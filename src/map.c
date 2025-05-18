@@ -43,6 +43,22 @@ char	*get_next_line(t_container *content)
 	return (line);
 }
 
+void map_printer(char **map) {
+    int i = 0;
+    int j;
+    while (map[i])
+    {
+        j = 0;
+        while (map[i][j])
+        {
+            printf("%c", map[i][j]);
+            j++;
+        }
+        printf("\n");
+        i++;
+    }
+}
+
 void get_and_init_map(t_container *content)
 {
     content->fd_map = open(content->filename, O_RDONLY);
@@ -53,4 +69,5 @@ void get_and_init_map(t_container *content)
         ft_error("Error in map maybe empty\n", content);
     printf("file open => %d \n", content->fd_map);
     printf("lines open => %d \n", content->number_of_newlines);
+    map_printer(content->map);
 }
