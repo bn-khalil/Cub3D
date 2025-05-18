@@ -1,7 +1,9 @@
 NAME = cub3d
 
 SRC = src/main.c \
-		src/libft_tools.c \
+		src/libft_tools_0.c \
+		src/libft_tools_1.c \
+		src/map.c \
 
 OBJ = $(SRC:.c=.o)
 

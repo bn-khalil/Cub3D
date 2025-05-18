@@ -1,8 +1,10 @@
 #include "../inc/cub3d.h"
 
-void ft_error(char *err)
+void ft_error(char *err, t_container *content)
 {
-	perror(err);
+	(void)content;
+	// free
+	write(2, err, ft_strlen(err));
 	exit(1);
 }
 
@@ -14,17 +16,28 @@ void is_file_ext_valid(char *filename)
 	if (len >= 4)
 	{
 		if (ft_strcmp(filename + len - 4, ".cub") != 0)
-			ft_error("invalid file name");
+			ft_error("there is not file with this name \n", NULL);
 	}
 	else
-		ft_error("invalid file name");
+		ft_error("invalid file name", NULL);
+}
+
+void init_container(t_container *content, char *filename)
+{
+	content->map = NULL;
+	content->fd_map = -1;
+	content->filename = filename;
+	content->line = NULL;
 }
 
 int main(int ac, char **av)
 {
-    (void)av;
+	t_container content;
+
     if (ac != 2)
         return (write(2,"Invalid number of arrguments!\n", 31), 1);
     is_file_ext_valid(av[1]);
+	init_container(&content, av[1]);
+	get_and_init_map(&content);
     return (0);
 }
