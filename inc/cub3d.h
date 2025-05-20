@@ -25,9 +25,12 @@ typedef struct s_container {
     char *filename;
     char *line;
     t_config *confs;
+    char *floor_color;
+    char *ceiling_color;
 } t_container;
 
 size_t	ft_strlen(const char *s);
+int     ft_isdigit(int c);
 char	*ft_strjoin(char *s1, char *s2);
 int	    ft_strcmp(char *s1, char *s2);
 void	ft_putnbr(int nb);
@@ -41,6 +44,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 void    configure_parsing(t_container *content);
 char	*ft_strdup(const char *s1);
 void	ft_configue(t_config **lst, t_config *new);
+int	    ft_atoi(const char *str);
 t_config	*ft_new_config(t_container *content, int fd_file, char *dir, char *path);
 
 

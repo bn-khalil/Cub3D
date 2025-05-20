@@ -30,6 +30,8 @@ void init_container(t_container *content, char *filename)
 	content->filename = filename;
 	content->line = NULL;
 	content->confs = NULL;
+	content->ceiling_color = NULL;
+	content->floor_color = NULL;
 }
 
 

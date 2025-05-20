@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:29:48 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/05/20 11:59:51 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/05/20 16:33:59 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,4 +144,39 @@ char	*ft_strdup(const char *s1)
 		p[i] = s1[i];
 	p[i] = '\0';
 	return (p);
+}
+
+int	ft_atoi(const char *str)
+{
+	int			i;
+	long long	store;
+	int			si;
+
+	i = 0;
+	si = 1;
+	store = 0;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			si *= -1;
+		i++;
+	}
+	while (ft_isdigit(str[i]))
+	{
+		if (store > (9223372036854775807 - (str[i] - '0')) / 10 && si == 1)
+			return (-1);
+		if (store > (9223372036854775807 - (str[i] - '0')) / 10 && si == -1)
+			return (0);
+		store = store * 10 + (str[i++] - '0');
+	}
+	return (store * si);
+}
+
+int	ft_isdigit(int c)
+{
+	if (c >= 48 && c <= 57)
+		return (1);
+	return (0);
 }
