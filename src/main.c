@@ -24,11 +24,14 @@ void is_file_ext_valid(char *filename)
 
 void init_container(t_container *content, char *filename)
 {
+	content->file_content = NULL;
 	content->map = NULL;
 	content->fd_map = -1;
 	content->filename = filename;
 	content->line = NULL;
+	content->confs = NULL;
 }
+
 
 int main(int ac, char **av)
 {
@@ -39,5 +42,6 @@ int main(int ac, char **av)
     is_file_ext_valid(av[1]);
 	init_container(&content, av[1]);
 	get_and_init_map(&content);
+	parsing_map_content(&content);
     return (0);
 }

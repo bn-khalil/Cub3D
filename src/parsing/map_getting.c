@@ -1,4 +1,4 @@
-#include "../inc/cub3d.h"
+#include "../../inc/cub3d.h"
 
 static int	get_number_newlines(char *str)
 {
@@ -59,15 +59,45 @@ void map_printer(char **map) {
     }
 }
 
+void get_width_and_height(t_container *content)
+{
+    int i;
+    content->map_w = ft_strlen(content->file_content[0]);
+
+    i = 0;
+    while (content->file_content[i])
+        i++;
+    content->map_h = i;
+}
+
+void saperate_map_configues(t_container *content)
+{
+	content->configues = malloc(sizeof(char *) * 7);
+	if (!content->configues)
+		ft_error("allocation failed!", content);
+	int i;
+
+	i = 0;
+	while (i < 6 && i < content->map_h)
+	{
+		content->configues[i] = content->file_content[i];
+		i++;
+	}
+	content->configues[i] = NULL;
+	configure_parsing(content);
+	// if (content->configues[i][0] == '1' && content->configues[i][content->map_w - 1] == '1')
+	// 	ft_error("configuration info not compleated", content);
+}
+
 void get_and_init_map(t_container *content)
 {
     content->fd_map = open(content->filename, O_RDONLY);
     if (content->fd_map <= 0)
         ft_error("Error opning map file", content);
-    content->map = ft_split(get_next_line(content), '\n');
-    if (!content->map || !content->map[0])
+    content->file_content = ft_split(get_next_line(content), '\n');
+    if (!content->file_content || !content->file_content[0])
         ft_error("Error in map maybe empty\n", content);
-    printf("file open => %d \n", content->fd_map);
-    printf("lines open => %d \n", content->number_of_newlines);
-    map_printer(content->map);
+    get_width_and_height(content);
+	saperate_map_configues(content);
+    // map_printer(content->configues);
 }

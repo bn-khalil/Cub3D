@@ -3,7 +3,9 @@ NAME = cub3d
 SRC = src/main.c \
 		src/libft_tools_0.c \
 		src/libft_tools_1.c \
-		src/map.c \
+		src/parsing/map_getting.c \
+		src/parsing/map_parsing.c \
+		src/parsing/conf_parsing.c \
 
 OBJ = $(SRC:.c=.o)
 
