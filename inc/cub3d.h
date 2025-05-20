@@ -46,6 +46,12 @@ char	*ft_strdup(const char *s1);
 void	ft_configue(t_config **lst, t_config *new);
 int	    ft_atoi(const char *str);
 t_config	*ft_new_config(t_container *content, int fd_file, char *dir, char *path);
+void configue_direction_parsing(t_container *content, char *direction, char *path);
+void check_rgb_format(char *str, t_container *content);
+void check_color_separator(char *color_form, t_container *content);
+void configue_rgb_parsing(t_container *content, char *color);
+void print_list(t_config *head);
+
 
 
 #endif

@@ -6,6 +6,9 @@ SRC = src/main.c \
 		src/parsing/map_getting.c \
 		src/parsing/map_parsing.c \
 		src/parsing/conf_parsing.c \
+		src/parsing/texture_parsing.c \
+		src/parsing/color_parsing.c \
+		
 
 OBJ = $(SRC:.c=.o)
 
