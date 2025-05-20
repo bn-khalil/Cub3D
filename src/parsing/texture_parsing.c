@@ -31,16 +31,27 @@ t_config	*ft_new_config(t_container *content, int fd_file, char *dir, char *path
 	return (head);
 }
 
+int is_texture_valid (t_container *content, char *path)
+{
+	int fd;
+
+	fd = -1;
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+		ft_error("Erorr: texture file not valid!\n", content);
+	return (fd);
+}
+
 void configue_direction_parsing(t_container *content, char *direction, char *path)
 {
-	ft_configue(&content->confs, ft_new_config(content, 0, direction, path));
+	ft_configue(&content->confs, ft_new_config(content, is_texture_valid(content, path), direction, path));
 }
 
 void print_list(t_config *head)
 {
     t_config *current = head;
     while (current) {
-        printf("ID: %s, Value: %s\n", current->id, current->value);
+        if (ft_strncmp("EA", current->value) )
         current = current->next;
     }
 }

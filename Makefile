@@ -13,7 +13,7 @@ SRC = src/main.c \
 OBJ = $(SRC:.c=.o)
 
 MFLAGS = -lmlx -framework OpenGL -framework Appkit
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address
 
 all: $(NAME)
 

@@ -49,7 +49,7 @@ t_config	*ft_new_config(t_container *content, int fd_file, char *dir, char *path
 void configue_direction_parsing(t_container *content, char *direction, char *path);
 void check_rgb_format(char *str, t_container *content);
 void check_color_separator(char *color_form, t_container *content);
-void configue_rgb_parsing(t_container *content, char *color);
+void configue_rgb_parsing(t_container *content, char *color, int flag);
 void print_list(t_config *head);
 
 

@@ -28,7 +28,7 @@ void check_color_separator(char *color_form, t_container *content)
     }
     
 }
-void configue_rgb_parsing(t_container *content, char *color)
+void configue_rgb_parsing(t_container *content, char *color, int flag)
 {
     int i;
     int pixel_ele;
@@ -50,10 +50,15 @@ void configue_rgb_parsing(t_container *content, char *color)
         pixel_ele = ft_atoi(rgb[i]);
         if (pixel_ele < 0 || pixel_ele > 255)
             ft_error("Error: color rgb not valid!", content);
+        
         i++;
     }
     if (i != 3)
         ft_error("Error: invalid rgb formatte!", content);
+    if (flag)
+        content->floor_color = color_form;
+    else
+        content->ceiling_color = color_form;
 
     // free rgb
 }

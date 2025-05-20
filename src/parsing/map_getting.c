@@ -70,15 +70,41 @@ void get_width_and_height(t_container *content)
     content->map_h = i;
 }
 
+int ft_is_wall(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != '1')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int get_conf_lines(t_container *content)
+{
+	int i;
+
+	i = 0;
+	while (!ft_is_wall(content->file_content[i]))
+		i++;
+	return (i);
+}
 void saperate_map_configues(t_container *content)
 {
-	content->configues = malloc(sizeof(char *) * 7);
+	int len;
+
+	len = get_conf_lines(content);
+	content->configues = malloc(sizeof(char *) * (len + 1));
 	if (!content->configues)
 		ft_error("allocation failed!", content);
 	int i;
 
 	i = 0;
-	while (i < 6 && i < content->map_h)
+	while (i < len && content->configues[i])
 	{
 		content->configues[i] = content->file_content[i];
 		i++;
