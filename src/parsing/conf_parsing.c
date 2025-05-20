@@ -43,9 +43,22 @@ void configue_direction_parsing(t_container *content, char *direction, char *pat
 void print_list(t_config *head) {
     t_config *current = head;
     while (current) {
-        printf("ID: %s, Value: %s\n", current->id, current->value);
+        printf("ID: %s, Value:%s\n", current->id, current->value);
         current = current->next;
     }
+}
+
+int skeep_spaces(char *str)
+{
+    int i;
+
+    i = 0;
+    if (!str)
+        return (i);
+    while (str[i] == ' ')
+        i++;
+    printf("%d\n", i);
+    return (i);
 }
 
 void configure_parsing(t_container *content)
@@ -56,13 +69,25 @@ void configure_parsing(t_container *content)
     while (content->configues[i])
     {
         if (ft_strncmp("NO ", content->configues[i], 3) == 0)
-            configue_direction_parsing(content, ft_substr(content->configues[i], 0, 3), ft_substr(content->configues[i], 3, ft_strlen(content->configues[i])));
+            configue_direction_parsing(content, \
+            ft_substr(content->configues[i], 0, 3), \
+            ft_substr(content->configues[i] + skeep_spaces(content->configues[i] + 2) + 2, 0, \
+            ft_strlen(content->configues[i])));
         else if (ft_strncmp("SO ", content->configues[i], 3) == 0)
-            configue_direction_parsing(content, ft_substr(content->configues[i], 0, 3), ft_substr(content->configues[i], 3, ft_strlen(content->configues[i])));
+            configue_direction_parsing(content, \
+            ft_substr(content->configues[i], 0, 3), \
+            ft_substr(content->configues[i] + skeep_spaces(content->configues[i] + 2) + 2, 0, \
+            ft_strlen(content->configues[i])));
         else if (ft_strncmp("WE ", content->configues[i], 3) == 0)
-            configue_direction_parsing(content, ft_substr(content->configues[i], 0, 3), ft_substr(content->configues[i], 3, ft_strlen(content->configues[i])));
+            configue_direction_parsing(content, \
+            ft_substr(content->configues[i], 0, 3), \
+            ft_substr(content->configues[i] + skeep_spaces(content->configues[i] + 2) + 2, 0, \
+            ft_strlen(content->configues[i])));
         else if (ft_strncmp("EA ", content->configues[i], 3) == 0)
-            configue_direction_parsing(content, ft_substr(content->configues[i], 0, 3), ft_substr(content->configues[i], 3, ft_strlen(content->configues[i])));
+            configue_direction_parsing(content, \
+            ft_substr(content->configues[i], 0, 3), \
+            ft_substr(content->configues[i] + skeep_spaces(content->configues[i] + 2) + 2, 0, \
+            ft_strlen(content->configues[i])));
         else if (ft_strncmp("F ", content->configues[i], 2) == 0)
             printf("f\n");
         else if (ft_strncmp("C ", content->configues[i], 2) == 0)
