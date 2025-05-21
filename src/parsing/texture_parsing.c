@@ -47,11 +47,20 @@ void configue_direction_parsing(t_container *content, char *direction, char *pat
 	ft_configue(&content->confs, ft_new_config(content, is_texture_valid(content, path), direction, path));
 }
 
-void print_list(t_config *head)
-{
-    t_config *current = head;
-    while (current) {
-        if (ft_strncmp("EA", current->value) )
-        current = current->next;
-    }
-}
+// void print_list(t_config *head)
+// {
+//     t_config *current = head;
+//     while (current) 
+// 	{
+// 		printf("%ss\n", current->id);
+// 		if (ft_strcmp("EA ", current->id) == 0 || ft_strcmp("NO ", current->id) == 0 || ft_strcmp("WE ", current->id) == 0 || ft_strcmp("SO ", current->id) == 0)
+//         	current = current->next;
+// 		else
+// 			ft_error("Error: missing textures!\n", NULL);
+//     }
+// }
+
+// EA /mnt/homes/kben-tou/Desktop/Cub3D/textures/tests
+// NO /mnt/homes/kben-tou/Desktop/Cub3D/textures/tests
+// SO /mnt/homes/kben-tou/Desktop/Cub3D/textures/tests
+// WE /mnt/homes/kben-tou/Desktop/Cub3D/textures/tests

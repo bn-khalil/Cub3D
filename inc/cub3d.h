@@ -37,8 +37,8 @@ void	ft_putnbr(int nb);
 char	*get_next_line(t_container *content);
 void    get_and_init_map(t_container *content);
 void    ft_error(char *err, t_container *content);
-char	**ft_split(char *s, char c);
-void    parsing_map_content(t_container *content);
+char	**ft_split(char *s, char c, int skip_separator);
+void    parsing_map_content(t_container *content, int start);
 int	    ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 void    configure_parsing(t_container *content);
@@ -51,6 +51,12 @@ void check_rgb_format(char *str, t_container *content);
 void check_color_separator(char *color_form, t_container *content);
 void configue_rgb_parsing(t_container *content, char *color, int flag);
 void print_list(t_config *head);
+int	get_number_newlines(char *str);
+char	*get_next_line(t_container *content);
+void get_width_and_height(t_container *content);
+void map_printer(char **map);
+int is_paces(char *str);
+
 
 
 

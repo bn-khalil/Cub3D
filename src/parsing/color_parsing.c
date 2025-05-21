@@ -39,7 +39,7 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
     if (!color_form)
         ft_error("Error: color rgb not valid!", content);
     check_color_separator(color_form, content);
-    rgb = ft_split(color_form, ',');
+    rgb = ft_split(color_form, ',', 1);
     if (!rgb)
         ft_error("Error: allocation failed!\n", content);
     
@@ -50,7 +50,6 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
         pixel_ele = ft_atoi(rgb[i]);
         if (pixel_ele < 0 || pixel_ele > 255)
             ft_error("Error: color rgb not valid!", content);
-        
         i++;
     }
     if (i != 3)
@@ -59,6 +58,5 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
         content->floor_color = color_form;
     else
         content->ceiling_color = color_form;
-
     // free rgb
 }

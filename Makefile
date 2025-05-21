@@ -8,12 +8,13 @@ SRC = src/main.c \
 		src/parsing/conf_parsing.c \
 		src/parsing/texture_parsing.c \
 		src/parsing/color_parsing.c \
+		src/parsing/map_utils.c \
 		
 
 OBJ = $(SRC:.c=.o)
 
 MFLAGS = -lmlx -framework OpenGL -framework Appkit
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address
 
 all: $(NAME)
 
