@@ -74,5 +74,5 @@ void get_and_init_map(t_container *content)
     if (!content->file_content || !content->file_content[0])
         ft_error("Error in map maybe empty\n", content);
 	saperate_map_configues(content);
-	map_printer(content->file_content);
+	// map_printer(content->file_content);
 }

@@ -70,17 +70,17 @@ char	*ft_strdup(const char *s1);
 void	ft_configue(t_config **lst, t_config *new);
 int	    ft_atoi(const char *str);
 t_config	*ft_new_config(t_container *content, int fd_file, char *dir, char *path);
-void configue_direction_parsing(t_container *content, char *direction, char *path);
-void check_rgb_format(char *str, t_container *content);
-void check_color_separator(char *color_form, t_container *content);
-void configue_rgb_parsing(t_container *content, char *color, int flag);
-void print_list(t_config *head);
-int	get_number_newlines(char *str);
+void    configue_direction_parsing(t_container *content, char *direction, char *path);
+void    check_rgb_format(char *str, t_container *content);
+void    check_color_separator(char *color_form, t_container *content);
+void    configue_rgb_parsing(t_container *content, char *color, int flag);
+void    print_list(t_config *head);
+int 	get_number_newlines(char *str);
 char	*get_next_line(t_container *content);
-void get_width_and_height(t_container *content);
-void map_printer(char **map);
-int is_paces(char *str);
-void start_the_play(t_container *content);
+void    get_width_and_height(t_container *content);
+void    map_printer(char **map);
+int     is_paces(char *str);
+void    start_the_play(t_container *content);
 
 
 

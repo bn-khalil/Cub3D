@@ -205,7 +205,7 @@ void draw_map(t_data *data)
         while (j < 21)
         {
             if (map[i][j] == '1')
-                draw_m(i * 35, j * 35, 35,color, data);
+                draw_square(i * 35, j * 35, 35,color, data);
             j++;
         }
         i++;
@@ -239,10 +239,10 @@ int main() {
     data.win = mlx_new_window(data.mxl, with * SIZE, hight * SIZE, "cub3d");
     data.img = mlx_new_image(data.mxl, with * SIZE, hight * SIZE);
     data.address = mlx_get_data_addr(data.img, &data.bits_per_pixel, &data.line_lenght, &data.endian);
+    draw_square(with / 2 * SIZE, hight / 2 * SIZE, 10, 0xFFFFFF, &data);
     mlx_put_image_to_window(data.mxl, data.win, data.img, 0, 0);
     mlx_hook(data.win, 2, 1L<<0, key_enter, &data.plr);
     mlx_hook(data.win, 3, 1L<<1, key_back, &data.plr);
-    draw_square(with / 2 * SIZE, hight / 2 * SIZE, 10, 0xFFFFFF, &data);
     mlx_loop_hook(data.mxl, draw_player, &data);
     mlx_loop(data.mxl);
     return 0;
