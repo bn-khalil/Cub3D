@@ -42,6 +42,14 @@ void check_map_components(t_container *content)
             ft_error("Error: invalid map there is newline\n", content);
         while (content->map[i][j])
         {
+            if (content->map[i][j] == 'N' || content->map[i][j] == 'E' || content->map[i][j] == 'W' || content->map[i][j] == 'S')
+            {
+                if (!content->player_pos)
+                    content->player_pos = 1;
+                else
+                    ft_error("Error: map should contain only one plyer position\n", content);
+            }
+
             if (j == 0 || i == content->map_h - 1 || i == 0 || j == ft_strlen(content->map[i]) - 1)
             {
                 if (content->map[i][j] != '1' && content->map[i][j] != ' ' && content->map[i][j] != '\t')

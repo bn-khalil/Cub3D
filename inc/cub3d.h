@@ -27,6 +27,7 @@ typedef struct s_container {
     t_config *confs;
     char *floor_color;
     char *ceiling_color;
+    int player_pos;
 } t_container;
 
 int	ft_strlen(const char *s);
