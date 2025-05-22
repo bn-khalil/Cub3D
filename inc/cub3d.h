@@ -7,12 +7,21 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
+#define PIXEL_SIZE 32
+
 typedef struct s_config {
     char *id;
     char *value;
     int fd;
     struct s_config *next;
 } t_config;
+
+typedef struct s_src
+{
+    void *mlx;
+    void *win;
+    void *img;
+} t_src;
 
 typedef struct s_container {
     int fd_map;
@@ -28,6 +37,7 @@ typedef struct s_container {
     char *floor_color;
     char *ceiling_color;
     int player_pos;
+    t_src src;
 } t_container;
 
 int	ft_strlen(const char *s);
@@ -57,6 +67,7 @@ char	*get_next_line(t_container *content);
 void get_width_and_height(t_container *content);
 void map_printer(char **map);
 int is_paces(char *str);
+void start_the_play(t_container *content);
 
 
 

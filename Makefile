@@ -9,6 +9,7 @@ SRC = src/main.c \
 		src/parsing/texture_parsing.c \
 		src/parsing/color_parsing.c \
 		src/parsing/map_utils.c \
+		src/engine/start_game.c \
 		
 
 OBJ = $(SRC:.c=.o)

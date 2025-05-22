@@ -45,5 +45,6 @@ int main(int ac, char **av)
     is_file_ext_valid(av[1]);
 	init_container(&content, av[1]);
 	get_and_init_map(&content);
+	start_the_play(&content);
     return (0);
 }

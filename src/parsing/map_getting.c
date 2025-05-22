@@ -42,6 +42,7 @@ int get_conf_lines(t_container *content)
 		i++;
 	return (i);
 }
+
 void saperate_map_configues(t_container *content)
 {
 	int len;
