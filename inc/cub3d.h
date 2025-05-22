@@ -8,6 +8,7 @@
 #include <fcntl.h>
 
 #define PIXEL_SIZE 32
+#define PLR (PIXEL_SIZE / 2)
 
 typedef struct s_config {
     char *id;
@@ -16,11 +17,22 @@ typedef struct s_config {
     struct s_config *next;
 } t_config;
 
+typedef struct s_plr
+{
+    int x;
+    int y;
+    char std_direction;
+} t_plr;
+
 typedef struct s_src
 {
     void *mlx;
     void *win;
     void *img;
+    char *buffer_pos;
+    int endian;
+    int len_with_pixels;
+    int pixel_bits_number;
 } t_src;
 
 typedef struct s_container {
@@ -38,6 +50,7 @@ typedef struct s_container {
     char *ceiling_color;
     int player_pos;
     t_src src;
+    t_plr plr;
 } t_container;
 
 int	ft_strlen(const char *s);

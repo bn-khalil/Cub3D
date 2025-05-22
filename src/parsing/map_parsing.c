@@ -45,7 +45,12 @@ void check_map_components(t_container *content)
             if (content->map[i][j] == 'N' || content->map[i][j] == 'E' || content->map[i][j] == 'W' || content->map[i][j] == 'S')
             {
                 if (!content->player_pos)
+                {
+                    content->plr.x = j * PIXEL_SIZE;
+                    content->plr.y = i * PIXEL_SIZE;
+                    content->plr.std_direction = content->map[i][j];
                     content->player_pos = 1;
+                }
                 else
                     ft_error("Error: map should contain only one plyer position\n", content);
             }

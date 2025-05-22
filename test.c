@@ -8,9 +8,8 @@
 #define UP 13
 #define SIZE 35
 
-
-
 #define pi = 3.14159265359
+
 typedef struct s_plyer{
     int x;
     int y;
@@ -19,6 +18,7 @@ typedef struct s_plyer{
     int left;
     int right;
 } t_plyer;
+
 typedef struct s_data{
     void *mxl;
     void *win;
@@ -189,7 +189,6 @@ void redraw(t_data *data)
         }
         x++;
     }
-    
 }
 
 void draw_map(t_data *data)
