@@ -72,7 +72,6 @@ void get_and_init_map(t_container *content)
     content->file_content = ft_split(get_next_line(content), '\n', 0);
     if (!content->file_content || !content->file_content[0])
         ft_error("Error in map maybe empty\n", content);
-    get_width_and_height(content);
 	saperate_map_configues(content);
 	map_printer(content->file_content);
 }

@@ -29,7 +29,7 @@ typedef struct s_container {
     char *ceiling_color;
 } t_container;
 
-size_t	ft_strlen(const char *s);
+int	ft_strlen(const char *s);
 int     ft_isdigit(int c);
 char	*ft_strjoin(char *s1, char *s2);
 int	    ft_strcmp(char *s1, char *s2);

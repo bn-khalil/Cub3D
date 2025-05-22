@@ -1,6 +1,4 @@
-#include "../inc/cub3d.h"
-
-#include "../inc/cub3d.h"
+#include "../../inc/cub3d.h"
 
 static size_t	words_count(const char *s, char c, int skip_separator)
 {
