@@ -6,9 +6,11 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <math.h>
 
 #define PIXEL_SIZE 32
-#define PLR (PIXEL_SIZE / 2)
+#define PLR PIXEL_SIZE / 3
+#define PI 3.14159265
 
 typedef struct s_config {
     char *id;
@@ -22,6 +24,10 @@ typedef struct s_plr
     int x;
     int y;
     char std_direction;
+    int up;
+    int down;
+    int left;
+    int right;
 } t_plr;
 
 typedef struct s_src

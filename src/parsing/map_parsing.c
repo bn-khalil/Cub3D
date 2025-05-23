@@ -71,6 +71,8 @@ void check_map_components(t_container *content)
         }
         i++;
     }
+    if (!content->player_pos)
+        ft_error("Error: map doesn't have player\n", content);
 }
 
 void parsing_map_content(t_container *content, int start)
