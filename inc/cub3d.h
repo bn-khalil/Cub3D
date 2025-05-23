@@ -28,6 +28,11 @@ typedef struct s_plr
     int down;
     int left;
     int right;
+
+    int radius;
+    int angle_r;
+    int turn_left;
+    int turn_right;
 } t_plr;
 
 typedef struct s_src
@@ -87,6 +92,13 @@ void    get_width_and_height(t_container *content);
 void    map_printer(char **map);
 int     is_paces(char *str);
 void    start_the_play(t_container *content);
+void    drawing_plr(t_container *content);
+void    draw_m(int x, int y, int color, t_container *content);
+int     draw_map(t_container *content);
+void    draw_clean(int x, int y, int color, t_container *content);
+void    clear_map_after_player(t_container *content);
+void    print_pxt(int x, int y, int color, t_container *content);
+int     draw_game(t_container *content);
 
 
 
