@@ -28,11 +28,12 @@ typedef struct s_plr
     int down;
     int left;
     int right;
-
     int radius;
-    int angle_r;
-    int turn_left;
-    int turn_right;
+    double r_angle;
+    float speed;
+    float r_speed;
+    float turn_left;
+    float turn_right;
 } t_plr;
 
 typedef struct s_src

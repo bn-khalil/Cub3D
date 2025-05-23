@@ -59,8 +59,3 @@ void configue_direction_parsing(t_container *content, char *direction, char *pat
 // 			ft_error("Error: missing textures!\n", NULL);
 //     }
 // }
-
-// EA /mnt/homes/kben-tou/Desktop/Cub3D/textures/tests
-// NO /mnt/homes/kben-tou/Desktop/Cub3D/textures/tests
-// SO /mnt/homes/kben-tou/Desktop/Cub3D/textures/tests
-// WE /mnt/homes/kben-tou/Desktop/Cub3D/textures/tests

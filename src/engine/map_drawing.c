@@ -1,6 +1,4 @@
-
 #include "../../inc/cub3d.h"
-
 
 void draw_m(int x, int y, int color, t_container *content)
 {
@@ -17,7 +15,6 @@ void draw_m(int x, int y, int color, t_container *content)
         i++;
     }
 }
-
 
 int draw_map(t_container *content)
 {
