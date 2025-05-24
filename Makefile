@@ -13,23 +13,41 @@ SRC = src/main.c \
 		src/engine/start_game.c \
 		src/engine/draw_tools.c \
 		src/engine/player_drawing.c \
-		#src/engine/plr_moving.c \
-		
 
 OBJ = $(SRC:.c=.o)
+DEP = $(OBJ:.o=.d)
 
-MFLAGS = -lmlx -framework OpenGL -framework Appkit
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=address
+
+CC = cc
+INCLUDES = -Iinc
+CFLAGS = -g #-Wall -Wextra -Werror
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Linux)
+    INCLUDES += -Iminilibx-linux
+    LIBS = -Lminilibx-linux -lmlx -lXext -lX11 -lm
+else ifeq ($(UNAME_S),Darwin)
+    LIBS = -lmlx -framework OpenGL -framework AppKit
+else
+    $(error OS not supported: $(UNAME_S))
+endif
 
 all: $(NAME)
 
-$(NAME):$(OBJ) inc/cub3d.h
-	cc $(CFLAGS) $(MFLAGS) $(OBJ) -o $(NAME)
+$(NAME): $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -o $@ $(LIBS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ -MMD
 
 clean:
-	rm -rf $(OBJ)
+	rm -f $(OBJ) $(DEP)
 
 fclean: clean
-	rm -rf $(NAME)
+	rm -f $(NAME)
 
 re: fclean all
+
+-include $(DEP)
+
+.PHONY: all clean fclean re
