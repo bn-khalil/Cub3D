@@ -6,14 +6,14 @@ void init_player(t_container *content)
     content->plr.down = 0;
     content->plr.left = 0;
     content->plr.right = 0;
-    content->plr.speed = 3;
-	if (content->player_pos == 'E')
+    content->plr.speed = 2.5;
+	if (content->plr.std_direction == 'E')
 	    content->plr.r_angle = 0;
-	if (content->player_pos == 'W')
+	if (content->plr.std_direction== 'W')
 		content->plr.r_angle = PI;
-	if (content->player_pos == 'S')
+	if (content->plr.std_direction== 'S')
 		content->plr.r_angle = PI / 2;
-    if (content->player_pos == 'N')
+    if (content->plr.std_direction== 'N')
 		content->plr.r_angle = 3 * PI / 2;
     content->plr.r_speed = 2  * (PI / 180);
 }
@@ -68,8 +68,6 @@ int is_wall(float x, float y, t_container *content)
     int i;
     int j;
 
-    // if (x < 0 || y < 0 || x >= content->map_w || y >= content->map_h)
-    //     return (1);
     i = x / PIXEL_SIZE;
     j = y / PIXEL_SIZE;
     if (i < 0 || j < 0 || i >= content->map_w || j >= content->map_h)
