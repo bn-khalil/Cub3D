@@ -1,0 +1,3 @@
+- [ ] understand the previouse code 
+- [ ] creating the reay effictivly
+- [ ] moving the player in more smooth way espacialy ungels 
