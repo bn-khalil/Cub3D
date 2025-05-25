@@ -8,6 +8,7 @@ void init_player(t_container *content) {
   content->plr.speed = 1.5;
   content->plr.rotate_left = 0;
   content->plr.rotate_right = 0;
+  content->num_rays = content->map_w / WALL_COL_WIDH;
   if (content->plr.std_direction == 'E')
     content->plr.r_angle = 0;
   if (content->plr.std_direction == 'W')
@@ -149,6 +150,7 @@ void let_player_move(t_container *content) {
     }
   }
 }
+
 void drawing_rays_angle(t_container *content) {
   float ray_x = content->plr.x + PLR / 2;
   float ray_y = content->plr.y + PLR / 2;

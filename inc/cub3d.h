@@ -11,6 +11,10 @@
 #define PIXEL_SIZE 32
 #define PLR PIXEL_SIZE / 3
 #define PI 3.14159265
+#define FOV (60 * PI / 180)
+#define WALL_COL_WIDH 1
+
+#endif //
 #ifdef __APPLE__
 #define KEY_ESC 53
 #define KEY_A 0
@@ -78,6 +82,7 @@ typedef struct s_container {
   char *floor_color;
   char *ceiling_color;
   int player_pos;
+  int num_rays;
   t_src src;
   t_plr plr;
 } t_container;
