@@ -18,14 +18,14 @@ OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)
 
 
-CC = cc
+CC = gcc
 INCLUDES = -Iinc
-CFLAGS = -g #-Wall -Wextra -Werror
+CFLAGS = -Wno-incompatible-pointer-types
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-    INCLUDES += -Iminilibx-linux
-    LIBS = -Lminilibx-linux -lmlx -lXext -lX11 -lm
+    INCLUDES += -I${HOME}/.local/include
+    LIBS = -L${HOME}/.local/lib -lmlx -lXext -lX11 -lm
 else ifeq ($(UNAME_S),Darwin)
     LIBS = -lmlx -framework OpenGL -framework AppKit
 else
