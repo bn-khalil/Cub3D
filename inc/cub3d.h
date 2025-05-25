@@ -39,14 +39,14 @@ typedef struct s_config {
 } t_config;
 
 typedef struct s_plr {
-  int x;
-  int y;
+  float x;
+  float y;
   char std_direction;
   int up;
   int down;
   int left;
   int right;
-  int radius;
+  float radius;
   double r_angle;
   float speed;
   float r_speed;

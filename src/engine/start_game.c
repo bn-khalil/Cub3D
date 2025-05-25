@@ -5,7 +5,7 @@ void init_player(t_container *content) {
   content->plr.down = 0;
   content->plr.left = 0;
   content->plr.right = 0;
-  content->plr.speed = 2.5;
+  content->plr.speed = 1.5;
   content->plr.rotate_left = 0;
   content->plr.rotate_right = 0;
   if (content->plr.std_direction == 'E')
@@ -41,105 +41,122 @@ int ft_close(t_container *content) {
 }
 
 int key_action(int keycode, t_container *content) {
-    if (keycode == KEY_A)
-        content->plr.left = 1;
-    else if (keycode == KEY_S)
-        content->plr.down = 1;
-    else if (keycode == KEY_D)
-        content->plr.right = 1;
-    else if (keycode == KEY_W)
-        content->plr.up = 1;
-    else if (keycode == KEY_LEFT)
-        content->plr.rotate_left = 1;
-    else if (keycode == KEY_RIGHT)
-        content->plr.rotate_right = 1;
-    return (0);
-}
-
-int key_back(int keycode, t_container *content) {
-    if (keycode == KEY_ESC)
-        ft_close(content);
-    else if (keycode == KEY_A)
-        content->plr.left = 0;
-    else if (keycode == KEY_S)
-        content->plr.down = 0;
-    else if (keycode == KEY_D)
-        content->plr.right = 0;
-    else if (keycode == KEY_W)
-        content->plr.up = 0;
-    else if (keycode == KEY_LEFT)
-        content->plr.rotate_left = 0;
-    else if (keycode == KEY_RIGHT)
-        content->plr.rotate_right = 0;
-    return (0);
-}
-
-int is_wall(float x, float y, t_container *content) {
-  int i;
-  int j;
-
-  i = x / PIXEL_SIZE;
-  j = y / PIXEL_SIZE;
-  if (i < 0 || j < 0 || i >= content->map_w || j >= content->map_h)
-    return 1;
-  if (content->map[j][i] == '1')
-    return (1);
+  if (keycode == KEY_A)
+    content->plr.left = 1;
+  else if (keycode == KEY_S)
+    content->plr.down = 1;
+  else if (keycode == KEY_D)
+    content->plr.right = 1;
+  else if (keycode == KEY_W)
+    content->plr.up = 1;
+  else if (keycode == KEY_LEFT)
+    content->plr.rotate_left = 1;
+  else if (keycode == KEY_RIGHT)
+    content->plr.rotate_right = 1;
   return (0);
 }
 
+int key_back(int keycode, t_container *content) {
+  if (keycode == KEY_ESC)
+    ft_close(content);
+  else if (keycode == KEY_A)
+    content->plr.left = 0;
+  else if (keycode == KEY_S)
+    content->plr.down = 0;
+  else if (keycode == KEY_D)
+    content->plr.right = 0;
+  else if (keycode == KEY_W)
+    content->plr.up = 0;
+  else if (keycode == KEY_LEFT)
+    content->plr.rotate_left = 0;
+  else if (keycode == KEY_RIGHT)
+    content->plr.rotate_right = 0;
+  return (0);
+}
+
+int is_wall(float x, float y, t_container *content) {
+  int i = (int)(x / PIXEL_SIZE);
+  int j = (int)(y / PIXEL_SIZE);
+
+  if (i < 0 || j < 0 || i >= content->map_w || j >= content->map_h)
+    return 1;
+
+  if (!content->map || !content->map[j])
+    return 1; // guard null pointers
+
+  if (content->map[j][i] == '1')
+    return 1;
+
+  return 0;
+}
+
 int ft_is_collision(float x, float y, t_container *content) {
-    if (is_wall(x, y, content) ||               // top-left
-        is_wall(x + PLR, y, content) ||         // top-right
-        is_wall(x, y + PLR, content) ||         // bottom-left
-        is_wall(x + PLR, y + PLR, content)) {   // bottom-right
-        return 1;
-    }
-    return 0;
+  if (is_wall(x, y, content) ||             // top-left
+      is_wall(x + PLR, y, content) ||       // top-right
+      is_wall(x, y + PLR, content) ||       // bottom-left
+      is_wall(x + PLR, y + PLR, content)) { // bottom-right
+    return 1;
+  }
+  return 0;
 }
 
-void let_player_move(t_container *content) 
-{
-    float new_x = content->plr.x;
-    float new_y = content->plr.y;
+void let_player_move(t_container *content) {
+  float new_x = content->plr.x;
+  float new_y = content->plr.y;
 
-    if (content->plr.rotate_left)
-        content->plr.r_angle -= content->plr.r_speed;
-    if (content->plr.rotate_right)
-        content->plr.r_angle += content->plr.r_speed;
-    
-    content->plr.r_angle = fmod(content->plr.r_angle, 2 * PI);
-    if (content->plr.r_angle < 0)
-        content->plr.r_angle += 2 * PI;
+  if (content->plr.rotate_left)
+    content->plr.r_angle -= content->plr.r_speed;
+  if (content->plr.rotate_right)
+    content->plr.r_angle += content->plr.r_speed;
 
-    if (content->plr.up) {
-        new_y = content->plr.y - content->plr.speed;
-        if (!ft_is_collision(content->plr.x, new_y, content))
-            content->plr.y = new_y;
+  content->plr.r_angle = fmod(content->plr.r_angle, 2 * PI);
+  if (content->plr.r_angle < 0)
+    content->plr.r_angle += 2 * PI;
+
+  float cos_an = cos(content->plr.r_angle);
+  float sin_an = sin(content->plr.r_angle);
+
+  if (content->plr.up) {
+    new_x = content->plr.x + cos_an * content->plr.speed;
+    new_y = content->plr.y + sin_an * content->plr.speed;
+    if (!ft_is_collision(new_x, new_y, content)) {
+      content->plr.x = new_x;
+      content->plr.y = new_y;
     }
-    if (content->plr.down) {
-        new_y = content->plr.y + content->plr.speed;
-        if (!ft_is_collision(content->plr.x, new_y, content))
-            content->plr.y = new_y;
+  }
+  if (content->plr.down) {
+    new_x = content->plr.x - cos_an * content->plr.speed;
+    new_y = content->plr.y - sin_an * content->plr.speed;
+    if (!ft_is_collision(new_x, new_y, content)) {
+      content->plr.x = new_x;
+      content->plr.y = new_y;
     }
-    if (content->plr.right) {
-        new_x = content->plr.x + content->plr.speed;
-        if (!ft_is_collision(new_x, content->plr.y, content))
-            content->plr.x = new_x;
+  }
+  if (content->plr.left) {
+    new_x = content->plr.x + sin_an * content->plr.speed;
+    new_y = content->plr.y - cos_an * content->plr.speed;
+    if (!ft_is_collision(new_x, new_y, content)) {
+      content->plr.x = new_x;
+      content->plr.y = new_y;
     }
-    if (content->plr.left) {
-        new_x = content->plr.x - content->plr.speed;
-        if (!ft_is_collision(new_x, content->plr.y, content))
-            content->plr.x = new_x;
+  }
+  if (content->plr.right) {
+    new_x = content->plr.x - sin_an * content->plr.speed;
+    new_y = content->plr.y + cos_an * content->plr.speed;
+    if (!ft_is_collision(new_x, new_y, content)) {
+      content->plr.x = new_x;
+      content->plr.y = new_y;
     }
+  }
 }
-
 void drawing_rays_angle(t_container *content) {
   float ray_x = content->plr.x + PLR / 2;
   float ray_y = content->plr.y + PLR / 2;
   float cos_an = cos(content->plr.r_angle);
   float sin_an = sin(content->plr.r_angle);
 
-  while (is_wall(ray_x, ray_y, content) == 0) {
+  int steps = 40;
+  for (int i = 0; i < steps; i++) {
     print_pxt(ray_x, ray_y, 0x00FF00, content);
     ray_x += cos_an;
     ray_y += sin_an;
