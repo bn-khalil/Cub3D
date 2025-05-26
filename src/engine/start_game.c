@@ -9,6 +9,7 @@ void init_player(t_container *content) {
   content->plr.rotate_left = 0;
   content->plr.rotate_right = 0;
   content->num_rays = content->map_w / WALL_COL_WIDH;
+  content->rays = malloc(sizeof(t_ray) * content->map_w);
   if (content->plr.std_direction == 'E')
     content->plr.r_angle = 0;
   if (content->plr.std_direction == 'W')
@@ -151,17 +152,34 @@ void let_player_move(t_container *content) {
   }
 }
 
-void drawing_rays_angle(t_container *content) {
+void drawing_rays_angle(t_container *content, float angle) {
   float ray_x = content->plr.x + PLR / 2;
   float ray_y = content->plr.y + PLR / 2;
-  float cos_an = cos(content->plr.r_angle);
-  float sin_an = sin(content->plr.r_angle);
+  float cos_an = cos(angle);
+  float sin_an = sin(angle);
+  int length = 30;
+  int i;
 
-  int steps = 40;
-  for (int i = 0; i < steps; i++) {
-    print_pxt(ray_x, ray_y, 0x00FF00, content);
-    ray_x += cos_an;
-    ray_y += sin_an;
+  for (i = 0; i < length; i++) {
+    float x = ray_x + cos_an * i;
+    float y = ray_y + sin_an * i;
+    print_pxt(x, y, 0x00FF00, content);
+  }
+}
+
+void cast_all_rays(t_container *content) {
+  int columes = 0;
+  int i = -1;
+  int num_ray = content->map_w / WALL_COL_WIDH;
+  float ray_angle = content->plr.r_angle - (FOV / 2);
+  while (++i < num_ray) {
+    content->rays[i].ray_angle = ray_angle;
+    ray_angle += FOV / num_ray;
+    columes++;
+  }
+  i = -1;
+  while (++i < num_ray) {
+    drawing_rays_angle(content, content->rays[i].ray_angle);
   }
 }
 
@@ -170,7 +188,7 @@ int draw_game(t_container *content) {
   clear_map_after_player(content);
   draw_map(content);
   drawing_plr(content);
-  drawing_rays_angle(content);
+  cast_all_rays(content);
   mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img,
                           0, 0);
   return (0);

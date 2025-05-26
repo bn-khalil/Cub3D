@@ -14,7 +14,6 @@
 #define FOV (60 * PI / 180)
 #define WALL_COL_WIDH 1
 
-#endif //
 #ifdef __APPLE__
 #define KEY_ESC 53
 #define KEY_A 0
@@ -35,6 +34,16 @@
 #else
 #endif
 
+typedef struct s_ray {
+  float ray_angle;
+  float ray_hit_x;
+  float ray_hit_y;
+  float distance;
+  int is_ray_left;
+  int is_ray_right;
+  int is_ray_up;
+  int is_ray_down;
+} t_ray;
 typedef struct s_config {
   char *id;
   char *value;
@@ -85,6 +94,7 @@ typedef struct s_container {
   int num_rays;
   t_src src;
   t_plr plr;
+  t_ray *rays;
 } t_container;
 
 int ft_strlen(const char *s);

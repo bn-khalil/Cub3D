@@ -20,7 +20,7 @@ DEP = $(OBJ:.o=.d)
 
 CC = gcc
 INCLUDES = -Iinc
-CFLAGS = -Wno-incompatible-pointer-types
+CFLAGS = -g -Wno-incompatible-pointer-types #-fsanitize=address
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
