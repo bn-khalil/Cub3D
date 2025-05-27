@@ -35,15 +35,22 @@
 #endif
 
 typedef struct s_ray {
+  float next_h_y_touch;
+  float next_h_x_touch;
   float ray_angle;
-  float ray_hit_x;
-  float ray_hit_y;
+  float x_intersept;
+  float y_intersept;
+  float x_step;
+  float y_step;
   float distance;
+  float hit_x;
+  float hit_y;
   int is_ray_left;
   int is_ray_right;
   int is_ray_up;
   int is_ray_down;
 } t_ray;
+
 typedef struct s_config {
   char *id;
   char *value;
@@ -60,7 +67,7 @@ typedef struct s_plr {
   int left;
   int right;
   float radius;
-  double r_angle;
+  float r_angle;
   float speed;
   float r_speed;
   int rotate_left;
@@ -134,5 +141,6 @@ void draw_clean(int x, int y, int color, t_container *content);
 void clear_map_after_player(t_container *content);
 void print_pxt(int x, int y, int color, t_container *content);
 int draw_game(t_container *content);
+void	*ft_memset(void *b, int c, size_t len);
 
 #endif

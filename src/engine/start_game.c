@@ -1,5 +1,29 @@
 #include "../../inc/cub3d.h"
+float fix_angle(float angle)
+{
+    angle = fmod(angle, 2 * PI);
+    if (angle < 0)
+        angle += 2 * PI;
+    return angle;
+}
 
+
+void drawLineDDA(int x0, int y0, int x1, int y1, int color, t_container *content) 
+{
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+    int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+    float xInc = dx / (float)steps;
+    float yInc = dy / (float)steps;
+    float x = x0;
+    float y = y0;
+
+    for (int i = 0; i <= steps; i++) {
+        print_pxt((int)round(x), (int)round(y), color, content);
+        x += xInc;
+        y += yInc;
+    }
+}
 void init_player(t_container *content) {
   content->plr.up = 0;
   content->plr.down = 0;
@@ -9,7 +33,8 @@ void init_player(t_container *content) {
   content->plr.rotate_left = 0;
   content->plr.rotate_right = 0;
   content->num_rays = content->map_w / WALL_COL_WIDH;
-  content->rays = malloc(sizeof(t_ray) * content->map_w);
+  content->rays = malloc(sizeof(t_ray) * content->num_rays);
+  ft_memset(content->rays, 0, sizeof(t_ray) * content->num_rays);
   if (content->plr.std_direction == 'E')
     content->plr.r_angle = 0;
   if (content->plr.std_direction == 'W')
@@ -19,6 +44,7 @@ void init_player(t_container *content) {
   if (content->plr.std_direction == 'N')
     content->plr.r_angle = 3 * PI / 2;
   content->plr.r_speed = 1 * (PI / 180);
+
 }
 
 void mlx_res_init(t_container *content) {
@@ -93,39 +119,47 @@ int is_wall(float x, float y, t_container *content) {
 }
 
 int ft_is_collision(float x, float y, t_container *content) {
-  if (is_wall(x, y, content) ||             // top-left
-      is_wall(x + PLR, y, content) ||       // top-right
-      is_wall(x, y + PLR, content) ||       // bottom-left
-      is_wall(x + PLR, y + PLR, content)) { // bottom-right
+  if (is_wall(x, y, content) || is_wall(x + (float)PLR, y, content) ||
+      is_wall(x, y + (float)PLR, content) ||
+      is_wall(x + (float)PLR, y + (float)PLR, content)) {
     return 1;
   }
   return 0;
 }
 
 void let_player_move(t_container *content) {
-  float new_x = content->plr.x;
-  float new_y = content->plr.y;
+    // Normalize angle first
+    content->plr.r_angle = fix_angle(content->plr.r_angle);
 
-  if (content->plr.rotate_left)
-    content->plr.r_angle -= content->plr.r_speed;
-  if (content->plr.rotate_right)
-    content->plr.r_angle += content->plr.r_speed;
+    // Handle rotation
+    if (content->plr.rotate_left)
+        content->plr.r_angle -= content->plr.r_speed;
+    if (content->plr.rotate_right)
+        content->plr.r_angle += content->plr.r_speed;
+    
+    // Normalize again after rotation
+    content->plr.r_angle = fix_angle(content->plr.r_angle);
 
-  content->plr.r_angle = fmod(content->plr.r_angle, 2 * PI);
-  if (content->plr.r_angle < 0)
-    content->plr.r_angle += 2 * PI;
+    // Get precise trig values with epsilon checks
+    float cos_an = cos(content->plr.r_angle);
+    float sin_an = sin(content->plr.r_angle);
+    
+    // Snap to exact cardinal directions if very close
+    if (fabs(cos_an) < 0.0001) cos_an = 0;
+    if (fabs(sin_an) < 0.0001) sin_an = 0;
 
-  float cos_an = cos(content->plr.r_angle);
-  float sin_an = sin(content->plr.r_angle);
-
-  if (content->plr.up) {
-    new_x = content->plr.x + cos_an * content->plr.speed;
-    new_y = content->plr.y + sin_an * content->plr.speed;
-    if (!ft_is_collision(new_x, new_y, content)) {
-      content->plr.x = new_x;
-      content->plr.y = new_y;
+    // Movement calculations remain the same
+    float new_x = content->plr.x;
+    float new_y = content->plr.y;
+    
+    if (content->plr.up) {
+        new_x = content->plr.x + cos_an * content->plr.speed;
+        new_y = content->plr.y + sin_an * content->plr.speed;
+        if (!ft_is_collision(new_x, new_y, content)) {
+            content->plr.x = new_x;
+            content->plr.y = new_y;
+        }
     }
-  }
   if (content->plr.down) {
     new_x = content->plr.x - cos_an * content->plr.speed;
     new_y = content->plr.y - sin_an * content->plr.speed;
@@ -153,8 +187,8 @@ void let_player_move(t_container *content) {
 }
 
 void drawing_rays_angle(t_container *content, float angle) {
-  float ray_x = content->plr.x + PLR / 2;
-  float ray_y = content->plr.y + PLR / 2;
+  float ray_x = content->plr.x + (float)PLR / 2;
+  float ray_y = content->plr.y + (float)PLR / 2;
   float cos_an = cos(angle);
   float sin_an = sin(angle);
   int length = 30;
@@ -166,21 +200,131 @@ void drawing_rays_angle(t_container *content, float angle) {
     print_pxt(x, y, 0x00FF00, content);
   }
 }
-
-void cast_all_rays(t_container *content) {
-  int columes = 0;
+/* void ray_info(t_container *content) */
+/* { */
+/*   int i = -1; */
+/*   int columes = 0; */
+/*   int num_ray = 1; */
+/*   int is_hit_horsental = 0; */
+/*   float ray_angle = content->plr.r_angle - (FOV / 2); */
+/*    */
+/*   while (++i < num_ray) { */
+/*     content->rays[i].ray_angle = ray_angle; */
+/*     content->rays[i].is_ray_down = ray_angle > 0 && ray_angle < PI; */
+/*     content->rays[i].is_ray_up = !content->rays[i].is_ray_down;  */
+/*     content->rays[i].is_ray_right = ray_angle < (PI / 2) || ray_angle > 1.5 * PI; */
+/*     content->rays[i].is_ray_left = !content->rays[i].is_ray_right; */
+/*     content->rays[i].y_intersept = floor(content->plr.y / PIXEL_SIZE) * PIXEL_SIZE; */
+/*      */
+/*     if (content->rays[i].is_ray_down) { */
+/*         content->rays[i].y_intersept += PIXEL_SIZE; */
+/*     } */
+/*     else { */
+/*         content->rays[i].y_intersept += 0; */
+/*     } */
+/*      */
+/*     content->rays[i].x_intersept = content->plr.x + (content->rays[i].y_intersept - content->plr.y) / tan(ray_angle); */
+/*     content->rays[i].y_step = PIXEL_SIZE; */
+/*      */
+/*     if (content->rays[i].is_ray_up) { */
+/*         content->rays[i].y_step *= -1; */
+/*     } */
+/*      */
+/*     content->rays[i].x_step = PIXEL_SIZE / tan(ray_angle); */
+/*      */
+/*     if (content->rays[i].is_ray_left && content->rays[i].x_step > 0) { */
+/*         content->rays[i].x_step *= -1; */
+/*     } */
+/*        */
+/*     if (content->rays[i].is_ray_right && content->rays[i].x_step < 0) { */
+/*         content->rays[i].x_step *= -1; */
+/*     } */
+/*      */
+/*     content->rays[i].next_h_x_touch = content->rays[i].x_intersept; */
+/*     content->rays[i].next_h_y_touch = content->rays[i].y_intersept; */
+/*      */
+/*     if (content->rays[i].is_ray_up) { */
+/*       content->rays[i].next_h_y_touch--; */
+/*     } */
+/*      */
+/*     while (content->rays[i].next_h_x_touch >= 0 &&  */
+/*            content->rays[i].next_h_x_touch <= content->map_w * PIXEL_SIZE && */
+/*            content->rays[i].next_h_y_touch >= 0 &&  */
+/*            content->rays[i].next_h_y_touch <= content->map_h * PIXEL_SIZE) */
+/*     { */
+/*       if (is_wall(content->rays[i].next_h_x_touch, content->rays[i].next_h_y_touch, content)) { */
+/*         is_hit_horsental = 1; */
+/*         content->rays[i].hit_x = content->rays[i].next_h_x_touch; */
+/*         content->rays[i].hit_y = content->rays[i].next_h_y_touch; */
+/*         drawLineDDA(content->plr.x, content->plr.y, content->rays[i].hit_x, content->rays[i].hit_y, 0x00FF00, content); */
+/*         break; */
+/*       } */
+/*       else { */
+/*         content->rays[i].next_h_x_touch += content->rays[i].x_step; */
+/*         content->rays[i].next_h_y_touch += content->rays[i].y_step; */
+/*       } */
+/*     } */
+/*        */
+/*     ray_angle += FOV / num_ray; */
+/*     columes++; */
+/*   } */
+/* } */
+void ray_info(t_container *content)
+{
   int i = -1;
-  int num_ray = content->map_w / WALL_COL_WIDH;
+  int columes = 0;
+  int num_ray = 1;
+  int is_hit_horsental = 0;
   float ray_angle = content->plr.r_angle - (FOV / 2);
   while (++i < num_ray) {
-    content->rays[i].ray_angle = ray_angle;
+    //geting the inte first intersection horisantal x and y//
+    content->rays[i].ray_angle = fix_angle(ray_angle);
+    content->rays[i].is_ray_down = ray_angle > 0 && ray_angle < PI;
+    content->rays[i].is_ray_up = !content->rays[i].is_ray_down; 
+    content->rays[i].is_ray_right = ray_angle < (PI / 2) || ray_angle > 1.5 * PI;
+    content->rays[i].is_ray_left = !content->rays[i].is_ray_right;
+    content->rays[i].y_intersept = floor(content->plr.y / PIXEL_SIZE) * PIXEL_SIZE;
+    content->rays[i].x_intersept = content->plr.x + (content->rays[i].y_intersept - content->plr.y) / tan(ray_angle);
+    if (content->rays[i].is_ray_down)
+      content->rays[i].y_intersept += PIXEL_SIZE;
+    content->rays[i].y_step = PIXEL_SIZE;
+    if (content->rays[i].is_ray_up)
+        content->rays[i].y_step *= -1;
+    content->rays[i].x_step = PIXEL_SIZE  / tan(ray_angle);
+    if (content->rays[i].is_ray_left && content->rays[i].x_step > 0)
+        content->rays[i].x_step *= -1;
+      
+    if (content->rays[i].is_ray_right && content->rays[i].x_step < 0)
+        content->rays[i].x_step *= -1;
+    content->rays[i].next_h_x_touch = content->rays[i].x_intersept;
+    content->rays[i].next_h_y_touch = content->rays[i].y_intersept;
+    if (content->rays[i].is_ray_up)
+      content->rays[i].next_h_y_touch--;
+  while (content->rays[i].next_h_x_touch >= 0 && 
+           content->rays[i].next_h_x_touch <= content->map_w * PIXEL_SIZE &&
+           content->rays[i].next_h_y_touch >= 0 && 
+           content->rays[i].next_h_y_touch <= content->map_h * PIXEL_SIZE)
+    {
+      if (is_wall(content->rays[i].next_h_x_touch, content->rays[i].next_h_y_touch, content)) {
+        is_hit_horsental = 1;
+        content->rays[i].hit_x = content->rays[i].next_h_x_touch;
+        content->rays[i].hit_y = content->rays[i].next_h_y_touch;
+        drawLineDDA(content->plr.x, content->plr.y, content->rays[i].hit_x, content->rays[i].hit_y, 0x00FF00, content);
+        break;
+      }
+      else {
+        content->rays[i].next_h_x_touch += content->rays[i].x_step;
+        content->rays[i].next_h_y_touch += content->rays[i].y_step;
+      }
+    }
+      
     ray_angle += FOV / num_ray;
     columes++;
   }
-  i = -1;
-  while (++i < num_ray) {
-    drawing_rays_angle(content, content->rays[i].ray_angle);
-  }
+  
+}
+void cast_all_rays(t_container *content) {
+  ray_info(content);
 }
 
 int draw_game(t_container *content) {

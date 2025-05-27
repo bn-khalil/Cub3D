@@ -1,18 +1,19 @@
 NAME = cub3d
 
 SRC = src/main.c \
-		src/utils/libft_tools_0.c \
-		src/utils/libft_tools_1.c \
-		src/parsing/map_getting.c \
-		src/parsing/map_parsing.c \
-		src/parsing/conf_parsing.c \
-		src/parsing/texture_parsing.c \
-		src/parsing/color_parsing.c \
-		src/parsing/map_utils.c \
-		src/engine/map_drawing.c \
-		src/engine/start_game.c \
-		src/engine/draw_tools.c \
-		src/engine/player_drawing.c \
+			src/utils/memset.c \
+			src/utils/libft_tools_0.c \
+			src/utils/libft_tools_1.c \
+			src/parsing/map_getting.c \
+			src/parsing/map_parsing.c \
+			src/parsing/conf_parsing.c \
+			src/parsing/texture_parsing.c \
+			src/parsing/color_parsing.c \
+			src/parsing/map_utils.c \
+			src/engine/map_drawing.c \
+			src/engine/start_game.c \
+			src/engine/draw_tools.c \
+			src/engine/player_drawing.c \
 
 OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)
