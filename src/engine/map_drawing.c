@@ -23,9 +23,9 @@ int draw_map(t_container *content)
     while (content->map[i])
     {
         j = 0;
-        while (content->map[j])
+        while (content->map[i][j])
         {
-            if (content->map[i][j] == '1' || content->map[i][j] == ' ' || content->map[i][j] == '\t')
+            if (content->map[i][j] == '1')
                 draw_m(j * PIXEL_SIZE, i * PIXEL_SIZE, 0xFF8C00, content);
             if (content->map[i][j] == '0' || content->map[i][j] == 'W' || content->map[i][j] == 'N' \
             || content->map[i][j] == 'E' || content->map[i][j] == 'S')

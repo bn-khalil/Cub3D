@@ -100,6 +100,7 @@ void    draw_clean(int x, int y, int color, t_container *content);
 void    clear_map_after_player(t_container *content);
 void    print_pxt(int x, int y, int color, t_container *content);
 int     draw_game(t_container *content);
+char	*ft_strtrim(char *s1, char *set);
 
 
 

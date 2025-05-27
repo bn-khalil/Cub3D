@@ -47,9 +47,11 @@ void configure_parsing(t_container *content)
 {
     int i;
     int texture_count;
+    int colors_count;
 
     i = 0;
     texture_count = 0;
+    colors_count = 0;
     check_conf_duplication(content);
     while (content->configues[i])
     {
@@ -59,16 +61,22 @@ void configure_parsing(t_container *content)
             texture_count++;
         }
         else if (ft_strncmp("F ", content->configues[i], 2) == 0)
+        {
            configue_rgb_parsing(content, content->configues[i], 1);
+            colors_count++;
+        }
         else if (ft_strncmp("C ", content->configues[i], 2) == 0)
+        {
             configue_rgb_parsing(content, content->configues[i], 0);
+            colors_count++;
+        }
         else if (is_paces(content->configues[i]))
             ;
         else
             ft_error("Error: missing or invalid identifier\n", content);
         i++;
     }
-    if (texture_count < 4)
+    if (texture_count < 4 || colors_count < 2)
         ft_error("Error: missing textures!\n", content);
 	// print_list(content->confs);
 }

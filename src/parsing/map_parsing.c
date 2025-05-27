@@ -7,9 +7,25 @@ int is_map_chars(char c)
     return (0);
 }
 
+// int ft_check_zeros(int x, int y, char *line)
+// {
+//     int i;
+
+//     i = 0;
+//     while (line[i])
+//         i++;
+//     if (x > i - 1){
+//         printf("%d %d \n", x,, i);
+//         return (1);
+//     }
+//     return (0);
+// }
+
 void spaces_in_map(t_container *content, int x, int y)
 {
     if (x < 0 || x > content->map_w || y < 0 || y > content->map_h)
+        return ;
+    if (x - 1 < 0 || y - 1 < 0)
         return ;
     if (y == content->map_h - 1)
     {
@@ -25,6 +41,15 @@ void spaces_in_map(t_container *content, int x, int y)
         ft_error("Error: invalid map characters!\n", content);
 }
 
+int double_check_free_spaces(int x, int y, t_container *content)
+{
+    if (content->map[y][x] == '0')
+    {
+        if (x > ft_strlen(content->map[y - 1]) - 1 || x > ft_strlen(content->map[y + 1]) - 1)
+            return (1);
+    }
+    return (0);
+}
 void check_map_components(t_container *content)
 {
     int i;
@@ -54,7 +79,6 @@ void check_map_components(t_container *content)
                 else
                     ft_error("Error: map should contain only one plyer position\n", content);
             }
-
             if (j == 0 || i == content->map_h - 1 || i == 0 || j == ft_strlen(content->map[i]) - 1)
             {
                 if (content->map[i][j] != '1' && content->map[i][j] != ' ' && content->map[i][j] != '\t')
@@ -65,8 +89,10 @@ void check_map_components(t_container *content)
             && content->map[i][j] != 'E' && content->map[i][j] != 'S' \
             && content->map[i][j] != ' ' && content->map[i][j] != '\t')
                 ft_error("Error: invalid map characters!\n", content);
-            if ((content->map[i][j] == ' ' || content->map[i][j] == '\t'))
+            if (content->map[i][j] == ' ' || content->map[i][j] == '\t')
                 spaces_in_map(content, j, i);
+            if (double_check_free_spaces(j, i, content))
+                ft_error("Error: map should be rounded with walls\n", content);
             j++;
         }
         i++;
