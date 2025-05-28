@@ -35,7 +35,7 @@ void init_player(t_container *content) {
     content->plr.down = 0;
     content->plr.left = 0;
     content->plr.right = 0;
-    content->plr.speed = 1.5;
+    content->plr.speed = 6.5;
     content->plr.rotate_left = 0;
     content->plr.rotate_right = 0;
     content->num_rays = content->map_w / WALL_COL_WIDH;
@@ -52,7 +52,7 @@ void init_player(t_container *content) {
     if (content->plr.std_direction == 'S')
         content->plr.r_angle = 3 * PI / 2;
     
-    content->plr.r_speed = 1 * (PI / 180);  // 1 degree per frame
+    content->plr.r_speed = 3 * (PI / 180);  // 1 degree per frame
 }
 
 void mlx_res_init(t_container *content) {
@@ -147,8 +147,10 @@ void let_player_move(t_container *content) {
     float cos_an = cos(content->plr.r_angle);
     float sin_an = sin(content->plr.r_angle);
 
-    if (fabs(cos_an) < 0.0001) cos_an = 0;
-    if (fabs(sin_an) < 0.0001) sin_an = 0;
+    if (fabs(cos_an) < 0.0001) 
+        cos_an = 0;
+    if (fabs(sin_an) < 0.0001) 
+        sin_an = 0;
 
     float new_x = content->plr.x;
     float new_y = content->plr.y;
@@ -205,8 +207,8 @@ void get_the_smallest(t_ray *ray, float ray_angle, float player_angle)
         ray->wall_hit_y = ray->ver_hit_y;
         ray->distance = ray->ver_distance;
     }
-    // Fish-eye correction
-    ray->distance *= cos(ray_angle - player_angle);
+    /* // Fish-eye correction */
+    /* ray->distance *= cos(ray_angle - player_angle); */
 }
 
 void ray_info(t_container *content)
@@ -243,23 +245,29 @@ void ray_info(t_container *content)
         float next_h_x = x_intercept;
         float next_h_y = y_intercept;
         
-        if (content->rays[i].is_ray_up)
-            next_h_y -= 1;  // Avoid floating point precision issues
-            
         while (next_h_x >= 0 && next_h_x <= content->map_w * PIXEL_SIZE &&
                next_h_y >= 0 && next_h_y <= content->map_h * PIXEL_SIZE)
         {
+            if (content->rays[i].is_ray_up) {
+                if (is_wall(next_h_x, next_h_y - 1, content)) {
+                    is_hit_horizontal = 1;
+                    content->rays[i].horiz_hit_x = next_h_x;
+                    content->rays[i].horiz_hit_y = next_h_y;
+                    break;
+                }
+            }
+            
             if (is_wall(next_h_x, next_h_y, content)) {
                 is_hit_horizontal = 1;
                 content->rays[i].horiz_hit_x = next_h_x;
                 content->rays[i].horiz_hit_y = next_h_y;
                 break;
             }
+            
             next_h_x += x_step;
             next_h_y += y_step;
         }
 
-        /* Vertical intersection */
         float x_v_intercept = floor(content->plr.x / PIXEL_SIZE) * PIXEL_SIZE;
         if (content->rays[i].is_ray_right)
             x_v_intercept += PIXEL_SIZE;
@@ -278,30 +286,43 @@ void ray_info(t_container *content)
         float next_v_x = x_v_intercept;
         float next_v_y = y_v_intercept;
         
-        if (content->rays[i].is_ray_left)
-            next_v_x -= 1;  // Avoid floating point precision issues
-            
         while (next_v_x >= 0 && next_v_x <= content->map_w * PIXEL_SIZE &&
                next_v_y >= 0 && next_v_y <= content->map_h * PIXEL_SIZE)
         {
+            if (content->rays[i].is_ray_left) {
+                if (is_wall(next_v_x - 1, next_v_y, content)) {
+                    is_hit_vertical = 1;
+                    content->rays[i].ver_hit_x = next_v_x - 1;
+                    content->rays[i].ver_hit_y = next_v_y;
+                    break;
+                }
+            }
+            
             if (is_wall(next_v_x, next_v_y, content)) {
                 is_hit_vertical = 1;
                 content->rays[i].ver_hit_x = next_v_x;
                 content->rays[i].ver_hit_y = next_v_y;
                 break;
             }
+            
             next_v_x += x_v_step;
             next_v_y += y_v_step;
         }
 
-        // Calculate distances
-        content->rays[i].horiz_distance = is_hit_horizontal ? 
-            get_vector_dis(content, content->rays[i].horiz_hit_x, content->rays[i].horiz_hit_y) : FLT_MAX;
-            
-        content->rays[i].ver_distance = is_hit_vertical ? 
-            get_vector_dis(content, content->rays[i].ver_hit_x, content->rays[i].ver_hit_y) : FLT_MAX;
+        if (is_hit_horizontal) {
+            content->rays[i].horiz_distance = get_vector_dis(content, 
+                content->rays[i].horiz_hit_x, content->rays[i].horiz_hit_y);
+        } else {
+            content->rays[i].horiz_distance = FLT_MAX;
+        }
 
-        // Determine closest hit
+        if (is_hit_vertical) {
+            content->rays[i].ver_distance = get_vector_dis(content, 
+                content->rays[i].ver_hit_x, content->rays[i].ver_hit_y);
+        } else {
+            content->rays[i].ver_distance = FLT_MAX;
+        }
+
         get_the_smallest(&content->rays[i], ray_angle, content->plr.r_angle);
         
         // Draw debug ray

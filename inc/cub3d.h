@@ -8,11 +8,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define PIXEL_SIZE 32
+#define PIXEL_SIZE 64
 #define PLR PIXEL_SIZE / 3
 #define PI 3.14159265
 #define FOV (60.0 * (PI / 180.0))
-#define WALL_COL_WIDH 1
+#define WALL_COL_WIDH 0.05
+#define  MAP_RATIO 0.2
 
 #ifdef __APPLE__
 #define KEY_ESC 53
