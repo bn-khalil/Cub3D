@@ -11,7 +11,7 @@
 #define PIXEL_SIZE 32
 #define PLR PIXEL_SIZE / 3
 #define PI 3.14159265
-#define FOV (60 * PI / 180)
+#define FOV (60.0 * (PI / 180.0))
 #define WALL_COL_WIDH 1
 
 #ifdef __APPLE__
@@ -35,16 +35,24 @@
 #endif
 
 typedef struct s_ray {
+  float wall_hit_x;
+  float wall_hit_y;
   float next_h_y_touch;
   float next_h_x_touch;
+  float next_v_y_touch;
+  float next_v_x_touch;
   float ray_angle;
   float x_intersept;
   float y_intersept;
   float x_step;
   float y_step;
   float distance;
-  float hit_x;
-  float hit_y;
+  float ver_distance;
+  float horiz_distance;
+  float horiz_hit_x;
+  float horiz_hit_y;
+  float ver_hit_x;
+  float ver_hit_y;
   int is_ray_left;
   int is_ray_right;
   int is_ray_up;
