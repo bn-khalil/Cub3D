@@ -7,12 +7,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <float.h>
 
 #define PIXEL_SIZE 64
 #define PLR PIXEL_SIZE / 3
 #define PI 3.14159265
 #define FOV (60.0 * (PI / 180.0))
-#define WALL_COL_WIDH 0.05
+#define WALL_COL_WIDH 1
 #define  MAP_RATIO 0.2
 
 #ifdef __APPLE__
@@ -58,6 +59,8 @@ typedef struct s_ray {
   int is_ray_right;
   int is_ray_up;
   int is_ray_down;
+  int is_hit_horizontal;
+  int is_hit_vertical;
 } t_ray;
 
 typedef struct s_config {

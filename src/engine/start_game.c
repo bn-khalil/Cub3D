@@ -1,8 +1,6 @@
 #include "../../inc/cub3d.h"
 #include <float.h>
 
-#define FOV (60.0 * (PI / 180.0))  // Field of View in radians (60 degrees)
-
 float fix_angle(float angle)
 {
     angle = fmod(angle, 2 * PI);
@@ -23,7 +21,7 @@ void drawLineDDA(int x0, int y0, int x1, int y1, int color, t_container *content
     int i = 0;
 
     while (i <= steps) {
-        print_pxt((int)round(x), (int)round(y), color, content);
+        print_pxt((int)round(x) * MAP_RATIO, (int)round(y) * MAP_RATIO, color, content);
         x += xInc;
         y += yInc;
         i++;
@@ -38,7 +36,7 @@ void init_player(t_container *content) {
     content->plr.speed = 6.5;
     content->plr.rotate_left = 0;
     content->plr.rotate_right = 0;
-    content->num_rays = content->map_w / WALL_COL_WIDH;
+    content->num_rays = (content->map_w * PIXEL_SIZE) / WALL_COL_WIDH;
     content->rays = malloc(sizeof(t_ray) * content->num_rays);
     ft_memset(content->rays, 0, sizeof(t_ray) * content->num_rays);
     
@@ -52,7 +50,7 @@ void init_player(t_container *content) {
     if (content->plr.std_direction == 'S')
         content->plr.r_angle = 3 * PI / 2;
     
-    content->plr.r_speed = 3 * (PI / 180);  // 1 degree per frame
+    content->plr.r_speed = 3 * (PI / 180);  
 }
 
 void mlx_res_init(t_container *content) {
@@ -207,8 +205,8 @@ void get_the_smallest(t_ray *ray, float ray_angle, float player_angle)
         ray->wall_hit_y = ray->ver_hit_y;
         ray->distance = ray->ver_distance;
     }
-    /* // Fish-eye correction */
-    /* ray->distance *= cos(ray_angle - player_angle); */
+    // Fish-eye correction
+    ray->distance *= cos(ray_angle - player_angle);
 }
 
 void ray_info(t_container *content)
@@ -218,15 +216,14 @@ void ray_info(t_container *content)
     
     while (++i < content->num_rays) 
     {
-        int is_hit_horizontal = 0;
-        int is_hit_vertical = 0;
+        content->rays[i].is_hit_horizontal = 0;
+        content->rays[i].is_hit_vertical = 0;
         
         content->rays[i].is_ray_down = ray_angle > 0 && ray_angle < PI;
         content->rays[i].is_ray_up = !content->rays[i].is_ray_down;
         content->rays[i].is_ray_right = ray_angle < (PI / 2) || ray_angle > 1.5 * PI;
         content->rays[i].is_ray_left = !content->rays[i].is_ray_right;
 
-        /* Horizontal intersection */
         float y_intercept = floor(content->plr.y / PIXEL_SIZE) * PIXEL_SIZE;
         if (content->rays[i].is_ray_down)
             y_intercept += PIXEL_SIZE;
@@ -250,7 +247,7 @@ void ray_info(t_container *content)
         {
             if (content->rays[i].is_ray_up) {
                 if (is_wall(next_h_x, next_h_y - 1, content)) {
-                    is_hit_horizontal = 1;
+                    content->rays[i].is_hit_horizontal = 1;
                     content->rays[i].horiz_hit_x = next_h_x;
                     content->rays[i].horiz_hit_y = next_h_y;
                     break;
@@ -258,7 +255,7 @@ void ray_info(t_container *content)
             }
             
             if (is_wall(next_h_x, next_h_y, content)) {
-                is_hit_horizontal = 1;
+                content->rays[i].is_hit_horizontal = 1;
                 content->rays[i].horiz_hit_x = next_h_x;
                 content->rays[i].horiz_hit_y = next_h_y;
                 break;
@@ -291,7 +288,7 @@ void ray_info(t_container *content)
         {
             if (content->rays[i].is_ray_left) {
                 if (is_wall(next_v_x - 1, next_v_y, content)) {
-                    is_hit_vertical = 1;
+                    content->rays[i].is_hit_vertical = 1;
                     content->rays[i].ver_hit_x = next_v_x - 1;
                     content->rays[i].ver_hit_y = next_v_y;
                     break;
@@ -299,7 +296,7 @@ void ray_info(t_container *content)
             }
             
             if (is_wall(next_v_x, next_v_y, content)) {
-                is_hit_vertical = 1;
+                content->rays[i].is_hit_vertical = 1;
                 content->rays[i].ver_hit_x = next_v_x;
                 content->rays[i].ver_hit_y = next_v_y;
                 break;
@@ -309,14 +306,14 @@ void ray_info(t_container *content)
             next_v_y += y_v_step;
         }
 
-        if (is_hit_horizontal) {
+        if (content->rays[i].is_hit_horizontal) {
             content->rays[i].horiz_distance = get_vector_dis(content, 
                 content->rays[i].horiz_hit_x, content->rays[i].horiz_hit_y);
         } else {
             content->rays[i].horiz_distance = FLT_MAX;
         }
 
-        if (is_hit_vertical) {
+        if (content->rays[i].is_hit_vertical) {
             content->rays[i].ver_distance = get_vector_dis(content, 
                 content->rays[i].ver_hit_x, content->rays[i].ver_hit_y);
         } else {
@@ -326,22 +323,64 @@ void ray_info(t_container *content)
         get_the_smallest(&content->rays[i], ray_angle, content->plr.r_angle);
         
         // Draw debug ray
-        drawLineDDA(content->plr.x, content->plr.y, 
-                   content->rays[i].wall_hit_x, content->rays[i].wall_hit_y, 
-                   0x00FF00, content);
+        /* drawLineDDA(content->plr.x, content->plr.y,  */
+        /*            content->rays[i].wall_hit_x, content->rays[i].wall_hit_y,  */
+        /*            0x00FF00, content); */
         
         // Increment angle for next ray
         ray_angle = fix_angle(ray_angle + (FOV / content->num_rays));
     }
 }
 
+void convert_2d_to_3d(t_container *content)
+{
+    int i;
+    t_ray ray;
+    float distance_projection;
+    float wall_hight;
+    int color;
+    i = -1;
+    int y;
+    distance_projection = ((content->map_w * PIXEL_SIZE) / 2.0 ) / tan(FOV / 2.0);
+    while (++i < content->num_rays)
+    {
+        ray = content->rays[i];
+        wall_hight = (PIXEL_SIZE / ray.distance) * distance_projection;
+        int wall_strip_high = (int)wall_hight;
+        int wall_top_pixel = ((content->map_h * PIXEL_SIZE) / 2) - (wall_strip_high / 2);
+        if (wall_top_pixel < 0)
+            wall_top_pixel = 0;
+        int botm_pixel = ((content->map_h * PIXEL_SIZE) / 2) + (wall_strip_high / 2);
+        if (botm_pixel > (content->map_h * PIXEL_SIZE))
+            botm_pixel = content->map_h * PIXEL_SIZE;
+        y = wall_top_pixel;
+        if (ray.horiz_distance < ray.ver_distance) {
+            color = 0xFFFFFF;
+        } else {
+            color = 0xCCCCCC;
+        }
+        for (int y = wall_top_pixel; y < botm_pixel; y++) {
+            print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, color, content);
+        }
+
+    }
+}
+
 void cast_all_rays(t_container *content) {
-    ray_info(content);
+    int i = -1;
+    while (++i < content->num_rays)
+    {
+        drawLineDDA(content->plr.x, content->plr.y, 
+                   content->rays[i].wall_hit_x, content->rays[i].wall_hit_y, 
+                   0x00FF00, content);
+    }
 }
 
 int draw_game(t_container *content) {
     let_player_move(content);
+    ray_info(content);
     clear_map_after_player(content);
+    convert_2d_to_3d(content);
     draw_map(content);
     drawing_plr(content);
     cast_all_rays(content);
@@ -351,7 +390,7 @@ int draw_game(t_container *content) {
 
 void start_the_play(t_container *content) {
     mlx_res_init(content);
-    draw_map(content);
+    /* draw_map(content); */
     mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
     mlx_hook(content->src.win, 17, 0, ft_close, content);
     mlx_hook(content->src.win, 2, 1L << 0, key_action, content);
