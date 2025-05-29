@@ -40,7 +40,6 @@ void init_player(t_container *content) {
     content->rays = malloc(sizeof(t_ray) * content->num_rays);
     ft_memset(content->rays, 0, sizeof(t_ray) * content->num_rays);
     
-    // Corrected angle initialization
     if (content->plr.std_direction == 'E')
         content->plr.r_angle = 0;
     if (content->plr.std_direction == 'W')
@@ -199,13 +198,14 @@ void get_the_smallest(t_ray *ray, float ray_angle, float player_angle)
         ray->wall_hit_x = ray->horiz_hit_x;
         ray->wall_hit_y = ray->horiz_hit_y;
         ray->distance = ray->horiz_distance;
+        ray->was_vertical = 0;
     }
     else {
         ray->wall_hit_x = ray->ver_hit_x;
         ray->wall_hit_y = ray->ver_hit_y;
         ray->distance = ray->ver_distance;
+        ray->was_vertical = 1;
     }
-    // Fish-eye correction
     ray->distance *= cos(ray_angle - player_angle);
 }
 
@@ -254,7 +254,7 @@ void ray_info(t_container *content)
                 }
             }
             
-            if (is_wall(next_h_x, next_h_y, content)) {
+            else if (is_wall(next_h_x, next_h_y, content)) {
                 content->rays[i].is_hit_horizontal = 1;
                 content->rays[i].horiz_hit_x = next_h_x;
                 content->rays[i].horiz_hit_y = next_h_y;
@@ -265,46 +265,43 @@ void ray_info(t_container *content)
             next_h_y += y_step;
         }
 
-        float x_v_intercept = floor(content->plr.x / PIXEL_SIZE) * PIXEL_SIZE;
-        if (content->rays[i].is_ray_right)
-            x_v_intercept += PIXEL_SIZE;
-            
-        float y_v_intercept = content->plr.y + (x_v_intercept - content->plr.x) * tan(ray_angle);
-        
-        float x_v_step = PIXEL_SIZE;
-        if (content->rays[i].is_ray_left)
-            x_v_step *= -1;
-            
-        float y_v_step = PIXEL_SIZE * tan(ray_angle);
-        if ((content->rays[i].is_ray_up && y_v_step > 0) || 
-            (content->rays[i].is_ray_down && y_v_step < 0))
-            y_v_step *= -1;
-            
-        float next_v_x = x_v_intercept;
-        float next_v_y = y_v_intercept;
-        
-        while (next_v_x >= 0 && next_v_x <= content->map_w * PIXEL_SIZE &&
-               next_v_y >= 0 && next_v_y <= content->map_h * PIXEL_SIZE)
-        {
-            if (content->rays[i].is_ray_left) {
-                if (is_wall(next_v_x - 1, next_v_y, content)) {
-                    content->rays[i].is_hit_vertical = 1;
-                    content->rays[i].ver_hit_x = next_v_x - 1;
-                    content->rays[i].ver_hit_y = next_v_y;
-                    break;
-                }
-            }
-            
-            if (is_wall(next_v_x, next_v_y, content)) {
-                content->rays[i].is_hit_vertical = 1;
-                content->rays[i].ver_hit_x = next_v_x;
-                content->rays[i].ver_hit_y = next_v_y;
-                break;
-            }
-            
-            next_v_x += x_v_step;
-            next_v_y += y_v_step;
-        }
+float x_v_intercept = floor(content->plr.x / PIXEL_SIZE) * PIXEL_SIZE;
+if (content->rays[i].is_ray_right)
+    x_v_intercept += PIXEL_SIZE;
+
+float y_v_intercept = content->plr.y + (x_v_intercept - content->plr.x) * tan(ray_angle);
+
+float x_v_step = PIXEL_SIZE;
+if (content->rays[i].is_ray_left)
+    x_v_step *= -1;
+
+float y_v_step = PIXEL_SIZE * tan(ray_angle);
+if ((content->rays[i].is_ray_up && y_v_step > 0) || 
+    (content->rays[i].is_ray_down && y_v_step < 0))
+    y_v_step *= -1;
+
+float next_v_x = x_v_intercept;
+float next_v_y = y_v_intercept;
+
+while (next_v_x >= 0 && next_v_x <= content->map_w * PIXEL_SIZE &&
+       next_v_y >= 0 && next_v_y <= content->map_h * PIXEL_SIZE)
+{
+    float check_x = next_v_x;
+    float check_y = next_v_y;
+    
+    if (content->rays[i].is_ray_left) 
+        check_x -= 1.0;
+    
+    if (is_wall(check_x, check_y, content)) {
+        content->rays[i].is_hit_vertical = 1;
+        content->rays[i].ver_hit_x = next_v_x;
+        content->rays[i].ver_hit_y = next_v_y;
+        break;
+    }
+    
+    next_v_x += x_v_step;
+    next_v_y += y_v_step;
+}
 
         if (content->rays[i].is_hit_horizontal) {
             content->rays[i].horiz_distance = get_vector_dis(content, 
@@ -321,13 +318,6 @@ void ray_info(t_container *content)
         }
 
         get_the_smallest(&content->rays[i], ray_angle, content->plr.r_angle);
-        
-        // Draw debug ray
-        /* drawLineDDA(content->plr.x, content->plr.y,  */
-        /*            content->rays[i].wall_hit_x, content->rays[i].wall_hit_y,  */
-        /*            0x00FF00, content); */
-        
-        // Increment angle for next ray
         ray_angle = fix_angle(ray_angle + (FOV / content->num_rays));
     }
 }
@@ -354,11 +344,11 @@ void convert_2d_to_3d(t_container *content)
         if (botm_pixel > (content->map_h * PIXEL_SIZE))
             botm_pixel = content->map_h * PIXEL_SIZE;
         y = wall_top_pixel;
-        if (ray.horiz_distance < ray.ver_distance) {
-            color = 0xFFFFFF;
+        if (ray.was_vertical) {
+            color = 0xA0A0A0; 
         } else {
-            color = 0xCCCCCC;
-        }
+            color = 0xFFFFFF; 
+}
         for (int y = wall_top_pixel; y < botm_pixel; y++) {
             print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, color, content);
         }

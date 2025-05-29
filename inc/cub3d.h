@@ -61,6 +61,7 @@ typedef struct s_ray {
   int is_ray_down;
   int is_hit_horizontal;
   int is_hit_vertical;
+  int was_vertical;
 } t_ray;
 
 typedef struct s_config {
