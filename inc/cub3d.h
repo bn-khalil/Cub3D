@@ -22,6 +22,8 @@
 #define KEY_S 1
 #define KEY_D 2
 #define KEY_W 13
+#define KEY_LEFT 123
+#define KEY_RIGHT 124
 
 #elif defined(__linux__)
 #define KEY_ESC 65307
