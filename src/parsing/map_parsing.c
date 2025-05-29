@@ -38,7 +38,10 @@ void spaces_in_map(t_container *content, int x, int y)
     || is_map_chars(content->map[y][x - 1]) \
     || is_map_chars(content->map[y + 1][x]) \
     || is_map_chars(content->map[y - 1][x]))
+    {
+        printf("here\n");
         ft_error("Error: invalid map characters!\n", content);
+    }
 }
 
 int double_check_free_spaces(int x, int y, t_container *content)

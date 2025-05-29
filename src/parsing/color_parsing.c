@@ -34,12 +34,14 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
     int pixel_ele;
     char **rgb;
     char *color_form;
+    char *skeep_spaces;
     
     color_form = ft_substr(color, 2, ft_strlen(color));
-    if (!color_form)
+    skeep_spaces = ft_strtrim(color_form, " \t");
+    if (!color_form || !skeep_spaces)
         ft_error("Error: color rgb not valid!", content);
-    check_color_separator(color_form, content);
-    rgb = ft_split(color_form, ',', 1);
+    check_color_separator(skeep_spaces, content);
+    rgb = ft_split(skeep_spaces, ',', 1);
     if (!rgb)
         ft_error("Error: allocation failed!\n", content);
     
@@ -55,8 +57,8 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
     if (i != 3)
         ft_error("Error: invalid rgb formatte!", content);
     if (flag)
-        content->floor_color = color_form;
+        content->floor_color = skeep_spaces;
     else
-        content->ceiling_color = color_form;
+        content->ceiling_color = skeep_spaces;
     // free rgb
 }
