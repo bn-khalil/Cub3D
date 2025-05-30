@@ -11,8 +11,8 @@
 #define MINIMAP_WIDTH 200    // Fixed width in pixels
 #define MINIMAP_HEIGHT 200   // Fixed height
 #define MINIMAP_BORDER 5     // Border width
-#define MINIMAP_CELL_SIZE 10 // How many pixels per map cell
-#define PIXEL_SIZE 64
+#define MINIMAP_CELL_SIZE 8 // How many pixels per map cell
+#define PIXEL_SIZE 32
 #define PLR PIXEL_SIZE / 3
 #define PI 3.14159265
 #define FOV (60.0 * (PI / 180.0))

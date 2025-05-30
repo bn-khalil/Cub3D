@@ -1,5 +1,12 @@
 #include "../../inc/cub3d.h"
-#include <float.h>
+
+float fix_angle(float angle)
+{
+    angle = fmod(angle, 2 * PI);
+    if (angle < 0)
+        angle += 2 * PI;
+    return angle;
+}
 
 void drawLineDDA(int x0, int y0, int x1, int y1, int color, t_container *content) 
 {
@@ -20,93 +27,12 @@ void drawLineDDA(int x0, int y0, int x1, int y1, int color, t_container *content
     }
 }
 
-void render_minimap(t_container *content)
-{
-    int center_x = MINIMAP_WIDTH / 2;
-    int center_y = MINIMAP_HEIGHT / 2;
-    
-    int player_map_x = content->plr.x / PIXEL_SIZE;
-    int player_map_y = content->plr.y / PIXEL_SIZE;
-    
-    int start_x = player_map_x - (MINIMAP_WIDTH / (2 * MINIMAP_CELL_SIZE));
-    int start_y = player_map_y - (MINIMAP_HEIGHT / (2 * MINIMAP_CELL_SIZE));
-    int end_x = start_x + (MINIMAP_WIDTH / MINIMAP_CELL_SIZE);
-    int end_y = start_y + (MINIMAP_HEIGHT / MINIMAP_CELL_SIZE);
-    
-    for (int y = 0; y < MINIMAP_HEIGHT; y++) {
-        for (int x = 0; x < MINIMAP_WIDTH; x++) {
-            if (x < MINIMAP_BORDER || x >= MINIMAP_WIDTH - MINIMAP_BORDER ||
-                y < MINIMAP_BORDER || y >= MINIMAP_HEIGHT - MINIMAP_BORDER) {
-                print_pxt(x, y, 0x000000, content); 
-            } else {
-                print_pxt(x, y, 0x333333, content); // Dark background
-            }
-        }
-    }
-    
-    for (int map_y = start_y; map_y < end_y; map_y++) {
-        for (int map_x = start_x; map_x < end_x; map_x++) {
-            if (map_x >= 0 && map_x < content->map_w &&
-                map_y >= 0 && map_y < content->map_h) {
-                
-                int screen_x = center_x + (map_x - player_map_x) * MINIMAP_CELL_SIZE;
-                int screen_y = center_y + (map_y - player_map_y) * MINIMAP_CELL_SIZE;
-                
-                for (int dy = 0; dy < MINIMAP_CELL_SIZE; dy++) {
-                    for (int dx = 0; dx < MINIMAP_CELL_SIZE; dx++) {
-                        int px = screen_x + dx - MINIMAP_CELL_SIZE/2;
-                        int py = screen_y + dy - MINIMAP_CELL_SIZE/2;
-                        
-                        if (px >= MINIMAP_BORDER && px < MINIMAP_WIDTH - MINIMAP_BORDER &&
-                            py >= MINIMAP_BORDER && py < MINIMAP_HEIGHT - MINIMAP_BORDER) {
-                            if (content->map[map_y][map_x] == '1') {
-                                print_pxt(px, py, 0xFFFFFF, content); // White walls
-                            } else if (content->map[map_y][map_x] == '0') {
-                                print_pxt(px, py, 0x555555, content); // Gray floor
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    /* int player_size = 3; */
-    /* for (int dy = -player_size; dy <= player_size; dy++) { */
-    /*     for (int dx = -player_size; dx <= player_size; dx++) { */
-    /*         int px = center_x + dx; */
-    /*         int py = center_y + dy; */
-    /*          */
-    /*         if ((dx == 0 || dy == 0) && (abs(dx) <= player_size/2 && abs(dy) <= player_size/2)) { */
-    /*             if (px >= 0 && px < MINIMAP_WIDTH && py >= 0 && py < MINIMAP_HEIGHT) { */
-    /*                 print_pxt(px, py, 0xFF0000, content); // Red player */
-    /*             } */
-    /*         } */
-    /*     } */
-    /* } */
-    
-    /* // Optional: Draw player direction line */
-    /* float line_length = MINIMAP_CELL_SIZE * 1.5; */
-    /* int end_x_dir = center_x + (int)(cos(content->plr.r_angle) * line_length); */
-    /* int end_y_dir = center_y + (int)(sin(content->plr.r_angle) * line_length); */
-    /*  */
-    /* drawLineDDA(center_x, center_y, end_x_dir, end_y_dir, 0xFF0000, content); */
-}
-float fix_angle(float angle)
-{
-    angle = fmod(angle, 2 * PI);
-    if (angle < 0)
-        angle += 2 * PI;
-    return angle;
-}
-
-
 void init_player(t_container *content) {
     content->plr.up = 0;
     content->plr.down = 0;
     content->plr.left = 0;
     content->plr.right = 0;
-    content->plr.speed = 6.5;
+    content->plr.speed = 1.0;
     content->plr.rotate_left = 0;
     content->plr.rotate_right = 0;
     content->num_rays = (content->map_w * PIXEL_SIZE) / WALL_COL_WIDH;
@@ -122,7 +48,7 @@ void init_player(t_container *content) {
     if (content->plr.std_direction == 'S')
         content->plr.r_angle = 3 * PI / 2;
     
-    content->plr.r_speed = 3 * (PI / 180);  
+    content->plr.r_speed = 1 * (PI / 180);  
 }
 
 void mlx_res_init(t_container *content) {
@@ -289,9 +215,6 @@ void ray_info(t_container *content)
     
     while (++i < content->num_rays) 
     {
-        content->rays[i].is_hit_horizontal = 0;
-        content->rays[i].is_hit_vertical = 0;
-        
         content->rays[i].is_ray_down = ray_angle > 0 && ray_angle < PI;
         content->rays[i].is_ray_up = !content->rays[i].is_ray_down;
         content->rays[i].is_ray_right = ray_angle < (PI / 2) || ray_angle > 1.5 * PI;
@@ -429,13 +352,117 @@ void convert_2d_to_3d(t_container *content)
     }
 }
 
-void cast_all_rays(t_container *content) {
-    int i = -1;
-    while (++i < content->num_rays)
-    {
-        drawLineDDA(content->plr.x, content->plr.y, 
-                   content->rays[i].wall_hit_x, content->rays[i].wall_hit_y, 
-                   0x00FF00, content);
+
+void drawLineDDA_minimap(int x0, int y0, int x1, int y1, int color, t_container *content) 
+{
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+    int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+    
+    if (steps == 0) {
+        print_pxt(x0, y0, color, content);
+        return;
+    }
+    
+    float xInc = dx / (float)steps;
+    float yInc = dy / (float)steps;
+    float x = x0;
+    float y = y0;
+    
+    for (int i = 0; i <= steps; i++) {
+        print_pxt((int)round(x), (int)round(y), color, content);
+        x += xInc;
+        y += yInc;
+    }
+}
+
+void draw_player_shape_minimap(int center_x, int center_y, int color, t_container *content)
+{
+    int half = 2; 
+    int thickness = 1;
+
+    for (int dx = -half; dx <= half; dx++) {
+        for (int t = -thickness; t <= thickness; t++) {
+            print_pxt(center_x + dx, center_y + t, color, content);
+        }
+    }
+    for (int dy = -half; dy <= half; dy++) {
+        for (int t = -thickness; t <= thickness; t++) {
+            print_pxt(center_x + t, center_y + dy, color, content);
+        }
+    }
+    for (int i = 0; i < 2; i++) {
+        int sign = i ? 1 : -1;
+        print_pxt(center_x + sign*half, center_y + sign*half, color, content);
+        print_pxt(center_x + sign*half, center_y - sign*half, color, content);
+    }
+}
+
+void render_minimap(t_container *content)
+{
+    int minimap_size = 200; 
+    int minimap_x = 10;
+    int minimap_y = 10;
+    int cell_size = 8;      
+    int minimap_radius = minimap_size / (2 * cell_size);
+
+    // Player position in map coordinates (integer cell)
+    int player_map_x = (int)(content->plr.x / PIXEL_SIZE);
+    int player_map_y = (int)(content->plr.y / PIXEL_SIZE);
+
+    float player_cell_offset_x = (content->plr.x / PIXEL_SIZE) - player_map_x;
+    float player_cell_offset_y = (content->plr.y / PIXEL_SIZE) - player_map_y;
+
+    for (int y = 0; y < minimap_size; y++) {
+        for (int x = 0; x < minimap_size; x++) {
+            print_pxt(minimap_x + x, minimap_y + y, 0x000000, content);
+        }
+    }
+
+    for (int dy = -minimap_radius; dy <= minimap_radius; dy++) {
+        for (int dx = -minimap_radius; dx <= minimap_radius; dx++) {
+            int map_x = player_map_x + dx;
+            int map_y = player_map_y + dy;
+
+            int minimap_cell_x = minimap_x + (minimap_size / 2) + ((dx - player_cell_offset_x) * cell_size);
+            int minimap_cell_y = minimap_y + (minimap_size / 2) + ((dy - player_cell_offset_y) * cell_size);
+
+            int color = 0x000000;
+            if (map_x >= 0 && map_x < content->map_w && 
+                map_y >= 0 && map_y < content->map_h) 
+            {
+                if (content->map[map_y][map_x] == '1') {
+                    color = 0xFFFFFF; 
+                } else {
+                    color = 0x404040; 
+                }
+            }
+            for (int py = 0; py < cell_size; py++) {
+                for (int px = 0; px < cell_size; px++) {
+                    int draw_x = minimap_cell_x + px;
+                    int draw_y = minimap_cell_y + py;
+                    if (draw_x >= minimap_x && draw_x < minimap_x + minimap_size &&
+                        draw_y >= minimap_y && draw_y < minimap_y + minimap_size) {
+                        print_pxt(draw_x, draw_y, color, content);
+                    }
+                }
+            }
+        }
+    }
+
+    int player_minimap_x = minimap_x + (minimap_size / 2);
+    int player_minimap_y = minimap_y + (minimap_size / 2);
+
+    draw_player_shape_minimap(player_minimap_x, player_minimap_y, 0x00FF00, content);
+    float dir_length = 11.0;
+    int end_x = player_minimap_x + (int)(cos(content->plr.r_angle) * dir_length);
+    int end_y = player_minimap_y + (int)(sin(content->plr.r_angle) * dir_length);
+    drawLineDDA_minimap(player_minimap_x, player_minimap_y, end_x, end_y, 0xFF0000, content);
+    for (int i = 0; i < minimap_size; i++) {
+        print_pxt(minimap_x + i, minimap_y, 0xFFFFFF, content); // Top
+        print_pxt(minimap_x + i, minimap_y + minimap_size - 1, 0xFFFFFF, content); // Bottom
+        print_pxt(minimap_x, minimap_y + i, 0xFFFFFF, content); // Left
+        print_pxt(minimap_x + minimap_size - 1, minimap_y + i, 0xFFFFFF, content); // Right
     }
 }
 
@@ -445,8 +472,6 @@ int draw_game(t_container *content) {
     clear_map_after_player(content);
     convert_2d_to_3d(content);
     render_minimap(content);
-    /* drawing_plr(content); */
-    /* cast_all_rays(content); */
     mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
     return (0);
 }
