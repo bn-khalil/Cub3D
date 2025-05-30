@@ -215,6 +215,9 @@ void ray_info(t_container *content)
     
     while (++i < content->num_rays) 
     {
+        content->rays[i].is_hit_horizontal = 0;
+        content->rays[i].is_hit_vertical = 0;
+        
         content->rays[i].is_ray_down = ray_angle > 0 && ray_angle < PI;
         content->rays[i].is_ray_up = !content->rays[i].is_ray_down;
         content->rays[i].is_ray_right = ray_angle < (PI / 2) || ray_angle > 1.5 * PI;
