@@ -7,52 +7,63 @@ int is_map_chars(char c)
     return (0);
 }
 
-// int ft_check_zeros(int x, int y, char *line)
-// {
-//     int i;
 
-//     i = 0;
-//     while (line[i])
-//         i++;
-//     if (x > i - 1){
-//         printf("%d %d \n", x,, i);
-//         return (1);
+// void spaces_in_map(t_container *content, int x, int y)
+// {
+//     if (x < 0 || x > content->map_w || y < 0 || y > content->map_h)
+//         return ;
+//     if (x - 1 < 0 || y - 1 < 0)
+//         return ;
+//     if (y == content->map_h - 1)
+//     {
+//         if (is_map_chars(content->map[y][x + 1]) \
+//         || is_map_chars(content->map[y][x - 1]) \
+//         || is_map_chars(content->map[y - 1][x]))
+//             ft_error("Error: invalid map characters!\n", content); 
+//     }
+//     else if (is_map_chars(content->map[y][x + 1]) \
+//     || is_map_chars(content->map[y][x - 1]) \
+//     || is_map_chars(content->map[y + 1][x]) \
+//     || is_map_chars(content->map[y - 1][x]))
+//     {
+//         ft_error("Error: invalid map characters!\n", content);
+//     }
+// }
+
+// int double_check_free_spaces(int x, int y, t_container *content)
+// {
+//     if (content->map[y][x] == '0')
+//     {
+//         if (x > ft_strlen(content->map[y - 1]) - 1 || x > ft_strlen(content->map[y + 1]) - 1)
+//             return (1);
 //     }
 //     return (0);
 // }
 
-void spaces_in_map(t_container *content, int x, int y)
+int is_map_covered_with_walls(int x, int y, t_container *content)
 {
-    if (x < 0 || x > content->map_w || y < 0 || y > content->map_h)
-        return ;
+    if (x < 0 || x >= ft_strlen(content->map[y]) \
+    || y < 0 || y >= content->map_h)
+        return (0);
     if (x - 1 < 0 || y - 1 < 0)
-        return ;
-    if (y == content->map_h - 1)
-    {
-        if (is_map_chars(content->map[y][x + 1]) \
-        || is_map_chars(content->map[y][x - 1]) \
-        || is_map_chars(content->map[y - 1][x]))
-            ft_error("Error: invalid map characters!\n", content); 
-    }
-    else if (is_map_chars(content->map[y][x + 1]) \
-    || is_map_chars(content->map[y][x - 1]) \
-    || is_map_chars(content->map[y + 1][x]) \
-    || is_map_chars(content->map[y - 1][x]))
-    {
-        printf("here\n");
-        ft_error("Error: invalid map characters!\n", content);
-    }
-}
-
-int double_check_free_spaces(int x, int y, t_container *content)
-{
-    if (content->map[y][x] == '0')
-    {
-        if (x > ft_strlen(content->map[y - 1]) - 1 || x > ft_strlen(content->map[y + 1]) - 1)
-            return (1);
-    }
+        return (0);
+    if (content->map[y - 1][x] == ' ' \
+    || content->map[y - 1][x] == '\t' \
+    || content->map[y + 1][x] == ' ' \
+    || content->map[y + 1][x] == '\t')
+        return (1);
+    if (content->map[y][x - 1] == ' ' \
+    || content->map[y][x - 1] == '\t' \
+    || content->map[y][x + 1] == ' ' \
+    || content->map[y][x + 1] == '\t')
+        return (1);
+    if (x >= ft_strlen(content->map[y - 1]) \
+    || x >= ft_strlen(content->map[y + 1]))
+        return (1);
     return (0);
 }
+
+
 void check_map_components(t_container *content)
 {
     int i;
@@ -66,11 +77,14 @@ void check_map_components(t_container *content)
         j = 0;
         if (content->map[i][0] == '\0')
             count++;
-        if (count > 0)
-            ft_error("Error: invalid map there is newline\n", content);
+        // if (count > 0)
+        //     ft_error("Error: invalid map there is newline\n", content);
         while (content->map[i][j])
         {
-            if (content->map[i][j] == 'N' || content->map[i][j] == 'E' || content->map[i][j] == 'W' || content->map[i][j] == 'S')
+            if (content->map[i][j] == 'N' \
+            || content->map[i][j] == 'E' \
+            || content->map[i][j] == 'W' \
+            || content->map[i][j] == 'S')
             {
                 if (!content->player_pos)
                 {
@@ -92,10 +106,11 @@ void check_map_components(t_container *content)
             && content->map[i][j] != 'E' && content->map[i][j] != 'S' \
             && content->map[i][j] != ' ' && content->map[i][j] != '\t')
                 ft_error("Error: invalid map characters!\n", content);
-            if (content->map[i][j] == ' ' || content->map[i][j] == '\t')
-                spaces_in_map(content, j, i);
-            if (double_check_free_spaces(j, i, content))
-                ft_error("Error: map should be rounded with walls\n", content);
+            if (is_map_chars(content->map[i][j]))
+            {
+                if (is_map_covered_with_walls(j , i, content))
+                    ft_error("Error: map should be rounded with walls\n", content);
+            }
             j++;
         }
         i++;
@@ -104,25 +119,37 @@ void check_map_components(t_container *content)
         ft_error("Error: map doesn't have player\n", content);
 }
 
+int check_newlines(t_container *content, int start, int i)
+{
+    while (ft_strcmp(content->file_content[start + i], "\n") == 0)
+        i++;
+    if (content->file_content[start + i] != NULL)
+            ft_error("Error: invalid map there is newline\n", content);
+    return (start + i);
+}
+
 void parsing_map_content(t_container *content, int start)
 {
     int i;
-    char **map;
 
     i = 0;
     while (content->file_content[start + i])
         i++;
-    map = malloc(sizeof(char *) * (i + 1));
-    if (!map)
+    content->map = malloc(sizeof(char *) * (i + 1));
+    if (!content->map)
         ft_error("Error: allocation failed!\n", content);
     i = 0;
     while (content->file_content[start + i])
     {
-        map[i] = content->file_content[start + i];
+        content->map[i] = content->file_content[start + i];
+        if (ft_strcmp(content->map[i], "\n") == 0)
+        {
+            i += check_newlines(content, start, i);
+            continue ;
+        }
         i++;
     }
-    map[i] = NULL;
-    content->map = map;
+    content->map[i] = NULL;
     get_width_and_height(content);
     check_map_components(content);
 }

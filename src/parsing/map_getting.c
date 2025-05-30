@@ -26,7 +26,7 @@ int ft_is_wall(char *str)
 		return 0;
 	while (str[i])
 	{
-		if (str[i] != '1' && str[i] != '0')
+		if (str[i] != '1' && str[i] != '\t' && str[i] != ' ' && str[i] != '0')
 			return 0;
 		i++;
 	}
@@ -52,7 +52,6 @@ void saperate_map_configues(t_container *content)
 	if (!content->configues)
 		ft_error("allocation failed!", content);
 	int i;
-
 	i = 0;
 	while (i < len)
 	{

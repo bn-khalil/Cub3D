@@ -47,7 +47,8 @@ void configue_direction_parsing(t_container *content, char *direction, char *pat
 	char *texture_path;
 
 	texture_path = ft_strtrim(path, " \t");
-	ft_configue(&content->confs, ft_new_config(content, is_texture_valid(content, texture_path), direction, texture_path));
+	ft_configue(&content->confs, ft_new_config(content, \
+	is_texture_valid(content, texture_path), direction, texture_path));
 }
 
 // void print_list(t_config *head)

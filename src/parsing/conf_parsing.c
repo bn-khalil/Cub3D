@@ -55,9 +55,15 @@ void configure_parsing(t_container *content)
     check_conf_duplication(content);
     while (content->configues[i])
     {
-        if (ft_strncmp("NO ", content->configues[i], 3) == 0 || ft_strncmp("SO ", content->configues[i], 3) == 0 || ft_strncmp("WE ", content->configues[i], 3) == 0 || ft_strncmp("EA ", content->configues[i], 3) == 0)
+        if (ft_strncmp("NO ", content->configues[i], 3) == 0 \
+        || ft_strncmp("SO ", content->configues[i], 3) == 0 \
+        || ft_strncmp("WE ", content->configues[i], 3) == 0 \
+        || ft_strncmp("EA ", content->configues[i], 3) == 0)
         {
-            configue_direction_parsing(content, ft_substr(content->configues[i], 0, 3), ft_substr(content->configues[i], 3, ft_strlen(content->configues[i])));
+            configue_direction_parsing(content, \
+            ft_substr(content->configues[i], 0, 3), \
+            ft_substr(content->configues[i], 3, \
+            ft_strlen(content->configues[i])));
             texture_count++;
         }
         else if (ft_strncmp("F ", content->configues[i], 2) == 0)
