@@ -8,7 +8,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <float.h>
-
+#define MINIMAP_WIDTH 200    // Fixed width in pixels
+#define MINIMAP_HEIGHT 200   // Fixed height
+#define MINIMAP_BORDER 5     // Border width
+#define MINIMAP_CELL_SIZE 10 // How many pixels per map cell
 #define PIXEL_SIZE 64
 #define PLR PIXEL_SIZE / 3
 #define PI 3.14159265
