@@ -1,0 +1,5 @@
+- [X] understand the previouse code 
+- [ ] creating the reay effictivly
+- [x] moving the player in more smooth way espacialy ungels 
+- [ ] rmoving the double speed in sertain angle
+- [ ] creating the recasting  

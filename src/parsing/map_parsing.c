@@ -1,10 +1,9 @@
 #include "../../inc/cub3d.h"
 
-int is_map_chars(char c)
-{
-    if (c == '0' || c == 'N' || c == 'E' || c == 'W' || c == 'S')
-        return (1);
-    return (0);
+int is_map_chars(char c) {
+  if (c == '0' || c == 'N' || c == 'E' || c == 'W' || c == 'S')
+    return (1);
+  return (0);
 }
 
 

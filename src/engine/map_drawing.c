@@ -29,7 +29,7 @@ int draw_map(t_container *content)
                 draw_m(j * PIXEL_SIZE, i * PIXEL_SIZE, 0xFF8C00, content);
             if (content->map[i][j] == '0' || content->map[i][j] == 'W' || content->map[i][j] == 'N' \
             || content->map[i][j] == 'E' || content->map[i][j] == 'S')
-                draw_m(j * PIXEL_SIZE, i * PIXEL_SIZE, 0x1f1200, content);
+                draw_m(j * PIXEL_SIZE * MAP_RATIO, i * PIXEL_SIZE * MAP_RATIO, 0x1f1200, content);
             j++;
         }
         i++;
