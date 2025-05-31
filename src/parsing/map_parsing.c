@@ -131,6 +131,8 @@ int check_newlines(t_container *content, int start, int i)
 void parsing_map_content(t_container *content, int start)
 {
     int i;
+    int j;
+    int stop;
 
     i = 0;
     while (content->file_content[start + i])
@@ -139,14 +141,20 @@ void parsing_map_content(t_container *content, int start)
     if (!content->map)
         ft_error("Error: allocation failed!\n", content);
     i = 0;
+    stop = 0;
     while (content->file_content[start + i])
     {
-        content->map[i] = content->file_content[start + i];
-        if (ft_strcmp(content->map[i], "\n") == 0)
+        if (is_paces(content->file_content[start + i]))
         {
-            i += check_newlines(content, start, i);
-            continue ;
+            j = start + i;
+            while (content->file_content[j] && is_paces(content->file_content[j]))
+                j++;
+            if (content->file_content[j] == NULL)
+                stop++;
         }
+        if (stop)
+            break ;
+        content->map[i] = content->file_content[start + i];
         i++;
     }
     content->map[i] = NULL;
