@@ -48,7 +48,7 @@ void init_player(t_container *content) {
     if (content->plr.std_direction == 'S')
         content->plr.r_angle = 3 * PI / 2;
     
-    content->plr.r_speed = 2 * (PI / 180);  
+    content->plr.r_speed = 3 * (PI / 180);  
 }
 
 void mlx_res_init(t_container *content) {
