@@ -87,8 +87,8 @@ void check_map_components(t_container *content)
             {
                 if (!content->player_pos)
                 {
-                    content->plr.x = j * PIXEL_SIZE;
-                    content->plr.y = i * PIXEL_SIZE;
+                    content->plr.x = j * PIXEL_SIZE + (PIXEL_SIZE / 2.0f);
+                    content->plr.y = i * PIXEL_SIZE + (PIXEL_SIZE / 2.0f);
                     content->plr.std_direction = content->map[i][j];
                     content->player_pos = 1;
                 }
