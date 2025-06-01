@@ -218,14 +218,15 @@ void convert_2d_to_3d(t_container *content)
             float relative_y = (float)(y - (MAP_H / 2)) / wall_hight;
             float texture_y = (0.5f + relative_y) * texture->txr_h;
             int tex_y = (int)texture_y;
-            if (tex_y < 0) tex_y = 0;
-            if (tex_y >= texture->txr_h) tex_y = texture->txr_h - 1;
+            if (tex_y < 0)
+                tex_y = 0;
+            if (tex_y >= texture->txr_h)
+                tex_y = texture->txr_h - 1;
             unsigned int color = ((unsigned int*)texture->buffer_pos)[tex_y * texture->txr_w + tex_x];
             print_pxt(i * WALL_COL_WIDH, y, color, content);
         }
     }
 }
-
 
 int draw_game(t_container *content) {
     let_player_move(content);

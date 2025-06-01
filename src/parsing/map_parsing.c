@@ -6,39 +6,6 @@ int is_map_chars(char c) {
   return (0);
 }
 
-
-// void spaces_in_map(t_container *content, int x, int y)
-// {
-//     if (x < 0 || x > content->map_w || y < 0 || y > content->map_h)
-//         return ;
-//     if (x - 1 < 0 || y - 1 < 0)
-//         return ;
-//     if (y == content->map_h - 1)
-//     {
-//         if (is_map_chars(content->map[y][x + 1]) \
-//         || is_map_chars(content->map[y][x - 1]) \
-//         || is_map_chars(content->map[y - 1][x]))
-//             ft_error("Error: invalid map characters!\n", content); 
-//     }
-//     else if (is_map_chars(content->map[y][x + 1]) \
-//     || is_map_chars(content->map[y][x - 1]) \
-//     || is_map_chars(content->map[y + 1][x]) \
-//     || is_map_chars(content->map[y - 1][x]))
-//     {
-//         ft_error("Error: invalid map characters!\n", content);
-//     }
-// }
-
-// int double_check_free_spaces(int x, int y, t_container *content)
-// {
-//     if (content->map[y][x] == '0')
-//     {
-//         if (x > ft_strlen(content->map[y - 1]) - 1 || x > ft_strlen(content->map[y + 1]) - 1)
-//             return (1);
-//     }
-//     return (0);
-// }
-
 int is_map_covered_with_walls(int x, int y, t_container *content)
 {
     if (x < 0 || x >= ft_strlen(content->map[y]) \
@@ -76,8 +43,6 @@ void check_map_components(t_container *content)
         j = 0;
         if (content->map[i][0] == '\0')
             count++;
-        // if (count > 0)
-        //     ft_error("Error: invalid map there is newline\n", content);
         while (content->map[i][j])
         {
             if (content->map[i][j] == 'N' \

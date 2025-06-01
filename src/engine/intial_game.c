@@ -21,7 +21,9 @@ void init_player(t_container *content) {
     if (content->plr.std_direction == 'S')
         content->plr.r_angle = 3 * PI / 2;
 
-    content->plr.r_speed = 3 * (PI / 180);  
+    content->plr.r_speed = 3 * (PI / 180);
+    content->old_mouse_x = MAP_W / 2;
+    content->mouse_press = 0;
 }
 
 void mlx_res_init(t_container *content) {
@@ -35,13 +37,17 @@ void mlx_res_init(t_container *content) {
                                               &content->src.endian);
     texture_init(content);
 }
+
 void start_the_play(t_container *content) {
     mlx_res_init(content);
-    /* draw_map(content); */
     mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
     mlx_hook(content->src.win, 17, 0, ft_close, content);
     mlx_hook(content->src.win, 2, 1L << 0, key_action, content);
     mlx_hook(content->src.win, 3, 1L << 1, key_back, content);
+    mlx_hook(content->src.win, 3, 1L << 1, key_back, content);
+    mlx_hook(content->src.win, 4, 1L << 2, mouse_press, content); 
+    mlx_hook(content->src.win, 5, 1L << 3, mouse_release, content);
+    mlx_hook(content->src.win, 6, 1L << 6, mouse_detection, content);
     mlx_loop_hook(content->src.mlx, draw_game, content);
     mlx_loop(content->src.mlx);
 }

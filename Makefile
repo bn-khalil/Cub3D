@@ -19,7 +19,8 @@ SRC = src/main.c \
 			src/engine/intial_game.c \
 			src/engine/key_event_handle.c \
 			src/engine/minimap.c \
-			src/engine/plr_moving.c 
+			src/engine/plr_moving.c \
+			src/engine/mouse_dete.c \
 
 OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)

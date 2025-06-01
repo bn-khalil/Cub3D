@@ -131,6 +131,9 @@ typedef struct s_container {
   t_src src;
   t_plr plr;
   t_ray *rays;
+  int old_mouse_x;
+  int mouse_press;
+  int fix_mouse_x;
 } t_container;
 
 int ft_strlen(const char *s);
@@ -181,5 +184,8 @@ int is_wall(float x, float y, t_container *content);
 void render_minimap(t_container *content);
 float fix_angle(float angle);
 void texture_init(t_container *content);
+int mouse_detection(int x, int y, void *data);
+int mouse_press(int button, int x, int y, void *data);
+int mouse_release(int button, int x, int y, void *data);
 
 #endif
