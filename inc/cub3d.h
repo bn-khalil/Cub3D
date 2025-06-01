@@ -67,12 +67,21 @@ typedef struct s_ray {
   int is_hit_horizontal;
   int is_hit_vertical;
   int was_vertical;
+  char *wall_dir;
 } t_ray;
+
 
 typedef struct s_config {
   char *id;
   char *value;
   int fd;
+  int txr_w;
+  int txr_h;
+  void *img;
+  char *buffer_pos;
+  int endian;
+  int len_with_pixels;
+  int pixel_bits_number;
   struct s_config *next;
 } t_config;
 
@@ -161,5 +170,6 @@ void print_pxt(int x, int y, int color, t_container *content);
 int draw_game(t_container *content);
 void	*ft_memset(void *b, int c, size_t len);
 char	*ft_strtrim(char *s1, char *set);
+void texture_init(t_container *content);
 
 #endif

@@ -14,6 +14,7 @@ SRC = src/main.c \
 			src/engine/start_game.c \
 			src/engine/draw_tools.c \
 			src/engine/player_drawing.c \
+			src/engine/texture_drawing.c \
 
 OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)

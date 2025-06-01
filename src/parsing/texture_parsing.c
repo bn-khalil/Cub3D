@@ -24,6 +24,7 @@ t_config *ft_new_config(t_container *content, int fd_file, char *dir,
   head->id = dir;
   head->value = path;
   head->fd = fd_file;
+  head->img = NULL;
   head->next = NULL;
   return (head);
 }

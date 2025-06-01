@@ -62,6 +62,7 @@ void mlx_res_init(t_container *content) {
                                               &content->src.pixel_bits_number, 
                                               &content->src.len_with_pixels, 
                                               &content->src.endian);
+    texture_init(content);
 }
 
 int ft_close(t_container *content) {
@@ -321,6 +322,39 @@ while (next_v_x >= 0 && next_v_x <= content->map_w * PIXEL_SIZE &&
     }
 }
 
+t_config *get_texture_by_id(t_config *confs, const char *id) {
+    while (confs) {
+        if (ft_strncmp(confs->id, id, 2) == 0)
+            return confs;
+        confs = confs->next;
+    }
+    return NULL;
+}
+
+int mod(int a, int b) {
+    while (a < 0) a += b;
+    while (a >= b) a -= b;
+    return a;
+}
+
+void set_ray_wall_dir(t_ray *ray)
+{
+    // M_PI = 3.1415926535, M_PI_2 = 1.5707963267
+    if (ray->was_vertical) {
+        // Vertical hit: E/W
+        if (ray->ray_angle > M_PI_2 && ray->ray_angle < 3 * M_PI_2)
+            ray->wall_dir = "WE";
+        else
+            ray->wall_dir = "EA";
+    } else {
+        // Horizontal hit: N/S
+        if (ray->ray_angle > 0 && ray->ray_angle < M_PI)
+            ray->wall_dir = "NO";
+        else
+            ray->wall_dir = "SO";
+    }
+}
+
 void convert_2d_to_3d(t_container *content)
 {
     int i;
@@ -329,11 +363,13 @@ void convert_2d_to_3d(t_container *content)
     float wall_hight;
     int color;
     i = -1;
-    int y;
     distance_projection = ((content->map_w * PIXEL_SIZE) / 2.0 ) / tan(FOV / 2.0);
     while (++i < content->num_rays)
     {
         ray = content->rays[i];
+        // Prevent division by near-zero distance
+        if (ray.distance < 0.1f)
+            ray.distance = 0.1f; // Minimum distance threshold
         wall_hight = (PIXEL_SIZE / ray.distance) * distance_projection;
         int wall_strip_high = (int)wall_hight;
         int wall_top_pixel = ((content->map_h * PIXEL_SIZE) / 2) - (wall_strip_high / 2);
@@ -342,19 +378,83 @@ void convert_2d_to_3d(t_container *content)
         int botm_pixel = ((content->map_h * PIXEL_SIZE) / 2) + (wall_strip_high / 2);
         if (botm_pixel > (content->map_h * PIXEL_SIZE))
             botm_pixel = content->map_h * PIXEL_SIZE;
-        y = wall_top_pixel;
-        if (ray.was_vertical) {
-            color = 0xA0A0A0; 
-        } else {
-            color = 0xFFFFFF; 
-}
+        set_ray_wall_dir(&ray);
+        t_config *texture = get_texture_by_id(content->confs, ray.wall_dir);
+        if (!texture || !texture->buffer_pos) // fallback, just gray if not found
+        {
+            for (int y = wall_top_pixel; y < botm_pixel; y++) {
+                print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, 0xAAAAAA, content);
+            }
+            continue;
+        }
+        int tex_x;
+        if (ray.was_vertical)
+            tex_x = mod((int)(ray.wall_hit_y * texture->txr_w / PIXEL_SIZE), texture->txr_w);
+        else
+            tex_x = mod((int)(ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), texture->txr_w);
+
+        // Map texture to the wall, anchoring it to the center of the wall
+        float texture_scale = (float)texture->txr_h / wall_hight;
         for (int y = wall_top_pixel; y < botm_pixel; y++) {
+            // Calculate texture_y relative to the wall's vertical center
+            float relative_y = (float)(y - ((content->map_h * PIXEL_SIZE) / 2)) / wall_hight;
+            float texture_y = (0.5f + relative_y) * texture->txr_h;
+            int tex_y = (int)texture_y;
+            if (tex_y < 0)
+                tex_y = 0;
+            if (tex_y >= texture->txr_h)
+                tex_y = texture->txr_h - 1;
+            unsigned int color = ((unsigned int*)texture->buffer_pos)[tex_y * texture->txr_w + tex_x];
             print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, color, content);
         }
-
     }
 }
 
+// void convert_2d_to_3d(t_container *content)
+// {
+//     int i;
+//     t_ray ray;
+//     float distance_projection;
+//     float wall_hight;
+//     i = -1;
+//     distance_projection = ((content->map_w * PIXEL_SIZE) / 2.0 ) / tan(FOV / 2.0);
+//     while (++i < content->num_rays)
+//     {
+//         ray = content->rays[i];
+//         wall_hight = (PIXEL_SIZE / ray.distance) * distance_projection;
+//         int wall_strip_high = (int)wall_hight;
+//         int wall_top_pixel = ((content->map_h * PIXEL_SIZE) / 2) - (wall_strip_high / 2);
+//         if (wall_top_pixel < 0)
+//             wall_top_pixel = 0;
+//         int botm_pixel = ((content->map_h * PIXEL_SIZE) / 2) + (wall_strip_high / 2);
+//         if (botm_pixel > (content->map_h * PIXEL_SIZE))
+//             botm_pixel = content->map_h * PIXEL_SIZE;
+//         printf("%f \n", ray.ray_angle);
+//         // -------- TEXTURE LOGIC START --------
+//         // You must set ray.wall_dir = "NO", "SO", "EA", or "WE" in your raycasting logic!
+//         t_config *texture = get_texture_by_id(content->confs, ray.wall_dir);
+//         if (!texture || !texture->buffer_pos) // fallback, just gray if not found
+//         {
+//             for (int y = wall_top_pixel; y < botm_pixel; y++) {
+//                 print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, 0xAAAAAA, content);
+//             }
+//             continue;
+//         }
+
+//         int tex_x;
+//         if (ray.was_vertical)
+//             tex_x = mod((int)ray.wall_hit_y, texture->txr_w);
+//         else
+//             tex_x = mod((int)ray.wall_hit_x, texture->txr_w);
+
+//         for (int y = wall_top_pixel; y < botm_pixel; y++) {
+//             int tex_y = ((y - wall_top_pixel) * texture->txr_h) / wall_strip_high;
+//             unsigned int color = ((unsigned int*)texture->buffer_pos)[tex_y * texture->txr_w + tex_x];
+//             print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, color, content);
+//         }
+//         // -------- TEXTURE LOGIC END --------
+//     }
+// }
 
 void drawLineDDA_minimap(int x0, int y0, int x1, int y1, int color, t_container *content) 
 {
@@ -478,6 +578,7 @@ int draw_game(t_container *content) {
     mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
     return (0);
 }
+
 
 void start_the_play(t_container *content) {
     mlx_res_init(content);
