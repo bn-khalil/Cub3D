@@ -198,6 +198,20 @@ void convert_2d_to_3d(t_container *content)
         int botm_pixel = (MAP_H / 2) + (wall_strip_high / 2);
         if (botm_pixel > MAP_H)
             botm_pixel = MAP_H;
+
+        int c;
+        int f;
+
+        c = -1;
+        while (++c < wall_top_pixel)
+            print_pxt(i * WALL_COL_WIDH, c, C_COLOR, content);
+        f = botm_pixel;
+        while (f < MAP_H)
+        {
+            print_pxt(i * WALL_COL_WIDH, f, F_COLOR, content);
+            f++;
+        }
+
         set_ray_wall_dir(&ray);
         t_config *texture = get_texture_by_id(content->confs, ray.wall_dir);
         if (!texture || !texture->buffer_pos)
@@ -225,6 +239,7 @@ void convert_2d_to_3d(t_container *content)
             unsigned int color = ((unsigned int*)texture->buffer_pos)[tex_y * texture->txr_w + tex_x];
             print_pxt(i * WALL_COL_WIDH, y, color, content);
         }
+
     }
 }
 

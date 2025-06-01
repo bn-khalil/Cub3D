@@ -20,6 +20,8 @@
 #define  MAP_RATIO 0.2
 #define MAP_W 1080
 #define MAP_H 720
+#define C_COLOR 0x87CEEB
+#define F_COLOR   0x434230
 
 #ifdef __APPLE__
 #define KEY_ESC 53
