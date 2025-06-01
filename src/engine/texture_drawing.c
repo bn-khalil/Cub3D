@@ -16,7 +16,6 @@ void texture_init(t_container *content)
         iter->img = mlx_xpm_file_to_image(content->src.mlx, iter->value, &iter->txr_w, &iter->txr_h);
         if (!iter->img)
             ft_error("Error: failed to load texture image", content);
-        printf("%s\n", iter->value);
 
         iter->buffer_pos = mlx_get_data_addr(iter->img, &iter->pixel_bits_number, &iter->len_with_pixels, &iter->endian);
         if (!iter->buffer_pos)

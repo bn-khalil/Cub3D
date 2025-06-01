@@ -184,27 +184,26 @@ void convert_2d_to_3d(t_container *content)
     float wall_hight;
     int color;
     i = -1;
-    distance_projection = ((content->map_w * PIXEL_SIZE) / 2.0 ) / tan(FOV / 2.0);
+    distance_projection = (MAP_W / 2.0f) / tan(FOV / 2.0f);
     while (++i < content->num_rays)
     {
         ray = content->rays[i];
-        // Prevent division by near-zero distance
         if (ray.distance < 0.1f)
-            ray.distance = 0.1f; // Minimum distance threshold
+            ray.distance = 0.1f;
         wall_hight = (PIXEL_SIZE / ray.distance) * distance_projection;
         int wall_strip_high = (int)wall_hight;
-        int wall_top_pixel = ((content->map_h * PIXEL_SIZE) / 2) - (wall_strip_high / 2);
+        int wall_top_pixel = (MAP_H / 2) - (wall_strip_high / 2);
         if (wall_top_pixel < 0)
             wall_top_pixel = 0;
-        int botm_pixel = ((content->map_h * PIXEL_SIZE) / 2) + (wall_strip_high / 2);
-        if (botm_pixel > (content->map_h * PIXEL_SIZE))
-            botm_pixel = content->map_h * PIXEL_SIZE;
+        int botm_pixel = (MAP_H / 2) + (wall_strip_high / 2);
+        if (botm_pixel > MAP_H)
+            botm_pixel = MAP_H;
         set_ray_wall_dir(&ray);
         t_config *texture = get_texture_by_id(content->confs, ray.wall_dir);
-        if (!texture || !texture->buffer_pos) // fallback, just gray if not found
+        if (!texture || !texture->buffer_pos)
         {
             for (int y = wall_top_pixel; y < botm_pixel; y++) {
-                print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, 0xAAAAAA, content);
+                print_pxt(i * WALL_COL_WIDH, y, 0xAAAAAA, content);
             }
             continue;
         }
@@ -214,19 +213,15 @@ void convert_2d_to_3d(t_container *content)
         else
             tex_x = mod((int)(ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), texture->txr_w);
 
-        // Map texture to the wall, anchoring it to the center of the wall
         float texture_scale = (float)texture->txr_h / wall_hight;
         for (int y = wall_top_pixel; y < botm_pixel; y++) {
-            // Calculate texture_y relative to the wall's vertical center
-            float relative_y = (float)(y - ((content->map_h * PIXEL_SIZE) / 2)) / wall_hight;
+            float relative_y = (float)(y - (MAP_H / 2)) / wall_hight;
             float texture_y = (0.5f + relative_y) * texture->txr_h;
             int tex_y = (int)texture_y;
-            if (tex_y < 0)
-                tex_y = 0;
-            if (tex_y >= texture->txr_h)
-                tex_y = texture->txr_h - 1;
+            if (tex_y < 0) tex_y = 0;
+            if (tex_y >= texture->txr_h) tex_y = texture->txr_h - 1;
             unsigned int color = ((unsigned int*)texture->buffer_pos)[tex_y * texture->txr_w + tex_x];
-            print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, color, content);
+            print_pxt(i * WALL_COL_WIDH, y, color, content);
         }
     }
 }

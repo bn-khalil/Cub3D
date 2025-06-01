@@ -8,7 +8,7 @@ void init_player(t_container *content) {
     content->plr.speed =3.0;
     content->plr.rotate_left = 0;
     content->plr.rotate_right = 0;
-    content->num_rays = (content->map_w * PIXEL_SIZE) / WALL_COL_WIDH;
+    content->num_rays = MAP_W / WALL_COL_WIDH;
     content->rays = malloc(sizeof(t_ray) * content->num_rays);
     ft_memset(content->rays, 0, sizeof(t_ray) * content->num_rays);
     
@@ -20,17 +20,15 @@ void init_player(t_container *content) {
         content->plr.r_angle = PI / 2;
     if (content->plr.std_direction == 'S')
         content->plr.r_angle = 3 * PI / 2;
-    
+
     content->plr.r_speed = 3 * (PI / 180);  
 }
 
 void mlx_res_init(t_container *content) {
     init_player(content);
     content->src.mlx = mlx_init();
-    content->src.win = mlx_new_window(content->src.mlx, content->map_w * PIXEL_SIZE, 
-                                     content->map_h * PIXEL_SIZE, "Cub3D");
-    content->src.img = mlx_new_image(content->src.mlx, content->map_w * PIXEL_SIZE, 
-                                    content->map_h * PIXEL_SIZE);
+    content->src.win = mlx_new_window(content->src.mlx, MAP_W, MAP_H, "Cub3D");
+    content->src.img = mlx_new_image(content->src.mlx, MAP_W, MAP_H);
     content->src.buffer_pos = mlx_get_data_addr(content->src.img, 
                                               &content->src.pixel_bits_number, 
                                               &content->src.len_with_pixels, 

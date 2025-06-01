@@ -18,6 +18,8 @@
 #define FOV (60.0 * (PI / 180.0))
 #define WALL_COL_WIDH 1
 #define  MAP_RATIO 0.2
+#define MAP_W 1080
+#define MAP_H 720
 
 #ifdef __APPLE__
 #define KEY_ESC 53
