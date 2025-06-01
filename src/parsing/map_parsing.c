@@ -1,7 +1,7 @@
 #include "../../inc/cub3d.h"
 
 int is_map_chars(char c) {
-  if (c == '0' || c == 'N' || c == 'E' || c == 'W' || c == 'S')
+  if (c == '0' || c == 'N' || c == 'E' || c == 'W' || c == 'S' || c == 'D')
     return (1);
   return (0);
 }
@@ -68,7 +68,7 @@ void check_map_components(t_container *content)
             if (content->map[i][j] != '1' && content->map[i][j] != '0' \
             && content->map[i][j] != 'N' && content->map[i][j] != 'W' \
             && content->map[i][j] != 'E' && content->map[i][j] != 'S' \
-            && content->map[i][j] != ' ' && content->map[i][j] != '\t')
+            && content->map[i][j] != 'D' && content->map[i][j] != ' ' && content->map[i][j] != '\t')
                 ft_error("Error: invalid map characters!\n", content);
             if (is_map_chars(content->map[i][j]))
             {

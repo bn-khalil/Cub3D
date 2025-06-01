@@ -8,10 +8,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <float.h>
-#define MINIMAP_WIDTH 200    // Fixed width in pixels
-#define MINIMAP_HEIGHT 200   // Fixed height
-#define MINIMAP_BORDER 5     // Border width
-#define MINIMAP_CELL_SIZE 8 // How many pixels per map cell
+#define MINIMAP_WIDTH 200
+#define MINIMAP_HEIGHT 200
+#define MINIMAP_BORDER 5
+#define MINIMAP_CELL_SIZE 8 
 #define PIXEL_SIZE 32
 #define PLR PIXEL_SIZE / 3
 #define PI 3.14159265
@@ -73,7 +73,6 @@ typedef struct s_ray {
   int was_vertical;
   char *wall_dir;
 } t_ray;
-
 
 typedef struct s_config {
   char *id;
