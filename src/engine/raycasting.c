@@ -1,0 +1,188 @@
+#include "../../inc/cub3d.h"
+
+float get_vector_dis(t_container *content, float nex_x, float nex_y)
+{
+    return sqrt((nex_x - content->plr.x) * (nex_x - content->plr.x) + 
+               (nex_y - content->plr.y) * (nex_y - content->plr.y));
+}
+
+void get_the_smallest(t_ray *ray, float ray_angle, float player_angle)
+{
+    if (ray->horiz_distance < ray->ver_distance) {
+        ray->wall_hit_x = ray->horiz_hit_x;
+        ray->wall_hit_y = ray->horiz_hit_y;
+        ray->distance = ray->horiz_distance;
+        ray->was_vertical = 0;
+    }
+    else {
+        ray->wall_hit_x = ray->ver_hit_x;
+        ray->wall_hit_y = ray->ver_hit_y;
+        ray->distance = ray->ver_distance;
+        ray->was_vertical = 1;
+    }
+    ray->distance *= cos(ray_angle - player_angle);
+}
+
+void get_the_horizantal(t_container *content, int i)
+{
+        float y_intercept = floor(content->plr.y / PIXEL_SIZE) * PIXEL_SIZE;
+        if (content->rays[i].is_ray_down)
+            y_intercept += PIXEL_SIZE;
+        float x_intercept = content->plr.x + (y_intercept - content->plr.y) / tan(content->rays[i].ray_angle);
+        float y_step = PIXEL_SIZE;
+        if (content->rays[i].is_ray_up)
+            y_step *= -1;
+            
+        float x_step = PIXEL_SIZE / tan(content->rays[i].ray_angle);
+        if ((content->rays[i].is_ray_left && x_step > 0) || 
+            (content->rays[i].is_ray_right && x_step < 0))
+            x_step *= -1;
+        float next_h_x = x_intercept;
+        float next_h_y = y_intercept;
+        while (next_h_x >= 0 && next_h_x <= content->map_w * PIXEL_SIZE &&
+               next_h_y >= 0 && next_h_y <= content->map_h * PIXEL_SIZE)
+        {
+            if (content->rays[i].is_ray_up) {
+                if (is_wall(next_h_x, next_h_y - 1, content)) {
+                    content->rays[i].is_hit_horizontal = 1;
+                    content->rays[i].horiz_hit_x = next_h_x;
+                    content->rays[i].horiz_hit_y = next_h_y;
+                    break;
+                }
+            }
+            else if (is_wall(next_h_x, next_h_y, content)) {
+                content->rays[i].is_hit_horizontal = 1;
+                content->rays[i].horiz_hit_x = next_h_x;
+                content->rays[i].horiz_hit_y = next_h_y;
+                break;
+            }
+            next_h_x += x_step;
+            next_h_y += y_step;
+        }
+}
+
+void get_vertical(t_container *content, int i)
+{
+    float x_v_intercept = floor(content->plr.x / PIXEL_SIZE) * PIXEL_SIZE;
+    if (content->rays[i].is_ray_right)
+        x_v_intercept += PIXEL_SIZE;
+
+    float y_v_intercept = content->plr.y + (x_v_intercept - content->plr.x) * tan(content->rays[i].ray_angle);
+
+    float x_v_step = PIXEL_SIZE;
+    if (content->rays[i].is_ray_left)
+        x_v_step *= -1;
+
+    float y_v_step = PIXEL_SIZE * tan(content->rays[i].ray_angle);
+    if ((content->rays[i].is_ray_up && y_v_step > 0) || 
+        (content->rays[i].is_ray_down && y_v_step < 0))
+        y_v_step *= -1;
+
+    float next_v_x = x_v_intercept;
+    float next_v_y = y_v_intercept;
+
+    while (next_v_x >= 0 && next_v_x <= content->map_w * PIXEL_SIZE &&
+        next_v_y >= 0 && next_v_y <= content->map_h * PIXEL_SIZE)
+    {
+        float check_x = next_v_x;
+        float check_y = next_v_y;
+
+        if (content->rays[i].is_ray_left) 
+            check_x -= 1.0;
+
+        if (is_wall(check_x, check_y, content)) {
+            content->rays[i].is_hit_vertical = 1;
+            content->rays[i].ver_hit_x = next_v_x;
+            content->rays[i].ver_hit_y = next_v_y;
+            break;
+        }
+        next_v_x += x_v_step;
+        next_v_y += y_v_step;
+    }
+
+}
+
+void get_the_ray_length(t_container *content, int i)
+{
+        if (content->rays[i].is_hit_horizontal) {
+            content->rays[i].horiz_distance = get_vector_dis(content, 
+                content->rays[i].horiz_hit_x, content->rays[i].horiz_hit_y);
+        } else {
+            content->rays[i].horiz_distance = FLT_MAX;
+        }
+
+        if (content->rays[i].is_hit_vertical) {
+            content->rays[i].ver_distance = get_vector_dis(content, 
+                content->rays[i].ver_hit_x, content->rays[i].ver_hit_y);
+        } else {
+            content->rays[i].ver_distance = FLT_MAX;
+        }
+
+        get_the_smallest(&content->rays[i], content->rays[i].ray_angle, content->plr.r_angle);
+
+}
+
+void ray_info(t_container *content)
+{
+    int i = -1;
+    float ray_angle = fix_angle(content->plr.r_angle - (FOV / 2));
+
+    while (++i < content->num_rays) 
+    {
+        content->rays[i].is_hit_horizontal = 0;
+        content->rays[i].is_hit_vertical = 0;
+        content->rays[i].ray_angle = ray_angle; 
+        content->rays[i].is_ray_down = ray_angle > 0 && ray_angle < PI;
+        content->rays[i].is_ray_up = !content->rays[i].is_ray_down;
+        content->rays[i].is_ray_right = ray_angle < (PI / 2) || ray_angle > 1.5 * PI;
+        content->rays[i].is_ray_left = !content->rays[i].is_ray_right;
+        get_the_horizantal(content, i);
+        get_vertical(content,  i);
+        get_the_ray_length(content, i);
+        ray_angle = fix_angle(ray_angle + (FOV / content->num_rays));
+    }
+}
+
+void convert_2d_to_3d(t_container *content)
+{
+    int i;
+    t_ray ray;
+    float distance_projection;
+    float wall_hight;
+    int color;
+    i = -1;
+    int y;
+    distance_projection = ((content->map_w * PIXEL_SIZE) / 2.0 ) / tan(FOV / 2.0);
+    while (++i < content->num_rays)
+    {
+        ray = content->rays[i];
+        wall_hight = (PIXEL_SIZE / ray.distance) * distance_projection;
+        int wall_strip_high = (int)wall_hight;
+        int wall_top_pixel = ((content->map_h * PIXEL_SIZE) / 2) - (wall_strip_high / 2);
+        if (wall_top_pixel < 0)
+            wall_top_pixel = 0;
+        int botm_pixel = ((content->map_h * PIXEL_SIZE) / 2) + (wall_strip_high / 2);
+        if (botm_pixel > (content->map_h * PIXEL_SIZE))
+            botm_pixel = content->map_h * PIXEL_SIZE;
+        y = wall_top_pixel;
+        if (ray.was_vertical) {
+            color = 0xA0A0A0; 
+        } else {
+            color = 0xFFFFFF; 
+}
+        for (int y = wall_top_pixel; y < botm_pixel; y++) {
+            print_pxt(i * (content->map_w * PIXEL_SIZE / content->num_rays), y, color, content);
+        }
+
+    }
+}
+
+int draw_game(t_container *content) {
+    let_player_move(content);
+    ray_info(content);
+    clear_map_after_player(content);
+    convert_2d_to_3d(content);
+    render_minimap(content);
+    mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
+    return (0);
+}

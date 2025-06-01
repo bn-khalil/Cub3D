@@ -2,6 +2,7 @@ NAME = cub3d
 
 SRC = src/main.c \
 			src/utils/memset.c \
+			src/utils/memory_managemnt.c \
 			src/utils/libft_tools_0.c \
 			src/utils/libft_tools_1.c \
 			src/parsing/map_getting.c \
@@ -11,9 +12,13 @@ SRC = src/main.c \
 			src/parsing/color_parsing.c \
 			src/parsing/map_utils.c \
 			src/engine/map_drawing.c \
-			src/engine/start_game.c \
+			src/engine/raycasting.c \
 			src/engine/draw_tools.c \
 			src/engine/player_drawing.c \
+			src/engine/intial_game.c \
+			src/engine/key_event_handle.c \
+			src/engine/minimap.c \
+			src/engine/plr_moving.c 
 
 OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)

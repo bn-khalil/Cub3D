@@ -161,5 +161,13 @@ void print_pxt(int x, int y, int color, t_container *content);
 int draw_game(t_container *content);
 void	*ft_memset(void *b, int c, size_t len);
 char	*ft_strtrim(char *s1, char *set);
+int key_action(int keycode, t_container *content);
+int key_back(int keycode, t_container *content);
+int ft_close(t_container *content);
+int ft_is_collision(float x, float y, t_container *content);
+void let_player_move(t_container *content);
+int is_wall(float x, float y, t_container *content);
+void render_minimap(t_container *content);
+float fix_angle(float angle);
 
 #endif
