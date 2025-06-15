@@ -158,8 +158,16 @@ int mod(int a, int b) {
     return a;
 }
 
-void set_ray_wall_dir(t_ray *ray)
+void set_ray_wall_dir(t_ray *ray, t_container *content)
 {
+    int map_x = (int)(ray->wall_hit_x / PIXEL_SIZE);
+    int map_y = (int)(ray->wall_hit_y / PIXEL_SIZE);
+
+    char tile = content->map[map_y][map_x];
+    if (tile == 'D') {
+        ray->wall_dir = "DO"; // "DO" for Door, add this texture to your confs
+        return;
+    }
     // M_PI = 3.1415926535, M_PI_2 = 1.5707963267
     if (ray->was_vertical) {
         // Vertical hit: E/W
@@ -183,6 +191,14 @@ void convert_2d_to_3d(t_container *content)
     float distance_projection;
     float wall_hight;
     int color;
+    int w;
+    int h;
+    int ind;
+    int size_l;
+    int n_bits;
+    void *door_img = mlx_xpm_file_to_image(content->src.mlx, "/mnt/homes/kben-tou/Desktop/Cub3D/textures/do1.xpm", &w, &h);
+    char *door = mlx_get_data_addr(door_img, &size_l, &n_bits, &ind);
+
     i = -1;
     distance_projection = (MAP_W / 2.0f) / tan(FOV / 2.0f);
     while (++i < content->num_rays)
@@ -212,12 +228,18 @@ void convert_2d_to_3d(t_container *content)
             f++;
         }
 
-        set_ray_wall_dir(&ray);
+        set_ray_wall_dir(&ray, content);
         t_config *texture = get_texture_by_id(content->confs, ray.wall_dir);
         if (!texture || !texture->buffer_pos)
         {
             for (int y = wall_top_pixel; y < botm_pixel; y++) {
-                print_pxt(i * WALL_COL_WIDH, y, 0xAAAAAA, content);
+                if (ray.wall_dir && ft_strcmp(ray.wall_dir, "DO") == 0)
+                {
+                        unsigned int color = ((unsigned int*)door)[tex_y * texture->txr_w + t_x];
+                        print_pxt(i * WALL_COL_WIDH, y, color, content);
+                    }  
+                }
+                    print_pxt(i * WALL_COL_WIDH, y, 0x885511, content); 
             }
             continue;
         }
@@ -239,7 +261,6 @@ void convert_2d_to_3d(t_container *content)
             unsigned int color = ((unsigned int*)texture->buffer_pos)[tex_y * texture->txr_w + tex_x];
             print_pxt(i * WALL_COL_WIDH, y, color, content);
         }
-
     }
 }
 

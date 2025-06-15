@@ -18,7 +18,7 @@ int is_wall(float x, float y, t_container *content) {
     if (!content->map || !content->map[j])
         return 1;
 
-    if (content->map[j][i] == '1')
+    if (content->map[j][i] == '1' || content->map[j][i] == 'D')
         return 1;
 
     return 0;
