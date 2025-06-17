@@ -34,5 +34,7 @@ int key_back(int keycode, t_container *content) {
         content->plr.rotate_left = 0;
     else if (keycode == KEY_RIGHT)
         content->plr.rotate_right = 0;
+    else if (keycode == 49)
+        content->open_door = 0;
     return 0;
 }

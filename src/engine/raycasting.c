@@ -160,16 +160,39 @@ int mod(int a, int b) {
 
 void set_ray_wall_dir(t_ray *ray, t_container *content)
 {
+    
+    // Door tile position
     int map_x = (int)(ray->wall_hit_x / PIXEL_SIZE);
     int map_y = (int)(ray->wall_hit_y / PIXEL_SIZE);
 
     char tile = content->map[map_y][map_x];
 
-    // open the door
-
+    // Only allow opening if player is within radius AND facing the door
     if (content->open_door && tile == 'D')
     {
-            content->map[map_y][map_x] = '0';
+        // Player position in map grid (float)
+        float plr_map_x = content->plr.x / PIXEL_SIZE;
+        float plr_map_y = content->plr.y / PIXEL_SIZE;
+
+        // Distance from player center to door center
+        float dx = (float)map_x + 0.5f - plr_map_x;
+        float dy = (float)map_y + 0.5f - plr_map_y;
+        float distance = sqrtf(dx*dx + dy*dy);
+
+        // Set the open radius (tiles)
+        float open_radius = 1.8f; // 1.0 = touching, 2.0 = 2 tiles, 1.8 = "almost 2"
+        if (distance < open_radius)
+        {
+            // Optionally, check player's facing as before
+            float plr_angle = content->plr.r_angle;
+            float vx = cosf(plr_angle);
+            float vy = sinf(plr_angle);
+            float dot = (dx * vx + dy * vy) / (sqrtf(dx*dx + dy*dy) * sqrtf(vx*vx + vy*vy));
+            if (dot > 0.5f) // player generally facing the door (adjust threshold as needed)
+            {
+                content->map[map_y][map_x] = '0'; // Open the door
+            }
+        }
     }
 
     if (tile == 'D') {
