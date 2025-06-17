@@ -135,6 +135,7 @@ typedef struct s_container {
   int old_mouse_x;
   int mouse_press;
   int fix_mouse_x;
+  int open_door;
 } t_container;
 
 int ft_strlen(const char *s);

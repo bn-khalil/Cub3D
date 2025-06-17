@@ -164,6 +164,14 @@ void set_ray_wall_dir(t_ray *ray, t_container *content)
     int map_y = (int)(ray->wall_hit_y / PIXEL_SIZE);
 
     char tile = content->map[map_y][map_x];
+
+    // open the door
+
+    if (content->open_door && tile == 'D')
+    {
+            content->map[map_y][map_x] = '0';
+    }
+
     if (tile == 'D') {
         ray->wall_dir = "DO"; // "DO" for Door, add this texture to your confs
         return;
@@ -196,7 +204,7 @@ void convert_2d_to_3d(t_container *content)
     int ind;
     int size_l;
     int n_bits;
-    void *door_img = mlx_xpm_file_to_image(content->src.mlx, "/mnt/homes/kben-tou/Desktop/Cub3D/textures/do1.xpm", &w, &h);
+    void *door_img = mlx_xpm_file_to_image(content->src.mlx, "/mnt/homes/kben-tou/Desktop/Cub3D/textures/d.xpm", &w, &h);
     char *door = mlx_get_data_addr(door_img, &size_l, &n_bits, &ind);
 
     i = -1;
@@ -235,10 +243,23 @@ void convert_2d_to_3d(t_container *content)
             for (int y = wall_top_pixel; y < botm_pixel; y++) {
                 if (ray.wall_dir && ft_strcmp(ray.wall_dir, "DO") == 0)
                 {
-                        unsigned int color = ((unsigned int*)door)[tex_y * texture->txr_w + t_x];
-                        print_pxt(i * WALL_COL_WIDH, y, color, content);
-                    }  
+                    int t_x;
+                    int t_y;
+                    float r_r = (float)(y - (MAP_H / 2)) / wall_hight;
+                    float relative_y = (0.5f + r_r) * h;
+                    t_y = (int) relative_y;
+                    if (t_y < 0)
+                        t_y = 0;
+                    if (t_y >= h)
+                        t_y = h - 1;
+                    if (ray.was_vertical)
+                        t_x = mod((int)(ray.wall_hit_y * w / PIXEL_SIZE), w);
+                    else
+                        t_x = mod((int)(ray.wall_hit_x * w / PIXEL_SIZE), w);
+                    unsigned int color = ((unsigned int*)door)[t_y * w + t_x];
+                    print_pxt(i * WALL_COL_WIDH, y, color, content);
                 }
+                else
                     print_pxt(i * WALL_COL_WIDH, y, 0x885511, content); 
             }
             continue;

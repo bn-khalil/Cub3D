@@ -14,6 +14,8 @@ int key_action(int keycode, t_container *content)
         content->plr.rotate_left = 1;
     else if (keycode == KEY_RIGHT)
         content->plr.rotate_right = 1;
+    else if (keycode == 49)
+        content->open_door = 1;
     return 0;
 }
 
