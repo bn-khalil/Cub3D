@@ -169,8 +169,6 @@ void map_printer(char **map);
 int is_paces(char *str);
 void start_the_play(t_container *content);
 void drawing_plr(t_container *content);
-void draw_m(int x, int y, int color, t_container *content);
-int draw_map(t_container *content);
 void draw_clean(int x, int y, int color, t_container *content);
 void clear_map_after_player(t_container *content);
 void print_pxt(int x, int y, int color, t_container *content);

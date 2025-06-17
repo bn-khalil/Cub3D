@@ -1,42 +1,5 @@
 #include "../../inc/cub3d.h"
 
-void draw_m(int x, int y, int color, t_container *content)
-{
-    int i = 0;
-    int j;
-    while (i < PIXEL_SIZE - 1)
-    {
-        j = 0;
-        while (j < PIXEL_SIZE - 1)
-        {
-            print_pxt(x + i, y + j, color, content);
-            j++;
-        }
-        i++;
-    }
-}
-
-int draw_map(t_container *content)
-{
-    int i = 0;
-    int j;
-    while (content->map[i])
-    {
-        j = 0;
-        while (content->map[i][j])
-        {
-            if (content->map[i][j] == '1')
-                draw_m(j * PIXEL_SIZE, i * PIXEL_SIZE, 0xFF8C00, content);
-            if (content->map[i][j] == '0' || content->map[i][j] == 'W' || content->map[i][j] == 'N' \
-            || content->map[i][j] == 'E' || content->map[i][j] == 'S')
-                draw_m(j * PIXEL_SIZE * MAP_RATIO, i * PIXEL_SIZE * MAP_RATIO, 0x1f1200, content);
-            j++;
-        }
-        i++;
-    }
-    return (0);
-}
-
 void draw_clean(int x, int y, int color, t_container *content)
 {
     int i = 0;

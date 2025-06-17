@@ -308,12 +308,56 @@ void convert_2d_to_3d(t_container *content)
     }
 }
 
+void draw_sprite_hands(t_container *content)
+{
+    void *img;
+    char *buffer;
+    int width, height;
+    int size_l, nbits, endian;
+
+    img = mlx_xpm_file_to_image(content->src.mlx,
+            "/mnt/homes/kben-tou/Desktop/Cub3D/textures/h2.xpm", &width, &height);
+    if (!img)
+    {
+        fprintf(stderr, "Failed to load hand sprite (h2.xpm)\n");
+        return;
+    }
+
+    buffer = mlx_get_data_addr(img, &nbits, &size_l, &endian);
+
+    int screen_w = MAP_W;
+    int screen_h = MAP_H;
+    int draw_x = (screen_w - width) / 1.35;
+    int draw_y = screen_h - height;
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            unsigned int color = ((unsigned int*)buffer)[y * (size_l / 4) + x];
+            if (color != 0x000000)
+            {
+                int px = draw_x + x;
+                int py = draw_y + y;
+
+                if (px >= 0 && px < screen_w && py >= 0 && py < screen_h)
+                    print_pxt(px, py, color, content);
+            }
+        }
+    }
+
+    // Destroy the temporary image after drawing it
+    mlx_destroy_image(content->src.mlx, img);
+}
+
+
 int draw_game(t_container *content) {
     let_player_move(content);
     ray_info(content);
     clear_map_after_player(content);
     convert_2d_to_3d(content);
     render_minimap(content);
+    draw_sprite_hands(content);
     mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
     return (0);
 }
