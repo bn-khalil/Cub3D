@@ -28,6 +28,7 @@ void init_container(t_container *content, char *filename) {
   content->floor_color = NULL;
   content->player_pos = 0;
   content->open_door = 0;
+  content->sprite_switcher = 0;
 }
 
 int main(int ac, char **av) {

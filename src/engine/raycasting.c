@@ -157,64 +157,80 @@ int mod(int a, int b) {
     while (a >= b) a -= b;
     return a;
 }
-
 void set_ray_wall_dir(t_ray *ray, t_container *content)
 {
-    
-    // Door tile position
     int map_x = (int)(ray->wall_hit_x / PIXEL_SIZE);
     int map_y = (int)(ray->wall_hit_y / PIXEL_SIZE);
+    if (!ray->was_vertical && ray->ray_angle > M_PI && ray->ray_angle < 2 * M_PI)
+        map_y -= 1;
+    else if (ray->was_vertical && ray->ray_angle > M_PI_2 && ray->ray_angle < 3 * M_PI_2)
+        map_x -= 1;
 
     char tile = content->map[map_y][map_x];
-
-    // Only allow opening if player is within radius AND facing the door
     if (content->open_door && tile == 'D')
     {
-        // Player position in map grid (float)
         float plr_map_x = content->plr.x / PIXEL_SIZE;
         float plr_map_y = content->plr.y / PIXEL_SIZE;
-
-        // Distance from player center to door center
         float dx = (float)map_x + 0.5f - plr_map_x;
         float dy = (float)map_y + 0.5f - plr_map_y;
         float distance = sqrtf(dx*dx + dy*dy);
+        float open_radius = 1.8f;
 
-        // Set the open radius (tiles)
-        float open_radius = 1.8f; // 1.0 = touching, 2.0 = 2 tiles, 1.8 = "almost 2"
         if (distance < open_radius)
         {
-            // Optionally, check player's facing as before
             float plr_angle = content->plr.r_angle;
             float vx = cosf(plr_angle);
             float vy = sinf(plr_angle);
             float dot = (dx * vx + dy * vy) / (sqrtf(dx*dx + dy*dy) * sqrtf(vx*vx + vy*vy));
-            if (dot > 0.5f) // player generally facing the door (adjust threshold as needed)
+            if (dot > 0.5f)
+                content->map[map_y][map_x] = 'P';
+        }
+    }
+
+    tile = content->map[map_y][map_x];
+    // Check 3x3 grid around hit tile for open doors
+    float plr_map_x = content->plr.x / PIXEL_SIZE;
+    float plr_map_y = content->plr.y / PIXEL_SIZE;
+    float close_radius = 2.2f;
+    for (int dy = -1; dy <= 1; dy++)
+    {
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            int check_x = map_x + dx;
+            int check_y = map_y + dy;
+            if (check_x >= 0 && check_x < content->map_w && check_y >= 0 && check_y < content->map_h &&
+                content->map[check_y][check_x] == 'P')
             {
-                content->map[map_y][map_x] = '0'; // Open the door
+                float dist_x = (float)check_x + 0.5f - plr_map_x;
+                float dist_y = (float)check_y + 0.5f - plr_map_y;
+                float distance = sqrtf(dist_x * dist_x + dist_y * dist_y);
+                if (distance > close_radius)
+                    content->map[check_y][check_x] = 'D';
             }
         }
     }
 
+    tile = content->map[map_y][map_x];
     if (tile == 'D') {
-        ray->wall_dir = "DO"; // "DO" for Door, add this texture to your confs
+        ray->wall_dir = "DO";
         return;
     }
-    // M_PI = 3.1415926535, M_PI_2 = 1.5707963267
+    if (tile == 'P') {
+        ray->wall_dir = "DO";
+        return;
+    }
     if (ray->was_vertical) {
-        // Vertical hit: E/W
         if (ray->ray_angle > M_PI_2 && ray->ray_angle < 3 * M_PI_2)
             ray->wall_dir = "WE";
         else
             ray->wall_dir = "EA";
     } else {
-        // Horizontal hit: N/S
         if (ray->ray_angle > 0 && ray->ray_angle < M_PI)
             ray->wall_dir = "NO";
         else
             ray->wall_dir = "SO";
     }
 }
-
 void convert_2d_to_3d(t_container *content)
 {
     int i;
@@ -227,7 +243,7 @@ void convert_2d_to_3d(t_container *content)
     int ind;
     int size_l;
     int n_bits;
-    void *door_img = mlx_xpm_file_to_image(content->src.mlx, "/mnt/homes/kben-tou/Desktop/Cub3D/textures/d.xpm", &w, &h);
+    void *door_img = mlx_xpm_file_to_image(content->src.mlx, "./textures/d.xpm", &w, &h);
     char *door = mlx_get_data_addr(door_img, &size_l, &n_bits, &ind);
 
     i = -1;
@@ -283,7 +299,7 @@ void convert_2d_to_3d(t_container *content)
                     print_pxt(i * WALL_COL_WIDH, y, color, content);
                 }
                 else
-                    print_pxt(i * WALL_COL_WIDH, y, 0x885511, content); 
+                    print_pxt(i * WALL_COL_WIDH, y, 0x885511, content);
             }
             continue;
         }
@@ -315,8 +331,18 @@ void draw_sprite_hands(t_container *content)
     int width, height;
     int size_l, nbits, endian;
 
-    img = mlx_xpm_file_to_image(content->src.mlx,
-            "/mnt/homes/kben-tou/Desktop/Cub3D/textures/h2.xpm", &width, &height);
+    if (content->sprite_switcher < 20)
+        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h6.xpm", &width, &height);
+    else if (content->sprite_switcher < 30)
+        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h5.xpm", &width, &height);
+    else if (content->sprite_switcher < 40)
+        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h4.xpm", &width, &height);
+    else if (content->sprite_switcher < 50)
+        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h3.xpm", &width, &height);
+    else if (content->sprite_switcher < 300)
+        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h1.xpm", &width, &height);
+    else
+        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h2.xpm", &width, &height);
     if (!img)
     {
         fprintf(stderr, "Failed to load hand sprite (h2.xpm)\n");
@@ -330,26 +356,32 @@ void draw_sprite_hands(t_container *content)
     int draw_x = (screen_w - width) / 1.35;
     int draw_y = screen_h - height;
 
+    if (nbits != 32)
+    {
+        fprintf(stderr, "Unexpected pixel format: nbits = %d\n", nbits);
+        mlx_destroy_image(content->src.mlx, img);
+        return;
+    }
+
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
             unsigned int color = ((unsigned int*)buffer)[y * (size_l / 4) + x];
-            if (color != 0x000000)
+            // Mask alpha channel, check RGB only (0x00RRGGBB)
+            unsigned int rgb = color & 0x00FFFFFF;
+            if (rgb != 0x000000)
             {
                 int px = draw_x + x;
                 int py = draw_y + y;
-
                 if (px >= 0 && px < screen_w && py >= 0 && py < screen_h)
                     print_pxt(px, py, color, content);
             }
         }
     }
-
-    // Destroy the temporary image after drawing it
     mlx_destroy_image(content->src.mlx, img);
+    content->sprite_switcher = (content->sprite_switcher + 1) % 600;
 }
-
 
 int draw_game(t_container *content) {
     let_player_move(content);
