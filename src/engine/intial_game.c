@@ -5,7 +5,7 @@ void init_player(t_container *content) {
     content->plr.down = 0;
     content->plr.left = 0;
     content->plr.right = 0;
-    content->plr.speed =3.0;
+    content->plr.speed = 3.0;
     content->plr.rotate_left = 0;
     content->plr.rotate_right = 0;
     content->num_rays = MAP_W / WALL_COL_WIDH;
@@ -33,7 +33,7 @@ void mlx_res_init(t_container *content) {
     content->src.img = mlx_new_image(content->src.mlx, MAP_W, MAP_H);
     content->src.buffer_pos = mlx_get_data_addr(content->src.img, 
                                               &content->src.pixel_bits_number, 
-                                              &content->src.len_with_pixels, 
+                                              &content->src.len_with_pixels,
                                               &content->src.endian);
     texture_init(content);
 }
@@ -43,7 +43,6 @@ void start_the_play(t_container *content) {
     mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
     mlx_hook(content->src.win, 17, 0, ft_close, content);
     mlx_hook(content->src.win, 2, 1L << 0, key_action, content);
-    mlx_hook(content->src.win, 3, 1L << 1, key_back, content);
     mlx_hook(content->src.win, 3, 1L << 1, key_back, content);
     mlx_hook(content->src.win, 4, 1L << 2, mouse_press, content); 
     mlx_hook(content->src.win, 5, 1L << 3, mouse_release, content);

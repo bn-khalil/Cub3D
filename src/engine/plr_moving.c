@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   plr_moving.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sait-nac <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/20 10:56:34 by sait-nac          #+#    #+#             */
+/*   Updated: 2025/06/20 10:56:36 by sait-nac         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/cub3d.h"
 
 float fix_angle(float angle)
@@ -25,13 +37,26 @@ int is_wall(float x, float y, t_container *content) {
 }
 
 int ft_is_collision(float x, float y, t_container *content) {
-    if (is_wall(x, y, content) || 
-        is_wall(x + (float)PLR, y, content) ||
-        is_wall(x, y + (float)PLR, content) ||
-        is_wall(x + (float)PLR, y + (float)PLR, content)) {
-        return 1;
+    float offsets[4][2]; // Declaration by itself
+
+    offsets[0][0] = -PLR; // Initialization separate
+    offsets[0][1] = -PLR;
+    offsets[1][0] = PLR;
+    offsets[1][1] = -PLR;
+    offsets[2][0] = -PLR;
+    offsets[2][1] = PLR;
+    offsets[3][0] = PLR;
+    offsets[3][1] = PLR;
+
+    int i = 0; // This declaration is fine as is
+
+    while (i < 4) {
+        if (is_wall(x + offsets[i][0], y + offsets[i][1], content)) {
+            return 1; // Collision detected
+        }
+        i++;
     }
-    return 0;
+    return 0; // No collision
 }
 
 void let_player_move(t_container *content)
