@@ -6,7 +6,6 @@ int mouse_detection(int x, int y, void *data)
     float speed = 0.002;
     float d_x;
 
-    
     if (x < 0 || x > MAP_W)
     {
         content->mouse_press = 0;
@@ -17,7 +16,7 @@ int mouse_detection(int x, int y, void *data)
     && x >= 0 && x < MAP_W && y >= 0 && y < MAP_H)
     {
         d_x = content->old_mouse_x - x;
-        content->plr.r_angle += d_x * speed;
+        content->plr.r_angle -= d_x * speed;
         content->plr.r_angle = fix_angle(content->plr.r_angle);
         content->old_mouse_x = x;
     }

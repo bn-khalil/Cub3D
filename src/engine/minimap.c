@@ -44,6 +44,7 @@ void drawLineDDA_minimap(int x0, int y0, int x1, int y1, int color, t_container 
         y += yInc;
     }
 }
+
 void render_minimap(t_container *content)
 {
     int minimap_size = 200; 

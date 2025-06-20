@@ -157,10 +157,12 @@ int mod(int a, int b) {
     while (a >= b) a -= b;
     return a;
 }
+
 void set_ray_wall_dir(t_ray *ray, t_container *content)
 {
     int map_x = (int)(ray->wall_hit_x / PIXEL_SIZE);
     int map_y = (int)(ray->wall_hit_y / PIXEL_SIZE);
+
     if (!ray->was_vertical && ray->ray_angle > M_PI && ray->ray_angle < 2 * M_PI)
         map_y -= 1;
     else if (ray->was_vertical && ray->ray_angle > M_PI_2 && ray->ray_angle < 3 * M_PI_2)
@@ -231,6 +233,7 @@ void set_ray_wall_dir(t_ray *ray, t_container *content)
             ray->wall_dir = "SO";
     }
 }
+
 void convert_2d_to_3d(t_container *content)
 {
     int i;
@@ -245,11 +248,14 @@ void convert_2d_to_3d(t_container *content)
     int n_bits;
     void *door_img = mlx_xpm_file_to_image(content->src.mlx, "./textures/d.xpm", &w, &h);
     char *door = mlx_get_data_addr(door_img, &size_l, &n_bits, &ind);
-
     i = -1;
+
     distance_projection = (MAP_W / 2.0f) / tan(FOV / 2.0f);
     while (++i < content->num_rays)
     {
+        int c;
+        int f;
+
         ray = content->rays[i];
         if (ray.distance < 0.1f)
             ray.distance = 0.1f;
@@ -261,9 +267,6 @@ void convert_2d_to_3d(t_container *content)
         int botm_pixel = (MAP_H / 2) + (wall_strip_high / 2);
         if (botm_pixel > MAP_H)
             botm_pixel = MAP_H;
-
-        int c;
-        int f;
 
         c = -1;
         while (++c < wall_top_pixel)
@@ -292,9 +295,9 @@ void convert_2d_to_3d(t_container *content)
                     if (t_y >= h)
                         t_y = h - 1;
                     if (ray.was_vertical)
-                        t_x = mod((int)(ray.wall_hit_y * w / PIXEL_SIZE), w);
+                        t_x = mod((ray.wall_hit_y * w / PIXEL_SIZE), w);
                     else
-                        t_x = mod((int)(ray.wall_hit_x * w / PIXEL_SIZE), w);
+                        t_x = mod((ray.wall_hit_x * w / PIXEL_SIZE), w);
                     unsigned int color = ((unsigned int*)door)[t_y * w + t_x];
                     print_pxt(i * WALL_COL_WIDH, y, color, content);
                 }
@@ -302,12 +305,12 @@ void convert_2d_to_3d(t_container *content)
                     print_pxt(i * WALL_COL_WIDH, y, 0x885511, content);
             }
             continue;
-        }
+        
         int tex_x;
         if (ray.was_vertical)
-            tex_x = mod((int)(ray.wall_hit_y * texture->txr_w / PIXEL_SIZE), texture->txr_w);
+            tex_x = mod((ray.wall_hit_y * texture->txr_w / PIXEL_SIZE), texture->txr_w);
         else
-            tex_x = mod((int)(ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), texture->txr_w);
+            tex_x = mod((ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), texture->txr_w);
 
         float texture_scale = (float)texture->txr_h / wall_hight;
         for (int y = wall_top_pixel; y < botm_pixel; y++) {
@@ -331,21 +334,26 @@ void draw_sprite_hands(t_container *content)
     int width, height;
     int size_l, nbits, endian;
 
-    if (content->sprite_switcher < 20)
+    if (content->sprite_switcher < 10)
         img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h6.xpm", &width, &height);
-    else if (content->sprite_switcher < 30)
+    else if (content->sprite_switcher < 15)
         img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h5.xpm", &width, &height);
-    else if (content->sprite_switcher < 40)
+    else if (content->sprite_switcher < 25)
         img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h4.xpm", &width, &height);
-    else if (content->sprite_switcher < 50)
-        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h3.xpm", &width, &height);
-    else if (content->sprite_switcher < 300)
+    else if (content->sprite_switcher < 30)
+        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h3+.xpm", &width, &height);
+    else if (content->sprite_switcher < 35)
         img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h1.xpm", &width, &height);
     else
-        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h2.xpm", &width, &height);
+    {
+        if (content->plr.up)
+            img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h4.xpm", &width, &height);
+        else
+            img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h2.xpm", &width, &height);
+    }
     if (!img)
     {
-        fprintf(stderr, "Failed to load hand sprite (h2.xpm)\n");
+        printf("Failed to load hand sprite image \n");
         return;
     }
 
@@ -354,7 +362,7 @@ void draw_sprite_hands(t_container *content)
     int screen_w = MAP_W;
     int screen_h = MAP_H;
     int draw_x = (screen_w - width) / 1.35;
-    int draw_y = screen_h - height;
+    int draw_y = screen_h - height + 8;
 
     if (nbits != 32)
     {
@@ -368,7 +376,6 @@ void draw_sprite_hands(t_container *content)
         for (int x = 0; x < width; x++)
         {
             unsigned int color = ((unsigned int*)buffer)[y * (size_l / 4) + x];
-            // Mask alpha channel, check RGB only (0x00RRGGBB)
             unsigned int rgb = color & 0x00FFFFFF;
             if (rgb != 0x000000)
             {
@@ -380,7 +387,7 @@ void draw_sprite_hands(t_container *content)
         }
     }
     mlx_destroy_image(content->src.mlx, img);
-    content->sprite_switcher = (content->sprite_switcher + 1) % 600;
+    content->sprite_switcher = (content->sprite_switcher + 1) % 450;
 }
 
 int draw_game(t_container *content) {
