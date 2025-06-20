@@ -248,8 +248,8 @@ void convert_2d_to_3d(t_container *content)
     int n_bits;
     void *door_img = mlx_xpm_file_to_image(content->src.mlx, "./textures/d.xpm", &w, &h);
     char *door = mlx_get_data_addr(door_img, &size_l, &n_bits, &ind);
-    i = -1;
 
+    i = -1;
     distance_projection = (MAP_W / 2.0f) / tan(FOV / 2.0f);
     while (++i < content->num_rays)
     {
@@ -305,7 +305,7 @@ void convert_2d_to_3d(t_container *content)
                     print_pxt(i * WALL_COL_WIDH, y, 0x885511, content);
             }
             continue;
-        
+        }
         int tex_x;
         if (ray.was_vertical)
             tex_x = mod((ray.wall_hit_y * texture->txr_w / PIXEL_SIZE), texture->txr_w);
