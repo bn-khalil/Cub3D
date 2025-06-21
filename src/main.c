@@ -23,7 +23,8 @@ void ft_close_configs(t_container *content)
     free(content->confs->value);
     free(content->confs->id);
     close(content->confs->fd);
-    mlx_destroy_image(content->src.mlx, content->confs->img);
+    if (content->confs->img)
+      mlx_destroy_image(content->src.mlx, content->confs->img);
     tmp = content->confs->next;
     free(content->confs);
     content->confs = tmp;
@@ -34,14 +35,14 @@ void ft_free_all(t_container *content)
 {
   close(content->fd_map);
   free(content->rays);
-  // free(content->floor_color);
-  // free(content->ceiling_color);
   ft_free_2d(content->file_content);
   ft_close_configs(content);
 }
 
 void ft_error(char *err, t_container *content)
 {
+  if (!content)
+    return ;
   ft_free_all(content);
   write(2, err, ft_strlen(err));
   exit(1);
@@ -60,7 +61,7 @@ void is_file_ext_valid(char *filename) {
 
 void f()
 {
-  system("leaks cub3d");
+  system(" leak cub3d ");
 }
 int main(int ac, char **av) {
   t_container content;

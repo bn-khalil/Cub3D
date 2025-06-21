@@ -26,8 +26,8 @@ void check_color_separator(char *color_form, t_container *content)
             ft_error("Error: color rgb not valid!", content);
         i++;
     }
-    
 }
+
 void configue_rgb_parsing(t_container *content, char *color, int flag)
 {
     int i;
@@ -35,6 +35,8 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
     char *color_form;
     char *skeep_spaces;
     char **rgb;
+    unsigned int hex_color;
+    int rgb_int[3];
 
     color_form = ft_substr(color, 2, ft_strlen(color));
     skeep_spaces = ft_strtrim(color_form, " \t");
@@ -51,13 +53,15 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
         pixel_ele = ft_atoi(rgb[i]);
         if (pixel_ele < 0 || pixel_ele > 255)
             ft_error("Error: color rgb not valid!", content);
+        rgb_int[i] = pixel_ele;
         i++;
     }
     if (i != 3)
         ft_error("Error: invalid rgb formatte!", content);
+    hex_color = (rgb_int[0] << 16) | (rgb_int[1] << 8) | rgb_int[2];
     if (flag)
-        content->floor_color = skeep_spaces;
+        content->floor_color = hex_color;
     else
-        content->ceiling_color = skeep_spaces;
+        content->ceiling_color = hex_color;
     ft_free_2d(rgb);
 }

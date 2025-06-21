@@ -20,8 +20,6 @@
 #define  MAP_RATIO 0.2
 #define MAP_W 1080
 #define MAP_H 720
-#define C_COLOR 0x87CEEB
-#define F_COLOR   0x434230
 
 #ifdef __APPLE__
 #define KEY_ESC 53
@@ -126,8 +124,8 @@ typedef struct s_container {
   char *filename;
   char *line;
   t_config *confs;
-  char *floor_color;
-  char *ceiling_color;
+  unsigned int floor_color;
+  unsigned int ceiling_color;
   int player_pos;
   int num_rays;
   t_src src;

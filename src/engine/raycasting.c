@@ -100,7 +100,7 @@ void convert_2d_to_3d(t_container *content)
     int ind;
     int size_l;
     int n_bits;
-    void *door_img = mlx_xpm_file_to_image(content->src.mlx, "./textures/d.xpm", &w, &h);
+    void *door_img = mlx_xpm_file_to_image(content->src.mlx, "./textures/9_.xpm", &w, &h);
     char *door = mlx_get_data_addr(door_img, &size_l, &n_bits, &ind);
 
     i = -1;
@@ -124,11 +124,11 @@ void convert_2d_to_3d(t_container *content)
 
         c = -1;
         while (++c < wall_top_pixel)
-            print_pxt(i * WALL_COL_WIDH, c, C_COLOR, content);
+            print_pxt(i * WALL_COL_WIDH, c, content->ceiling_color, content);
         f = botm_pixel;
         while (f < MAP_H)
         {
-            print_pxt(i * WALL_COL_WIDH, f, F_COLOR, content);
+            print_pxt(i * WALL_COL_WIDH, f, content->floor_color, content);
             f++;
         }
 
@@ -204,10 +204,7 @@ void draw_sprite_hands(t_container *content)
             img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h2.xpm", &width, &height);
     }
     if (!img)
-    {
-        printf("Failed to load hand sprite image \n");
-        return;
-    }
+        ft_error("failed loading image\n", content);
 
     buffer = mlx_get_data_addr(img, &nbits, &size_l, &endian);
 
@@ -218,9 +215,8 @@ void draw_sprite_hands(t_container *content)
 
     if (nbits != 32)
     {
-        fprintf(stderr, "Unexpected pixel format: nbits = %d\n", nbits);
         mlx_destroy_image(content->src.mlx, img);
-        return;
+        ft_error("no pixel coordinates\n", content);
     }
 
     for (int y = 0; y < height; y++)
