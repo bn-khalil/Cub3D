@@ -1,7 +1,48 @@
 #include "../inc/cub3d.h"
 
-void ft_error(char *err, t_container *content) {
-  (void)content;
+void	ft_free_2d(char **str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		free(str[i]);
+		i++;
+	}
+  free(str);
+}
+
+void ft_close_configs(t_container *content)
+{
+  t_config *tmp;
+
+  tmp = NULL;
+  while (content->confs)
+  {
+    free(content->confs->value);
+    free(content->confs->id);
+    close(content->confs->fd);
+    mlx_destroy_image(content->src.mlx, content->confs->img);
+    tmp = content->confs->next;
+    free(content->confs);
+    content->confs = tmp;
+  }
+}
+
+void ft_free_all(t_container *content)
+{
+  close(content->fd_map);
+  free(content->rays);
+  // free(content->floor_color);
+  // free(content->ceiling_color);
+  ft_free_2d(content->file_content);
+  ft_close_configs(content);
+}
+
+void ft_error(char *err, t_container *content)
+{
+  ft_free_all(content);
   write(2, err, ft_strlen(err));
   exit(1);
 }
@@ -17,28 +58,21 @@ void is_file_ext_valid(char *filename) {
     ft_error("invalid file name", NULL);
 }
 
-void init_container(t_container *content, char *filename) {
-  content->file_content = NULL;
-  content->map = NULL;
-  content->fd_map = -1;
-  content->filename = filename;
-  content->line = NULL;
-  content->confs = NULL;
-  content->ceiling_color = NULL;
-  content->floor_color = NULL;
-  content->player_pos = 0;
-  content->open_door = 0;
-  content->sprite_switcher = 0;
+void f()
+{
+  system("leaks cub3d");
 }
-
 int main(int ac, char **av) {
   t_container content;
 
+  atexit(f);
   if (ac != 2)
     return (write(2, "Invalid number of arrguments!\n", 31), 1);
   is_file_ext_valid(av[1]);
-  init_container(&content, av[1]);
+  ft_memset(&content, 0, sizeof(t_container));
+  content.filename = av[1];
   get_and_init_map(&content);
   start_the_play(&content);
+  ft_free_all(&content);
   return (0);
 }

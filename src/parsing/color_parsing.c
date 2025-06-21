@@ -32,10 +32,10 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
 {
     int i;
     int pixel_ele;
-    char **rgb;
     char *color_form;
     char *skeep_spaces;
-    
+    char **rgb;
+
     color_form = ft_substr(color, 2, ft_strlen(color));
     skeep_spaces = ft_strtrim(color_form, " \t");
     if (!color_form || !skeep_spaces)
@@ -44,7 +44,6 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
     rgb = ft_split(skeep_spaces, ',', 1);
     if (!rgb)
         ft_error("Error: allocation failed!\n", content);
-    
     i = 0;
     while (rgb[i])
     {
@@ -60,5 +59,5 @@ void configue_rgb_parsing(t_container *content, char *color, int flag)
         content->floor_color = skeep_spaces;
     else
         content->ceiling_color = skeep_spaces;
-    // free rgb
+    ft_free_2d(rgb);
 }

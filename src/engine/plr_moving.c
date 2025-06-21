@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   plr_moving.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sait-nac <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 10:56:34 by sait-nac          #+#    #+#             */
-/*   Updated: 2025/06/20 10:56:36 by sait-nac         ###   ########.fr       */
+/*   Updated: 2025/06/21 16:46:34 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int is_wall(float x, float y, t_container *content) {
     if (!content->map || !content->map[j])
         return 1;
 
-    if (content->map[j][i] == '1' || content->map[j][i] == 'D')
+    if (content->map[j][i] && (content->map[j][i] == '1' || content->map[j][i] == 'D'))
         return 1;
 
     return 0;
