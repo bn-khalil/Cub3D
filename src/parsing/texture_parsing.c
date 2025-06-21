@@ -47,18 +47,3 @@ void configue_direction_parsing(t_container *content, char *direction, char *pat
 	ft_configue(&content->confs, ft_new_config(content, \
 	is_texture_valid(content, texture_path), direction, texture_path));
 }
-
-// void print_list(t_config *head)
-// {
-//     t_config *current = head;
-//     while (current)
-// 	{
-// 		printf("%ss\n", current->id);
-// 		if (ft_strcmp("EA ", current->id) == 0 || ft_strcmp("NO ",
-// current->id) == 0 || ft_strcmp("WE ", current->id) == 0 || ft_strcmp("SO ",
-// current->id) == 0)
-//         	current = current->next;
-// 		else
-// 			ft_error("Error: missing textures!\n", NULL);
-//     }
-// }
