@@ -5,6 +5,9 @@ SRC = src/main.c \
 			src/utils/memory_managemnt.c \
 			src/utils/libft_tools_0.c \
 			src/utils/libft_tools_1.c \
+			src/utils/ray.utils.c\
+			src/utils/horizantal_calcule.c \
+			src/utils/vertical_calcul.c \
 			src/parsing/map_getting.c \
 			src/parsing/map_parsing.c \
 			src/parsing/conf_parsing.c \
