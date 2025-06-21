@@ -29,7 +29,7 @@ OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)
 
 
-CC = gcc
+CC = cc
 INCLUDES = -Iinc
 CFLAGS = -g -Wno-incompatible-pointer-types #-fsanitize=address
 UNAME_S := $(shell uname -s)

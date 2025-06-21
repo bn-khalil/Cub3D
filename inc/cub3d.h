@@ -20,8 +20,6 @@
 #define  MAP_RATIO 0.2
 #define MAP_W 1080
 #define MAP_H 720
-#define C_COLOR 0x87CEEB
-#define F_COLOR   0x434230
 
 #ifdef __APPLE__
 #define KEY_ESC 53
@@ -122,11 +120,12 @@ typedef struct s_container {
   char **file_content;
   char **map;
   char **configues;
+  char **rgb;
   char *filename;
   char *line;
   t_config *confs;
-  char *floor_color;
-  char *ceiling_color;
+  unsigned int floor_color;
+  unsigned int ceiling_color;
   int player_pos;
   int num_rays;
   t_src src;
@@ -194,5 +193,7 @@ void	get_the_horizantal(t_container *content, int i);
 void	get_vertical(t_container *content, int i);
 int mod(int a, int b);
 void ray_info(t_container *content);
+void	ft_free_2d(char **str);
+void ft_free_all(t_container *content);
 
 #endif

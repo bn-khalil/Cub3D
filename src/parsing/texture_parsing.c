@@ -34,8 +34,8 @@ int is_texture_valid(t_container *content, char *path) {
 
   fd = -1;
   fd = open(path, O_RDONLY);
-  /* if (fd < 0) */
-  /* 	ft_error("Erorr: texture file not valid!\n", content); */
+  if (fd < 0)
+    ft_error("Erorr: texture file not valid!\n", content);
   return (fd);
 }
 

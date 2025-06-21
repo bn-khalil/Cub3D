@@ -84,5 +84,4 @@ void configure_parsing(t_container *content)
     }
     if (texture_count < 4 || colors_count < 2)
         ft_error("Error: missing textures!\n", content);
-	// print_list(content->confs);
 }
