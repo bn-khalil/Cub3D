@@ -188,5 +188,11 @@ void texture_init(t_container *content);
 int mouse_detection(int x, int y, void *data);
 int mouse_press(int button, int x, int y, void *data);
 int mouse_release(int button, int x, int y, void *data);
+float get_vector_dis(t_container *content, float nex_x, float nex_y);
+void get_the_smallest(t_ray *ray, float ray_angle, float player_angle);
+void	get_the_horizantal(t_container *content, int i);
+void	get_vertical(t_container *content, int i);
+int mod(int a, int b);
+void ray_info(t_container *content);
 
 #endif
