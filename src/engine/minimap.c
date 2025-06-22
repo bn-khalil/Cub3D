@@ -152,7 +152,7 @@ void render_minimap(t_container *content)
             if (map_x >= 0 && map_x < content->map_w && 
                 map_y >= 0 && map_y < content->map_h) 
             {
-                if (content->map[map_y][map_x] == '1') {
+                if (content->map[map_y][map_x] && content->map[map_y][map_x] == '1') {
                     color = 0xFFFFFF; 
                 } else {
                     color = 0x404040; 

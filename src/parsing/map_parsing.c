@@ -101,6 +101,7 @@ void parsing_map_content(t_container *content, int start)
     i = 0;
     while (content->file_content[start + i])
         i++;
+    printf("%d \n", i);
     content->map = malloc(sizeof(char *) * (i + 1));
     if (!content->map)
         ft_error("Error: allocation failed!\n", content);
@@ -108,17 +109,13 @@ void parsing_map_content(t_container *content, int start)
     stop = 0;
     while (content->file_content[start + i])
     {
-        if (is_paces(content->file_content[start + i]))
-        {
-            j = start + i;
-            while (content->file_content[j] && is_paces(content->file_content[j]))
-                j++;
-            if (content->file_content[j] == NULL)
-                stop++;
-        }
-        if (stop)
+        printf("%s \n", content->file_content[start + i]);
+        j = start + i;
+        while (content->file_content[j] && is_paces(content->file_content[j]))
+            j++;
+        if (content->file_content[j] == NULL)
             break ;
-        content->map[i] = content->file_content[start + i];
+        content->map[i] = content->file_content[j];
         i++;
     }
     content->map[i] = NULL;
