@@ -36,6 +36,7 @@ void ft_free_all(t_container *content)
   close(content->fd_map);
   free(content->rays);
   ft_free_2d(content->file_content);
+  ft_free_2d(content->map);
   ft_close_configs(content);
 }
 
@@ -61,7 +62,7 @@ void is_file_ext_valid(char *filename) {
 
 void f()
 {
-  system(" leak cub3d ");
+  system("leaks cub3d");
 }
 int main(int ac, char **av) {
   t_container content;

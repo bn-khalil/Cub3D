@@ -23,12 +23,24 @@ int is_map_covered_with_walls(int x, int y, t_container *content)
     || content->map[y][x + 1] == ' ' \
     || content->map[y][x + 1] == '\t')
         return (1);
-    if (x >= ft_strlen(content->map[y - 1]) \
-    || x >= ft_strlen(content->map[y + 1]))
-        return (1);
+    // if (x >= ft_strlen(content->map[y - 1]) \
+    // || x >= ft_strlen(content->map[y + 1]))
+    //     return (1);
     return (0);
 }
 
+void door_check(t_container *content, int i, int j)
+{
+    if (i < 0 || j < 0 || i >= content->map_w || j >= content->map_h )
+        return ;
+    if (content->map[i][j - 1] == '1' && content->map[i][j + 1] == '1')
+        ;
+    else if (content->map[i - 1][j] == '1' && content->map[i + 1][j] == '1')
+        ;
+    else
+        ft_error("the door doesn't have stands\n", content);
+
+}
 
 void check_map_components(t_container *content)
 {
@@ -75,6 +87,8 @@ void check_map_components(t_container *content)
                 if (is_map_covered_with_walls(j , i, content))
                     ft_error("Error: map should be rounded with walls\n", content);
             }
+            if (content->map[i][j] == 'D')
+                door_check(content, i, j);
             j++;
         }
         i++;
@@ -92,6 +106,41 @@ int check_newlines(t_container *content, int start, int i)
     return (start + i);
 }
 
+char *ft_complete(t_container *content, char *str)
+{
+    while (ft_strlen(str) <= content->map_w)
+        str = ft_strjoin(str, " ");
+    return (str);
+}
+
+void complete_map_rows(t_container *content)
+{
+    int i;
+
+    i = 0;
+    while (content->map[i])
+    {
+        content->map[i] = ft_complete(content, content->map[i]);
+        i++;
+    }
+}
+
+void map_printe(char **map) {
+    int i = 0;
+    int j;
+    while (map[i])
+    {
+        j = 0;
+        while (map[i][j])
+        {
+            printf("%c", map[i][j]);
+            j++;
+        }
+		printf("\n");
+        i++;
+    }
+}
+
 void parsing_map_content(t_container *content, int start)
 {
     int i;
@@ -101,7 +150,6 @@ void parsing_map_content(t_container *content, int start)
     i = 0;
     while (content->file_content[start + i])
         i++;
-    printf("%d \n", i);
     content->map = malloc(sizeof(char *) * (i + 1));
     if (!content->map)
         ft_error("Error: allocation failed!\n", content);
@@ -109,16 +157,16 @@ void parsing_map_content(t_container *content, int start)
     stop = 0;
     while (content->file_content[start + i])
     {
-        printf("%s \n", content->file_content[start + i]);
         j = start + i;
         while (content->file_content[j] && is_paces(content->file_content[j]))
             j++;
         if (content->file_content[j] == NULL)
             break ;
-        content->map[i] = content->file_content[j];
+        content->map[i] = ft_strdup(content->file_content[start + i]);
         i++;
     }
     content->map[i] = NULL;
     get_width_and_height(content);
+    complete_map_rows(content);
     check_map_components(content);
 }
