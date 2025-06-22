@@ -1,77 +1,152 @@
 #include "../../inc/cub3d.h"
 
-void draw_player_shape_minimap(int center_x, int center_y, int color, t_container *content)
+void	draw_horizontal_cross(int center_x, int center_y, int color, t_container *content)
 {
-    int half = 2; 
-    int thickness = 1;
+	int	dx;
+	int	t;
+	int	half;
+	int	thickness;
 
-    for (int dx = -half; dx <= half; dx++) {
-        for (int t = -thickness; t <= thickness; t++) {
-            print_pxt(center_x + dx, center_y + t, color, content);
-        }
-    }
-    for (int dy = -half; dy <= half; dy++) {
-        for (int t = -thickness; t <= thickness; t++) {
-            print_pxt(center_x + t, center_y + dy, color, content);
-        }
-    }
-    for (int i = 0; i < 2; i++) {
-        int sign = i ? 1 : -1;
-        print_pxt(center_x + sign*half, center_y + sign*half, color, content);
-        print_pxt(center_x + sign*half, center_y - sign*half, color, content);
-    }
+	half = 2;
+	thickness = 1;
+	dx = -half;
+	while (dx <= half)
+	{
+		t = -thickness;
+		while (t <= thickness)
+		{
+			print_pxt(center_x + dx, center_y + t, color, content);
+			t++;
+		}
+		dx++;
+	}
 }
 
-void drawLineDDA_minimap(int x0, int y0, int x1, int y1, int color, t_container *content) 
+void	draw_vertical_cross(int center_x, int center_y, int color, t_container *content)
 {
-    int dx = x1 - x0;
-    int dy = y1 - y0;
-    int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
-    
-    if (steps == 0) {
+	int	dy;
+	int	t;
+	int	half;
+	int	thickness;
+
+	half = 2;
+	thickness = 1;
+	dy = -half;
+	while (dy <= half)
+	{
+		t = -thickness;
+		while (t <= thickness)
+		{
+			print_pxt(center_x + t, center_y + dy, color, content);
+			t++;
+		}
+		dy++;
+	}
+}
+
+void	draw_diagonal_corners(int center_x, int center_y, int color, t_container *content)
+{
+	int	i;
+	int	sign;
+	int	half;
+
+	half = 2;
+	i = 0;
+	while (i < 2)
+	{
+		sign = -1;
+		if (i != 0)
+			sign = 1;
+		print_pxt(center_x + sign * half, center_y + sign * half, color, content);
+		print_pxt(center_x + sign * half, center_y - sign * half, color, content);
+		i++;
+	}
+}
+
+void	draw_player_shape_minimap(int center_x, int center_y, int color, t_container *content)
+{
+	draw_horizontal_cross(center_x, center_y, color, content);
+	draw_vertical_cross(center_x, center_y, color, content);
+	draw_diagonal_corners(center_x, center_y, color, content);
+}
+
+void drawLineDDA_minimap(int x0, int y0, int color, t_container *content)
+{
+    t_line_params *line;
+    int            dx_abs;
+    int            dy_abs;
+    int            i; // Loop counter
+
+    line = content->line_par;
+    line->dx = line->end_x - x0;
+    line->dy = line->end_y - y0;
+    dx_abs = abs(line->dx); // Get absolute values
+    dy_abs = abs(line->dy);
+    if (dx_abs > dy_abs) {
+        line->steps = dx_abs;
+    } else {
+        line->steps = dy_abs;
+    }
+    if (line->steps == 0) {
         print_pxt(x0, y0, color, content);
         return;
     }
-    
-    float xInc = dx / (float)steps;
-    float yInc = dy / (float)steps;
-    float x = x0;
-    float y = y0;
-    
-    for (int i = 0; i <= steps; i++) {
-        print_pxt((int)round(x), (int)round(y), color, content);
-        x += xInc;
-        y += yInc;
+    line->xInc = (float)line->dx / (float)line->steps; // Explicit float cast for division
+    line->yInc = (float)line->dy / (float)line->steps; // Explicit float cast for division
+    line->x = (float)x0; // Cast to float as line->x is float
+    line->y = (float)y0; // Cast to float as line->y is float
+    i = 0; // Initialize loop counter
+    while (i <= line->steps) {
+        print_pxt((int)roundf(line->x), (int)roundf(line->y), color, content); // Use roundf for float
+
+        line->x += line->xInc;
+        line->y += line->yInc;
+        i++;
     }
 }
 
+
+void draw_border(t_container *content)
+{
+    for (int i = 0; i < M_MAP_S; i++) {
+        print_pxt(M_M_X + i, M_M_Y, 0xFFFFFF, content); 
+        print_pxt(M_M_X + i, M_M_Y + M_MAP_S - 1, 0xFFFFFF, content); 
+        print_pxt(M_M_X, M_M_Y + i, 0xFFFFFF, content); 
+        print_pxt(M_M_X + M_MAP_S - 1, M_M_Y + i, 0xFFFFFF, content); 
+    }
+}
+
+void initiale_minimap(t_container *content)
+{
+    t_minimap *map_inf;
+
+    map_inf = content->minimap;
+    map_inf->minimap_radius = M_MAP_S / (2 * M_CELL);
+    map_inf->player_map_x = (int)(content->plr.x / PIXEL_SIZE);
+    map_inf->player_map_y = (int)(content->plr.y / PIXEL_SIZE);
+    map_inf->offset_x = (content->plr.x / PIXEL_SIZE) - map_inf->player_map_x;
+    map_inf->offset_y = (content->plr.y / PIXEL_SIZE) - map_inf->player_map_y;
+}
 void render_minimap(t_container *content)
 {
-    int minimap_size = 200; 
-    int minimap_x = 10;
-    int minimap_y = 10;
-    int cell_size = 8;      
-    int minimap_radius = minimap_size / (2 * cell_size);
+    t_minimap *map_inf;
 
-    int player_map_x = (int)(content->plr.x / PIXEL_SIZE);
-    int player_map_y = (int)(content->plr.y / PIXEL_SIZE);
+    map_inf = content->minimap;
+    initiale_minimap(content);
 
-    float player_cell_offset_x = (content->plr.x / PIXEL_SIZE) - player_map_x;
-    float player_cell_offset_y = (content->plr.y / PIXEL_SIZE) - player_map_y;
-
-    for (int y = 0; y < minimap_size; y++) {
-        for (int x = 0; x < minimap_size; x++) {
-            print_pxt(minimap_x + x, minimap_y + y, 0x000000, content);
+    for (int y = 0; y < M_MAP_S; y++) {
+        for (int x = 0; x < M_MAP_S; x++) {
+            print_pxt(M_M_X+ x, M_M_Y + y, 0x000000, content);
         }
     }
 
-    for (int dy = -minimap_radius; dy <= minimap_radius; dy++) {
-        for (int dx = -minimap_radius; dx <= minimap_radius; dx++) {
-            int map_x = player_map_x + dx;
-            int map_y = player_map_y + dy;
+    for (int dy = -map_inf->minimap_radius; dy <= map_inf->minimap_radius; dy++) {
+        for (int dx = -map_inf->minimap_radius; dx <= map_inf->minimap_radius; dx++) {
+            int map_x = map_inf->player_map_x + dx;
+            int map_y = map_inf->player_map_y + dy;
 
-            int minimap_cell_x = minimap_x + (minimap_size / 2) + ((dx - player_cell_offset_x) * cell_size);
-            int minimap_cell_y = minimap_y + (minimap_size / 2) + ((dy - player_cell_offset_y) * cell_size);
+            int minimap_cell_x = M_M_X + ((float)M_MAP_S / 2) + ((dx - map_inf->offset_x) * M_CELL);
+            int minimap_cell_y = M_M_Y + ((float)M_MAP_S / 2) + ((dy - map_inf->offset_y) * M_CELL);
 
             int color = 0x000000;
             if (map_x >= 0 && map_x < content->map_w && 
@@ -83,12 +158,12 @@ void render_minimap(t_container *content)
                     color = 0x404040; 
                 }
             }
-            for (int py = 0; py < cell_size; py++) {
-                for (int px = 0; px < cell_size; px++) {
+            for (int py = 0; py < M_CELL; py++) {
+                for (int px = 0; px < M_CELL; px++) {
                     int draw_x = minimap_cell_x + px;
                     int draw_y = minimap_cell_y + py;
-                    if (draw_x >= minimap_x && draw_x < minimap_x + minimap_size &&
-                        draw_y >= minimap_y && draw_y < minimap_y + minimap_size) {
+                    if (draw_x >= M_M_X && draw_x < M_M_X + M_MAP_S &&
+                        draw_y >= M_M_Y && draw_y < M_M_Y + M_MAP_S) {
                         print_pxt(draw_x, draw_y, color, content);
                     }
                 }
@@ -96,18 +171,14 @@ void render_minimap(t_container *content)
         }
     }
 
-    int player_minimap_x = minimap_x + (minimap_size / 2);
-    int player_minimap_y = minimap_y + (minimap_size / 2);
+    int player_minimap_x = M_M_X + (M_MAP_S / 2);
+    int player_minimap_y = M_M_Y + (M_MAP_S / 2);
 
     draw_player_shape_minimap(player_minimap_x, player_minimap_y, 0x00FF00, content);
     float dir_length = 11.0;
-    int end_x = player_minimap_x + (int)(cos(content->plr.r_angle) * dir_length);
-    int end_y = player_minimap_y + (int)(sin(content->plr.r_angle) * dir_length);
-    drawLineDDA_minimap(player_minimap_x, player_minimap_y, end_x, end_y, 0xFF0000, content);
-    for (int i = 0; i < minimap_size; i++) {
-        print_pxt(minimap_x + i, minimap_y, 0xFFFFFF, content); // Top
-        print_pxt(minimap_x + i, minimap_y + minimap_size - 1, 0xFFFFFF, content); // Bottom
-        print_pxt(minimap_x, minimap_y + i, 0xFFFFFF, content); // Left
-        print_pxt(minimap_x + minimap_size - 1, minimap_y + i, 0xFFFFFF, content); // Right
-    }
+    content->line_par->end_x = player_minimap_x + (int)(cos(content->plr.r_angle) * dir_length);
+    content->line_par->end_y = player_minimap_y + (int)(sin(content->plr.r_angle) * dir_length);
+    drawLineDDA_minimap(player_minimap_x, player_minimap_y, 0xFF0000, content);
+    draw_border(content);
+
 }
