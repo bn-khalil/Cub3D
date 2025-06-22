@@ -4,8 +4,10 @@ SRC = src/main.c \
 			src/utils/memset.c \
 			src/utils/memory_managemnt.c \
 			src/utils/libft_tools_0.c \
+			src/utils/draw_line_bonus.c \
 			src/utils/libft_tools_1.c \
 			src/utils/ray_utils.c\
+			src/utils/player_drawing_bonus.c\
 			src/utils/horizantal_calcule.c \
 			src/utils/vertical_calcul.c \
 			src/parsing/map_getting.c \
@@ -17,7 +19,6 @@ SRC = src/main.c \
 			src/engine/map_drawing.c \
 			src/engine/raycasting.c \
 			src/engine/draw_tools.c \
-			src/engine/player_drawing.c \
 			src/engine/texture_drawing.c \
 			src/engine/intial_game.c \
 			src/engine/key_event_handle.c \

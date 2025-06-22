@@ -125,6 +125,9 @@ typedef struct s_minimap
     int player_map_y;
     float offset_x;
     float offset_y;
+    int       minimap_cell_x; // Variable for minimap cell x-coordinate
+    int       minimap_cell_y; // Variable for minimap cell y-coordinate
+
 }	t_minimap;
 
 typedef struct s_line_params{
@@ -227,5 +230,8 @@ int mod(int a, int b);
 void ray_info(t_container *content);
 void	ft_free_2d(char **str);
 void ft_free_all(t_container *content);
+void put_player_map(t_container *content);
+void drawlinedda_minimap(int x, int y, int color, t_container *content);
+void initiale_minimap(t_container *content);
 
 #endif

@@ -1,7 +1,8 @@
 #include "../../inc/cub3d.h"
 
 
-t_config *get_texture_by_id(t_config *confs, const char *id) {
+t_config *get_texture_by_id(t_config *confs, const char *id) 
+{
     while (confs) {
         if (ft_strncmp(confs->id, id, 2) == 0)
             return confs;
