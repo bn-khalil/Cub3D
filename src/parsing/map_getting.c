@@ -68,10 +68,8 @@ void get_and_init_map(t_container *content)
     content->fd_map = open(content->filename, O_RDONLY);
     if (content->fd_map <= 0)
         ft_error("Error opning map file", content);
-	// printf("%s", ft_split(content->line, '\n')[0]);
     content->file_content = ft_split(get_next_line(content), '\n', 0);
     if (!content->file_content || !content->file_content[0])
         ft_error("Error in map maybe empty\n", content);
 	saperate_map_configues(content);
-	// map_printer(content->file_content);
 }

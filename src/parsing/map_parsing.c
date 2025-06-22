@@ -123,6 +123,5 @@ void parsing_map_content(t_container *content, int start)
     }
     content->map[i] = NULL;
     get_width_and_height(content);
-    map_printer(content->map);
     check_map_components(content);
 }
