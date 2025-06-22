@@ -20,7 +20,13 @@
 #define  MAP_RATIO 0.8
 #define MAP_W 1080
 #define MAP_H 720
-
+#define C_COLOR 0x87CEEB
+#define F_COLOR   0x434230
+#define M_CELL 8
+#define M_MAP_S 200
+#define M_M_X 10
+#define M_M_Y 10
+#define M_CELL 8
 #ifdef __APPLE__
 #define KEY_ESC 53
 #define KEY_A 0
@@ -112,6 +118,31 @@ typedef struct s_src {
   int pixel_bits_number;
 } t_src;
 
+typedef struct s_minimap
+{
+    int minimap_radius; 
+    int player_map_x;
+    int player_map_y;
+    float offset_x;
+    float offset_y;
+    int       minimap_cell_x; // Variable for minimap cell x-coordinate
+    int       minimap_cell_y; // Variable for minimap cell y-coordinate
+
+}	t_minimap;
+
+typedef struct s_line_params{
+
+  int dx;
+  int dy;
+  int end_x;
+  int end_y;
+  int steps;
+  float xInc; 
+  float yInc; 
+  float x;
+  float y;
+} t_line_params;
+
 typedef struct s_container {
   int fd_map;
   int number_of_newlines;
@@ -136,7 +167,11 @@ typedef struct s_container {
   int fix_mouse_x;
   int open_door;
   int sprite_switcher;
+  t_minimap *minimap;
+  t_line_params *line_par;
 } t_container;
+
+
 
 int ft_strlen(const char *s);
 int ft_isdigit(int c);
@@ -195,6 +230,8 @@ int mod(int a, int b);
 void ray_info(t_container *content);
 void	ft_free_2d(char **str);
 void ft_free_all(t_container *content);
-char	*ft_strjoin_ofree(char *s1, char *s2);
+void put_player_map(t_container *content);
+void drawlinedda_minimap(int x, int y, int color, t_container *content);
+void initiale_minimap(t_container *content);
 
 #endif
