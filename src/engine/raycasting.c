@@ -12,7 +12,6 @@ t_config *get_texture_by_id(t_config *confs, const char *id)
 }
 
 
-
 void set_ray_wall_dir(t_ray *ray, t_container *content)
 {
     int map_x = (int)(ray->wall_hit_x / PIXEL_SIZE);
@@ -94,93 +93,47 @@ void set_ray_wall_dir(t_ray *ray, t_container *content)
     }
 }
 
+void strip_start_end_points(t_ray *ray, float dis_project)
+{
+    if (ray->distance < 0.1f)
+        ray->distance = 0.1f;
+    ray->wall_hight = (PIXEL_SIZE / ray->distance) * dis_project;
+    ray->wall_strip_high = (int)ray->wall_hight;
+    ray->wall_top_pixel = (MAP_H / 2) - (ray->wall_strip_high / 2);
+    if (ray->wall_top_pixel < 0)
+        ray->wall_top_pixel = 0;
+    ray->botm_pixel = (MAP_H / 2) + (ray->wall_strip_high / 2);
+    if (ray->botm_pixel > MAP_H)
+        ray->botm_pixel = MAP_H;
+}
+
 void convert_2d_to_3d(t_container *content)
 {
     int i;
     t_ray ray;
-    float distance_projection;
-    float wall_hight;
-    int color;
-    int w;
-    int h;
-    int ind;
-    int size_l;
-    int n_bits;
-    void *door_img = mlx_xpm_file_to_image(content->src.mlx, "./textures/9_.xpm", &w, &h);
-    char *door = mlx_get_data_addr(door_img, &size_l, &n_bits, &ind);
+    float dis_project;
+    t_door door;
 
+    ft_memset(&door, 0, sizeof(t_door));
+    door.door_img = mlx_xpm_file_to_image(content->src.mlx, \
+    "./textures/9_.xpm", &door.w, &door.h);
+    door.door_data = mlx_get_data_addr(door.door_img, \
+    &door.size_l, &door.n_bits, &door.ind);
     i = -1;
-    distance_projection = (MAP_W / 2.0f) / tan(FOV / 2.0f);
+    dis_project = (MAP_W / 2.0f) / tan(FOV / 2.0f);
     while (++i < content->num_rays)
     {
-        int c;
-        int f;
-
         ray = content->rays[i];
-        if (ray.distance < 0.1f)
-            ray.distance = 0.1f;
-        wall_hight = (PIXEL_SIZE / ray.distance) * distance_projection;
-        int wall_strip_high = (int)wall_hight;
-        int wall_top_pixel = (MAP_H / 2) - (wall_strip_high / 2);
-        if (wall_top_pixel < 0)
-            wall_top_pixel = 0;
-        int botm_pixel = (MAP_H / 2) + (wall_strip_high / 2);
-        if (botm_pixel > MAP_H)
-            botm_pixel = MAP_H;
-
-        c = -1;
-        while (++c < wall_top_pixel)
-            print_pxt(i * WALL_COL_WIDH, c, content->ceiling_color, content);
-        f = botm_pixel;
-        while (f < MAP_H)
-        {
-            print_pxt(i * WALL_COL_WIDH, f, content->floor_color, content);
-            f++;
-        }
-
+        strip_start_end_points(&ray, dis_project);
+        draw_ceilling_floor(content, ray, i);
         set_ray_wall_dir(&ray, content);
-        t_config *texture = get_texture_by_id(content->confs, ray.wall_dir);
-        if (!texture || !texture->buffer_pos)
+        door.texture = get_texture_by_id(content->confs, ray.wall_dir);
+        if (!door.texture || !door.texture->buffer_pos)
         {
-            for (int y = wall_top_pixel; y < botm_pixel; y++) {
-                if (ray.wall_dir && ft_strcmp(ray.wall_dir, "DO") == 0)
-                {
-                    int t_x;
-                    int t_y;
-                    float r_r = (float)(y - (MAP_H / 2)) / wall_hight;
-                    float relative_y = (0.5f + r_r) * h;
-                    t_y = (int) relative_y;
-                    if (t_y < 0)
-                        t_y = 0;
-                    if (t_y >= h)
-                        t_y = h - 1;
-                    if (ray.was_vertical)
-                        t_x = mod((ray.wall_hit_y * w / PIXEL_SIZE), w);
-                    else
-                        t_x = mod((ray.wall_hit_x * w / PIXEL_SIZE), w);
-                    unsigned int color = ((unsigned int*)door)[t_y * w + t_x];
-                    print_pxt(i * WALL_COL_WIDH, y, color, content);
-                }
-            }
+            draw_door(content, door, ray, i);
             continue;
         }
-        int tex_x;
-        if (ray.was_vertical)
-            tex_x = mod((ray.wall_hit_y * texture->txr_w / PIXEL_SIZE), texture->txr_w);
-        else
-            tex_x = mod((ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), texture->txr_w);
-
-        for (int y = wall_top_pixel; y < botm_pixel; y++) {
-            float relative_y = (float)(y - (MAP_H / 2)) / wall_hight;
-            float texture_y = (0.5f + relative_y) * texture->txr_h;
-            int tex_y = (int)texture_y;
-            if (tex_y < 0)
-                tex_y = 0;
-            if (tex_y >= texture->txr_h)
-                tex_y = texture->txr_h - 1;
-            unsigned int color = ((unsigned int*)texture->buffer_pos)[tex_y * texture->txr_w + tex_x];
-            print_pxt(i * WALL_COL_WIDH, y, color, content);
-        }
+        draw_texture_on_screen(content, ray, door, i);
     }
 }
 
