@@ -11,7 +11,6 @@ t_config *get_texture_by_id(t_config *confs, const char *id)
     return NULL;
 }
 
-
 void set_ray_wall_dir(t_ray *ray, t_container *content)
 {
     int map_x = (int)(ray->wall_hit_x / PIXEL_SIZE);
@@ -129,11 +128,9 @@ void convert_2d_to_3d(t_container *content)
         set_ray_wall_dir(&ray, content);
         door.texture = get_texture_by_id(content->confs, ray.wall_dir);
         if (!door.texture || !door.texture->buffer_pos)
-        {
             draw_door(content, door, ray, i);
-            continue;
-        }
-        draw_texture_on_screen(content, ray, door, i);
+        else
+            draw_texture_on_screen(content, ray, door, i);
     }
 }
 
@@ -147,4 +144,3 @@ int draw_game(t_container *content) {
     mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
     return (0);
 }
-

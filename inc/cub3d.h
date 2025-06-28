@@ -96,6 +96,7 @@ typedef struct s_ray {
   int botm_pixel;
   int c;
   int f;
+  unsigned int color;
 } t_ray;
 
 typedef struct s_plr {
