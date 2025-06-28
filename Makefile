@@ -25,7 +25,8 @@ SRC = src/main.c \
 			src/engine/key_event_handle.c \
 			src/engine/minimap.c \
 			src/engine/plr_moving.c \
-			src/engine/mouse_dete.c \
+			src/engine/sprite_handler.c \
+			src/engine/mouse_dete.c 
 
 OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)

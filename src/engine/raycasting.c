@@ -170,7 +170,6 @@ void convert_2d_to_3d(t_container *content)
         else
             tex_x = mod((ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), texture->txr_w);
 
-        float texture_scale = (float)texture->txr_h / wall_hight;
         for (int y = wall_top_pixel; y < botm_pixel; y++) {
             float relative_y = (float)(y - (MAP_H / 2)) / wall_hight;
             float texture_y = (0.5f + relative_y) * texture->txr_h;
@@ -183,65 +182,6 @@ void convert_2d_to_3d(t_container *content)
             print_pxt(i * WALL_COL_WIDH, y, color, content);
         }
     }
-}
-
-void draw_sprite_hands(t_container *content)
-{
-    void *img;
-    char *buffer;
-    int width, height;
-    int size_l, nbits, endian;
-
-    if (content->sprite_switcher < 10)
-        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h6.xpm", &width, &height);
-    else if (content->sprite_switcher < 15)
-        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h5.xpm", &width, &height);
-    else if (content->sprite_switcher < 25)
-        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h4.xpm", &width, &height);
-    else if (content->sprite_switcher < 30)
-        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h3+.xpm", &width, &height);
-    else if (content->sprite_switcher < 35)
-        img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h1.xpm", &width, &height);
-    else
-    {
-        if (content->plr.up)
-            img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h4.xpm", &width, &height);
-        else
-            img = mlx_xpm_file_to_image(content->src.mlx, "./textures/h2.xpm", &width, &height);
-    }
-    if (!img)
-        ft_error("failed loading image\n", content);
-
-    buffer = mlx_get_data_addr(img, &nbits, &size_l, &endian);
-
-    int screen_w = MAP_W;
-    int screen_h = MAP_H;
-    int draw_x = (screen_w - width) / 1.35;
-    int draw_y = screen_h - height + 8;
-
-    if (nbits != 32)
-    {
-        mlx_destroy_image(content->src.mlx, img);
-        ft_error("no pixel coordinates\n", content);
-    }
-
-    for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            unsigned int color = ((unsigned int*)buffer)[y * (size_l / 4) + x];
-            unsigned int rgb = color & 0x00FFFFFF;
-            if (rgb != 0x000000)
-            {
-                int px = draw_x + x;
-                int py = draw_y + y;
-                if (px >= 0 && px < screen_w && py >= 0 && py < screen_h)
-                    print_pxt(px, py, color, content);
-            }
-        }
-    }
-    mlx_destroy_image(content->src.mlx, img);
-    content->sprite_switcher = (content->sprite_switcher + 1) % 450;
 }
 
 int draw_game(t_container *content) {

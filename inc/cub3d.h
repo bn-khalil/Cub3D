@@ -143,6 +143,22 @@ typedef struct s_line_params{
   float y;
 } t_line_params;
 
+typedef struct s_sprite {
+  void *img;
+  char *buffer;
+  int width;
+  int height;
+  int size_l;
+  int nbits;
+  int endian;
+  int draw_x;
+  int draw_y;
+  int px;
+  int py;
+  unsigned int color;
+  unsigned int rgb;
+} t_sprite;
+
 typedef struct s_container {
   int fd_map;
   int number_of_newlines;
@@ -239,5 +255,8 @@ void	player_pos_check(t_container *content, int i, int j);
 void	map_sides_check(t_container *content, int i, int j);
 void	map_items_check(t_container *content, int i, int j);
 int	is_map_covered_with_walls(int x, int y, t_container *content);
+void ft_texture_loading(t_container *content, t_sprite *spr);
+void put_texture_to_screen(t_container *content, t_sprite *spr);
+void draw_sprite_hands(t_container *content);
 
 #endif
