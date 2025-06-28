@@ -17,7 +17,7 @@
 #define PI 3.14159265
 #define FOV (60.0 * (PI / 180.0))
 #define WALL_COL_WIDH 1
-#define  MAP_RATIO 0.2
+#define  MAP_RATIO 0.8
 #define MAP_W 1080
 #define MAP_H 720
 #define C_COLOR 0x87CEEB
@@ -171,8 +171,6 @@ typedef struct s_container {
   t_line_params *line_par;
 } t_container;
 
-
-
 int ft_strlen(const char *s);
 int ft_isdigit(int c);
 char *ft_strjoin(char *s1, char *s2);
@@ -233,5 +231,6 @@ void ft_free_all(t_container *content);
 void put_player_map(t_container *content);
 void drawlinedda_minimap(int x, int y, int color, t_container *content);
 void initiale_minimap(t_container *content);
+void ft_free_all(t_container *content);
 
 #endif

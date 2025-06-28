@@ -44,17 +44,16 @@ char	*get_next_line(t_container *content)
 
 void get_width_and_height(t_container *content)
 {
-    int i;
-    int widh;
+    int i = 0;
+    int max_width = 0;
 
-    i = 0;
-	widh = 0;
     while (content->map[i])
-	{
-		if (ft_strlen(content->map[i]) > widh)
-			widh = ft_strlen(content->map[i]);
+    {
+        int len = ft_strlen(content->map[i]);
+        if (len > max_width)
+            max_width = len;
         i++;
-	}
+    }
+    content->map_w = max_width;
     content->map_h = i;
-	content->map_w = widh;
 }

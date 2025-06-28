@@ -13,95 +13,74 @@ t_config *get_texture_by_id(t_config *confs, const char *id)
 
 
 
-
 void set_ray_wall_dir(t_ray *ray, t_container *content)
 {
     int map_x = (int)(ray->wall_hit_x / PIXEL_SIZE);
     int map_y = (int)(ray->wall_hit_y / PIXEL_SIZE);
 
-    // Adjust map_x/map_y to get the correct tile index (the one the ray *entered*)
-    // This part remains unchanged as it's crucial for accurate tile identification.
     if (!ray->was_vertical && ray->ray_angle > M_PI && ray->ray_angle < 2 * M_PI)
         map_y -= 1;
     else if (ray->was_vertical && ray->ray_angle > M_PI_2 && ray->ray_angle < 3 * M_PI_2)
         map_x -= 1;
 
-    // --- Door Opening Logic (Simplified) ---
-    // Calculate player's position in map units (used for both open/close logic)
+    char tile;
+
+
+    if (map_y >= 0 && map_y < content->map_h && map_x >= 0 && map_x < content->map_w)
+        tile = content->map[map_y][map_x];
+
+    if (content->open_door && tile == 'D')
+    {
+        float plr_map_x = content->plr.x / PIXEL_SIZE;
+        float plr_map_y = content->plr.y / PIXEL_SIZE;
+        float dx = (float)map_x + 0.5f - plr_map_x;
+        float dy = (float)map_y + 0.5f - plr_map_y;
+        float distance = sqrtf(dx*dx + dy*dy);
+        float open_radius = 1.8f;
+
+        if (distance < open_radius)
+        {
+            float plr_angle = content->plr.r_angle;
+            float vx = cosf(plr_angle);
+            float vy = sinf(plr_angle);
+            float dot = (dx * vx + dy * vy) / (sqrtf(dx*dx + dy*dy) * sqrtf(vx*vx + vy*vy));
+            if (dot > 0.5f)
+                content->map[map_y][map_x] = 'P';
+        }
+    }
+
+    tile = content->map[map_y][map_x];
+    // Check 3x3 grid around hit tile for open doors
     float plr_map_x = content->plr.x / PIXEL_SIZE;
     float plr_map_y = content->plr.y / PIXEL_SIZE;
-
-    // Boundary check for map access before accessing content->map[map_y][map_x]
-    // This is important because map_x or map_y might be adjusted to be out of bounds.
-    if (map_x >= 0 && map_x < content->map_w && map_y >= 0 && map_y < content->map_h)
+    float close_radius = 2.2f;
+    for (int dy = -1; dy <= 1; dy++)
     {
-        char tile_at_hit = content->map[map_y][map_x]; // Get tile at the ray's hit point
-
-        // If the door opening action is triggered (e.g., by a key press setting content->open_door = 1)
-        // AND the tile hit by the ray is currently a closed door ('D')
-        if (content->open_door && tile_at_hit == 'D')
+        for (int dx = -1; dx <= 1; dx++)
         {
-            // Calculate distance from player to the center of the hit door tile
-            float dx = (float)map_x + 0.5f - plr_map_x;
-            float dy = (float)map_y + 0.5f - plr_map_y;
-            float distance = sqrtf(dx * dx + dy * dy);
-            float open_radius = 1.8f; // Radius within which door should open
-
-            // If player is within the opening radius, open the door
-            if (distance < open_radius)
+            int check_x = map_x + dx;
+            int check_y = map_y + dy;
+            if (check_x >= 0 && check_x < content->map_w && check_y >= 0 && check_y < content->map_h &&
+                content->map[check_y][check_x] == 'P')
             {
-                content->map[map_y][map_x] = 'P'; // Change 'D' to 'P' (door to passageway)
+                float dist_x = (float)check_x + 0.5f - plr_map_x;
+                float dist_y = (float)check_y + 0.5f - plr_map_y;
+                float distance = sqrtf(dist_x * dist_x + dist_y * dist_y);
+                if (distance > close_radius)
+                    content->map[check_y][check_x] = 'D';
             }
         }
     }
 
-    // --- Door Closing Logic (Based on Proximity, for any 'P' tile in 3x3 grid) ---
-    // This loop checks a 3x3 grid around the tile the ray hit.
-    // It closes any open doors ('P') if the player is far enough away from them.
-    float close_radius = 2.2f; // Radius beyond which open doors should close
-    for (int dy_offset = -1; dy_offset <= 1; dy_offset++) // Use unique loop var names
-    {
-        for (int dx_offset = -1; dx_offset <= 1; dx_offset++) // Use unique loop var names
-        {
-            int check_x = map_x + dx_offset;
-            int check_y = map_y + dy_offset;
-
-            // Boundary check for the current tile in the 3x3 grid
-            if (check_x >= 0 && check_x < content->map_w && check_y >= 0 && check_y < content->map_h)
-            {
-                // If the tile is an open door ('P')
-                if (content->map[check_y][check_x] == 'P')
-                {
-                    // Calculate distance from player to the center of this (open) door tile
-                    float dist_x_to_door = (float)check_x + 0.5f - plr_map_x;
-                    float dist_y_to_door = (float)check_y + 0.5f - plr_map_y;
-                    float distance_to_door = sqrtf(dist_x_to_door * dist_x_to_door + dist_y_to_door * dist_y_to_door);
-
-                    // If player is outside the closing radius, close the door
-                    if (distance_to_door > close_radius)
-                    {
-                        content->map[check_y][check_x] = 'D'; // Change 'P' back to 'D' (passageway to door)
-                    }
-                }
-            }
-        }
-    }
-
-    // --- Assign Wall Direction/Texture (This part's logic remains the same) ---
-    // Re-read the tile *after* potential map changes by the door logic.
-    // Ensure map_x and map_y are within bounds after adjustment at the start of function
-    // before accessing content->map.
-    char final_tile;
-    if (map_x >= 0 && map_x < content->map_w && map_y >= 0 && map_y < content->map_h)
-        final_tile = content->map[map_y][map_x];
-    else // If the adjusted map_x/y is out of bounds, treat as a regular wall for texture.
-        final_tile = '1';
-
-    if (final_tile == 'D' || final_tile == 'P') {
-        ray->wall_dir = "DO"; // Assign door texture for both closed and open states
+    tile = content->map[map_y][map_x];
+    if (tile == 'D') {
+        ray->wall_dir = "DO";
         return;
     }
-    // Regular wall texture assignment based on ray hit side
+    if (tile == 'P') {
+        ray->wall_dir = "DO";
+        return;
+    }
     if (ray->was_vertical) {
         if (ray->ray_angle > M_PI_2 && ray->ray_angle < 3 * M_PI_2)
             ray->wall_dir = "WE";
@@ -114,7 +93,6 @@ void set_ray_wall_dir(t_ray *ray, t_container *content)
             ray->wall_dir = "SO";
     }
 }
-
 
 void convert_2d_to_3d(t_container *content)
 {

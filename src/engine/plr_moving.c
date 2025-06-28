@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 10:56:34 by sait-nac          #+#    #+#             */
-/*   Updated: 2025/06/21 22:42:16 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/06/22 15:47:45 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,21 @@ float fix_angle(float angle)
     return angle;
 }
 
-int is_wall(float x, float y, t_container *content) {
-    int i = (int)(x / PIXEL_SIZE);
-    int j = (int)(y / PIXEL_SIZE);
+int is_wall(float x, float y, t_container *content)
+{
+	int i = (int)(x / PIXEL_SIZE);
+	int j = (int)(y / PIXEL_SIZE);
 
-    if (i < 0 || j < 0 || i >= content->map_w || j >= content->map_h)
-        return 1;
+	if (!content || !content->map)
+		return 1;
 
-    if (!content->map || !content->map[j])
-        return 1;
+	if (i < 0 || j < 0 || j >= content->map_h || i >= content->map_w)
+		return 1;
 
-    if (content->map[j][i] && (content->map[j][i] == '1' || content->map[j][i] == 'D'))
-        return 1;
+	if (content->map[j][i] == '1' || content->map[j][i] == 'D')
+		return 1;
 
-    return 0;
+	return 0;
 }
 
 int ft_is_collision(float x, float y, t_container *content) {
