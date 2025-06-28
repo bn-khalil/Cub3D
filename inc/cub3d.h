@@ -232,5 +232,12 @@ void put_player_map(t_container *content);
 void drawlinedda_minimap(int x, int y, int color, t_container *content);
 void initiale_minimap(t_container *content);
 void ft_free_all(t_container *content);
+int	 is_map_chars(char c);
+char *ft_complete(t_container *content, char *str);
+void	door_check(t_container *content, int i, int j);
+void	player_pos_check(t_container *content, int i, int j);
+void	map_sides_check(t_container *content, int i, int j);
+void	map_items_check(t_container *content, int i, int j);
+int	is_map_covered_with_walls(int x, int y, t_container *content);
 
 #endif
