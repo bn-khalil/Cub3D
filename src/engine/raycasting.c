@@ -194,3 +194,4 @@ int draw_game(t_container *content) {
     mlx_put_image_to_window(content->src.mlx, content->src.win, content->src.img, 0, 0);
     return (0);
 }
+
