@@ -1,172 +1,89 @@
 #include "../../inc/cub3d.h"
 
-int is_map_chars(char c) {
-  if (c == '0' || c == 'N' || c == 'E' || c == 'W' || c == 'S' || c == 'D')
-    return (1);
-  return (0);
-}
-
-int is_map_covered_with_walls(int x, int y, t_container *content)
+int	is_map_covered_with_walls(int x, int y, t_container *content)
 {
-    if (x < 0 || x >= ft_strlen(content->map[y]) \
-    || y < 0 || y >= content->map_h)
-        return (0);
-    if (x - 1 < 0 || y - 1 < 0)
-        return (0);
-    if (content->map[y - 1][x] == ' ' \
-    || content->map[y - 1][x] == '\t' \
-    || content->map[y + 1][x] == ' ' \
-    || content->map[y + 1][x] == '\t')
-        return (1);
-    if (content->map[y][x - 1] == ' ' \
-    || content->map[y][x - 1] == '\t' \
-    || content->map[y][x + 1] == ' ' \
-    || content->map[y][x + 1] == '\t')
-        return (1);
-    // if (x >= ft_strlen(content->map[y - 1]) \
-    // || x >= ft_strlen(content->map[y + 1]))
-    //     return (1);
-    return (0);
+	if (x < 0 || x >= ft_strlen(content->map[y])
+		|| y < 0 || y >= content->map_h)
+		return (0);
+	if (x - 1 < 0 || y - 1 < 0)
+		return (0);
+	if (content->map[y - 1][x] == ' '
+		|| content->map[y - 1][x] == '\t'
+		|| content->map[y + 1][x] == ' '
+		|| content->map[y + 1][x] == '\t')
+		return (1);
+	if (content->map[y][x - 1] == ' '
+		|| content->map[y][x - 1] == '\t'
+		|| content->map[y][x + 1] == ' '
+		|| content->map[y][x + 1] == '\t')
+		return (1);
+	if (x >= ft_strlen(content->map[y - 1])
+		|| x >= ft_strlen(content->map[y + 1]))
+		return (1);
+	return (0);
 }
 
-void door_check(t_container *content, int i, int j)
+void	check_map_components(t_container *content)
 {
-    if (i < 0 || j < 0 || i >= content->map_w || j >= content->map_h )
-        return ;
-    if (content->map[i][j - 1] == '1' && content->map[i][j + 1] == '1')
-        ;
-    else if (content->map[i - 1][j] == '1' && content->map[i + 1][j] == '1')
-        ;
-    else
-        ft_error("the door doesn't have stands\n", content);
+	int	i;
+	int	count;
+	int	j;
 
+	i = 0;
+	count = 0;
+	while (content->map[i])
+	{
+		j = 0;
+		if (content->map[i][0] == '\0')
+			count++;
+		while (content->map[i][j])
+		{
+			player_pos_check(content, i, j);
+			map_sides_check(content, i, j);
+			map_items_check(content, i, j);
+			j++;
+		}
+		i++;
+	}
+	if (!content->player_pos)
+		ft_error("Error: map doesn't have player\n", content);
 }
 
-void check_map_components(t_container *content)
+void	complete_map_rows(t_container *content)
 {
-    int i;
-    int count;
-    int j;
+	int	i;
 
-    i = 0;
-    count = 0;
-    while (content->map[i])
-    {
-        j = 0;
-        if (content->map[i][0] == '\0')
-            count++;
-        while (content->map[i][j])
-        {
-            if (content->map[i][j] == 'N' \
-            || content->map[i][j] == 'E' \
-            || content->map[i][j] == 'W' \
-            || content->map[i][j] == 'S')
-            {
-                if (!content->player_pos)
-                {
-                    content->plr.x = j * PIXEL_SIZE + (PIXEL_SIZE / 2.0f);
-                    content->plr.y = i * PIXEL_SIZE + (PIXEL_SIZE / 2.0f);
-                    content->plr.std_direction = content->map[i][j];
-                    content->player_pos = 1;
-                }
-                else
-                    ft_error("Error: map should contain only one plyer position\n", content);
-            }
-            if (j == 0 || i == content->map_h - 1 || i == 0 || j == ft_strlen(content->map[i]) - 1)
-            {
-                if (content->map[i][j] != '1' && content->map[i][j] != ' ' && content->map[i][j] != '\t')
-                    ft_error("Error: map should be rounded with walls\n", content);
-            }
-            if (content->map[i][j] != '1' && content->map[i][j] != '0' \
-            && content->map[i][j] != 'N' && content->map[i][j] != 'W' \
-            && content->map[i][j] != 'E' && content->map[i][j] != 'S' \
-            && content->map[i][j] != 'D' && content->map[i][j] != ' ' && content->map[i][j] != '\t')
-                ft_error("Error: invalid map characters!\n", content);
-            if (is_map_chars(content->map[i][j]))
-            {
-                if (is_map_covered_with_walls(j , i, content))
-                    ft_error("Error: map should be rounded with walls\n", content);
-            }
-            if (content->map[i][j] == 'D')
-                door_check(content, i, j);
-            j++;
-        }
-        i++;
-    }
-    if (!content->player_pos)
-        ft_error("Error: map doesn't have player\n", content);
+	i = 0;
+	while (content->map[i])
+	{
+		content->map[i] = ft_complete(content, content->map[i]);
+		i++;
+	}
 }
 
-int check_newlines(t_container *content, int start, int i)
+void	parsing_map_content(t_container *content, int start)
 {
-    while (ft_strcmp(content->file_content[start + i], "\n") == 0)
-        i++;
-    if (content->file_content[start + i] != NULL)
-            ft_error("Error: invalid map there is newline\n", content);
-    return (start + i);
-}
+	int	i;
+	int	j;
 
-char *ft_complete(t_container *content, char *str)
-{
-    while (ft_strlen(str) <= content->map_w)
-        str = ft_strjoin(str, " ");
-    return (str);
-}
-
-void complete_map_rows(t_container *content)
-{
-    int i;
-
-    i = 0;
-    while (content->map[i])
-    {
-        content->map[i] = ft_complete(content, content->map[i]);
-        i++;
-    }
-}
-
-void map_printe(char **map) {
-    int i = 0;
-    int j;
-    while (map[i])
-    {
-        j = 0;
-        while (map[i][j])
-        {
-            printf("%c", map[i][j]);
-            j++;
-        }
-		printf("\n");
-        i++;
-    }
-}
-
-void parsing_map_content(t_container *content, int start)
-{
-    int i;
-    int j;
-    int stop;
-
-    i = 0;
-    while (content->file_content[start + i])
-        i++;
-    content->map = malloc(sizeof(char *) * (i + 1));
-    if (!content->map)
-        ft_error("Error: allocation failed!\n", content);
-    i = 0;
-    stop = 0;
-    while (content->file_content[start + i])
-    {
-        j = start + i;
-        while (content->file_content[j] && is_paces(content->file_content[j]))
-            j++;
-        if (content->file_content[j] == NULL)
-            break ;
-        content->map[i] = ft_strdup(content->file_content[start + i]);
-        i++;
-    }
-    content->map[i] = NULL;
-    get_width_and_height(content);
-    complete_map_rows(content);
-    check_map_components(content);
+	i = 0;
+	while (content->file_content[start + i])
+		i++;
+	content->map = malloc(sizeof(char *) * (i + 1));
+	if (!content->map)
+		ft_error("Error: allocation failed!\n", content);
+	i = -1;
+	while (content->file_content[start + (++i)])
+	{
+		j = start + i;
+		while (content->file_content[j] && is_paces(content->file_content[j]))
+			j++;
+		if (content->file_content[j] == NULL)
+			break ;
+		content->map[i] = ft_strdup(content->file_content[start + i]);
+	}
+	content->map[i] = NULL;
+	get_width_and_height(content);
+	complete_map_rows(content);
+	check_map_components(content);
 }

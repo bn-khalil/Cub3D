@@ -1,41 +1,46 @@
 #include "../../inc/cub3d.h"
 
-void map_printer(char **map) {
-    int i = 0;
-    int j;
-    while (map[i])
-    {
-        j = 0;
-        while (map[i][j])
-        {
-            printf("%c", map[i][j]);
-            j++;
-        }
+void	map_printer(char **map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			printf("%c", map[i][j]);
+			j++;
+		}
 		printf("\n");
-        i++;
-    }
+		i++;
+	}
 }
 
-int ft_is_wall(char *str)
+int	ft_is_wall(char *str)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	while (str[i] == ' ' || str[i] == '\t')
 		i++;
 	if (!str[i])
-		return 0;
+		return (0);
 	while (str[i])
 	{
-		if (str[i] != '1' && str[i] != '\t' && str[i] != ' ' && str[i] != '0')
-			return 0;
+		if (str[i] != '1' && str[i] != '\t'
+			&& str[i] != ' ' && str[i] != '0')
+			return (0);
 		i++;
 	}
-	return 1;
+	return (1);
 }
 
-int get_conf_lines(t_container *content)
+int	get_conf_lines(t_container *content)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (!ft_is_wall(content->file_content[i]))
@@ -43,15 +48,15 @@ int get_conf_lines(t_container *content)
 	return (i);
 }
 
-void saperate_map_configues(t_container *content)
+void	saperate_map_configues(t_container *content)
 {
-	int len;
+	int	i;
+	int	len;
 
 	len = get_conf_lines(content);
 	content->configues = malloc(sizeof(char *) * (len + 1));
 	if (!content->configues)
-		ft_error("allocation failed!", content);
-	int i;
+		ft_error("allocation failed!\n", content);
 	i = 0;
 	while (i < len)
 	{
@@ -63,13 +68,13 @@ void saperate_map_configues(t_container *content)
 	parsing_map_content(content, len);
 }
 
-void get_and_init_map(t_container *content)
+void	get_and_init_map(t_container *content)
 {
-    content->fd_map = open(content->filename, O_RDONLY);
-    if (content->fd_map <= 0)
-        ft_error("Error opning map file", content);
-    content->file_content = ft_split(get_next_line(content), '\n', 0);
-    if (!content->file_content || !content->file_content[0])
-        ft_error("Error in map maybe empty\n", content);
+	content->fd_map = open(content->filename, O_RDONLY);
+	if (content->fd_map <= 0)
+		ft_error("Error opning map file\n", content);
+	content->file_content = ft_split(get_next_line(content), '\n', 0);
+	if (!content->file_content || !content->file_content[0])
+		ft_error("Error in map maybe empty\n", content);
 	saperate_map_configues(content);
 }
