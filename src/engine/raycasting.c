@@ -66,7 +66,6 @@ int draw_game(t_container *content) {
     ray_info(content);
     clear_map_after_player(content);
     convert_2d_to_3d(content);
-    render_minimap(content);
     draw_sprite_hands(content);
     mlx_put_image_to_window(content->src.mlx, \
     content->src.win, content->src.img, 0, 0);

@@ -10,10 +10,7 @@ void init_player(t_container *content) {
     content->plr.rotate_right = 0;
     content->num_rays = MAP_W / WALL_COL_WIDH;
     content->rays = malloc(sizeof(t_ray) * content->num_rays);
-    content->line_par = malloc(sizeof(t_line_params));
-    content->minimap = malloc(sizeof(t_minimap));
     ft_memset(content->rays, 0, sizeof(t_ray) * content->num_rays);
-    
     if (content->plr.std_direction == 'E')
         content->plr.r_angle = 0;
     if (content->plr.std_direction == 'W')
