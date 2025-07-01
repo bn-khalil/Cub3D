@@ -5,7 +5,7 @@ void init_player(t_container *content) {
     content->plr.down = 0;
     content->plr.left = 0;
     content->plr.right = 0;
-    content->plr.speed = 4.0;
+    content->plr.speed = 3.0;
     content->plr.rotate_left = 0;
     content->plr.rotate_right = 0;
     content->num_rays = MAP_W / WALL_COL_WIDH;

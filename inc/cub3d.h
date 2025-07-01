@@ -166,18 +166,6 @@ typedef struct s_sprite {
   unsigned int rgb;
 } t_sprite;
 
-typedef struct s_door{
-    int color;
-    int w;
-    int h;
-    int ind;
-    int size_l;
-    int n_bits;
-    void *door_img;
-    char *door_data;
-    t_config *texture;
-} t_door;
-
 typedef struct s_container {
   int fd_map;
   int number_of_newlines;
@@ -278,7 +266,6 @@ void ft_texture_loading(t_container *content, t_sprite *spr);
 void put_texture_to_screen(t_container *content, t_sprite *spr);
 void draw_sprite_hands(t_container *content);
 void draw_ceilling_floor(t_container *content, t_ray ray, int i);
-void draw_texture_on_screen(t_container *content, t_ray ray, t_door door, int i);
-void draw_door(t_container *content, t_door door, t_ray ray, int i);
+void draw_texture_on_screen(t_container *content, t_ray ray, t_config *texture, int i);
 
 #endif

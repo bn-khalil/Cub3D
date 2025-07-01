@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 13:11:56 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/06/28 13:13:53 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/01 09:29:11 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ void ft_texture_loading(t_container *content, t_sprite *spr)
             spr->img = mlx_xpm_file_to_image(content->src.mlx, \
             "./textures/h2.xpm", &spr->width, &spr->height);
     }
-    if (!spr->img)
-        ft_error("failed loading image\n", content);
 }
 
 void put_texture_to_screen(t_container *content, t_sprite *spr)
@@ -76,6 +74,8 @@ void draw_sprite_hands(t_container *content)
     t_sprite spr;
 
     ft_texture_loading(content, &spr);
+    if (!spr.img)
+        ft_error("failed loading image\n", content);
     put_texture_to_screen(content, &spr);
     mlx_destroy_image(content->src.mlx, spr.img);
     ++content->sprite_switcher;
