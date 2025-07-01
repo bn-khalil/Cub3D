@@ -12,8 +12,7 @@ static void	init_h_intercepts(t_container *content, int i, float *y_intercept,
 		/ tan(content->rays[i].ray_angle);
 }
 
-// Helper function: Calculates horizontal step values
-// (Less than 25 lines, 4 variables)
+
 static void	calc_h_steps(t_container *content, int i, float *y_step,
 		float *x_step)
 {
@@ -30,8 +29,6 @@ static void	calc_h_steps(t_container *content, int i, float *y_step,
 	}
 }
 
-// Helper function: Checks for wall hit for horizontal ray
-// (Less than 25 lines, 4 variables)
 static int	check_h_wall_hit(t_container *content, int i, float next_h_x,
 		float next_h_y)
 {
@@ -55,11 +52,7 @@ static int	check_h_wall_hit(t_container *content, int i, float next_h_x,
 	return (0);
 }
 
-// Main function: Gets horizontal intersection point for a ray
-// (Less than 25 lines, 6 variables -> will require a slight tweak)
-// To keep within 5 variables,
-// to a new loop helper, or the loop itself will be its own function.
-// Let's make the loop into a separate function.
+
 static void	find_horizontal_hit_point(t_container *content, int i,
 		float next_h_x, float next_h_y, float x_step, float y_step)
 {
@@ -68,7 +61,6 @@ static void	find_horizontal_hit_point(t_container *content, int i,
 	float	map_max_w;
 	float	map_max_h;
 
-	// 5 variables max within this helper function
 	curr_x = next_h_x;
 	curr_y = next_h_y;
 	map_max_w = content->map_w * PIXEL_SIZE;
@@ -92,7 +84,6 @@ void	get_the_horizantal(t_container *content, int i)
 	float	y_step;
 	float	x_step;
 
-	// Empty line after declarations
 	init_h_intercepts(content, i, &y_intercept, &x_intercept);
 	calc_h_steps(content, i, &y_step, &x_step);
 	find_horizontal_hit_point(content, i, x_intercept, y_intercept, x_step,
