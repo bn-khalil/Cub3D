@@ -97,5 +97,5 @@ void	get_the_horizantal(t_container *content, int i)
 	calc_h_steps(content, i, &y_step, &x_step);
 	find_horizontal_hit_point(content, i, x_intercept, y_intercept, x_step,
 		y_step);
-	return ;// Return with parentheses is preferred by norminette
+	return ;
 }

@@ -13,21 +13,20 @@ t_config	*get_texture_by_id(t_config *confs, const char *id)
 
 void	set_ray_wall_dir(t_ray *ray, t_container *content)
 {
-	if (ray->was_vertical)
-	{
-		if (ray->ray_angle > PI / 2 && ray->ray_angle < 3 * PI / 2)
-			ray->wall_dir = "WE";
-		else
-			ray->wall_dir = "EA";
-	}
-	else
-	{
-		if (ray->ray_angle > 0 && ray->ray_angle < PI)
-			ray->wall_dir = "NO";
-		else
-			ray->wall_dir = "SO";
-	}
-	(void)content;
+    if (ray->was_vertical) 
+    {
+        if (ray->ray_angle > PI / 2 && ray->ray_angle < 3 * PI / 2)
+            ray->wall_dir = "WE";
+        else
+            ray->wall_dir = "EA";
+    }
+    else
+    {
+        if (ray->ray_angle > 0 && ray->ray_angle < PI)
+            ray->wall_dir = "NO";
+        else
+            ray->wall_dir = "SO";
+    }
 }
 
 void	strip_start_end_points(t_ray *ray, float dis_project)
@@ -66,14 +65,13 @@ void	convert_2d_to_3d(t_container *content)
 	}
 }
 
-int	draw_game(t_container *content)
-{
-	let_player_move(content);
-	ray_info(content);
-	clear_map_after_player(content);
-	convert_2d_to_3d(content);
-	draw_sprite_hands(content);
-	mlx_put_image_to_window(content->src.mlx,
-		content->src.win, content->src.img, 0, 0);
-	return (0);
+int draw_game(t_container *content) {
+    let_player_move(content);
+    ray_info(content);
+    clear_map_after_player(content);
+    convert_2d_to_3d(content);
+    draw_sprite_hands(content);
+    mlx_put_image_to_window(content->src.mlx, \
+    content->src.win, content->src.img, 0, 0);
+    return (0);
 }

@@ -42,18 +42,14 @@ void	get_the_ray_length(t_container *content, int i)
 				content->rays[i].horiz_hit_x, content->rays[i].horiz_hit_y);
 	}
 	else
-	{
 		content->rays[i].horiz_distance = FLT_MAX;
-	}
 	if (content->rays[i].is_hit_vertical)
 	{
 		content->rays[i].ver_distance = get_vector_dis(content,
 				content->rays[i].ver_hit_x, content->rays[i].ver_hit_y);
 	}
 	else
-	{
 		content->rays[i].ver_distance = FLT_MAX;
-	}
 	get_the_smallest(&content->rays[i], content->rays[i].ray_angle,
 		content->plr.r_angle);
 }

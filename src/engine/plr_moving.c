@@ -6,112 +6,71 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 10:56:34 by sait-nac          #+#    #+#             */
-/*   Updated: 2025/06/22 15:47:45 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/01 10:58:04 by sait-nac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
 
-float fix_angle(float angle)
+void up_down(t_container *content, float cos_an, float sin_an)
 {
-    angle = fmod(angle, 2 * PI);
-    if (angle < 0)
-        angle += 2 * PI;
-    return angle;
-}
+    float new_x = content->plr.x;
+    float new_y = content->plr.y;
 
-int is_wall(float x, float y, t_container *content)
-{
-	int i = (int)(x / PIXEL_SIZE);
-	int j = (int)(y / PIXEL_SIZE);
-
-	if (!content || !content->map)
-		return 1;
-
-	if (i < 0 || j < 0 || j >= content->map_h || i >= content->map_w)
-		return 1;
-
-	if (content->map[j][i] == '1' || content->map[j][i] == 'D')
-		return 1;
-
-	return 0;
-}
-
-int ft_is_collision(float x, float y, t_container *content) {
-    float offsets[4][2]; // Declaration by itself
-
-    offsets[0][0] = -PLR; // Initialization separate
-    offsets[0][1] = -PLR;
-    offsets[1][0] = PLR;
-    offsets[1][1] = -PLR;
-    offsets[2][0] = -PLR;
-    offsets[2][1] = PLR;
-    offsets[3][0] = PLR;
-    offsets[3][1] = PLR;
-
-    int i = 0; // This declaration is fine as is
-
-    while (i < 4) {
-        if (is_wall(x + offsets[i][0], y + offsets[i][1], content)) {
-            return 1; // Collision detected
-        }
-        i++;
+    if (content->plr.up) 
+    {
+        new_x = content->plr.x + cos_an * content->plr.speed;
+        new_y = content->plr.y + sin_an * content->plr.speed;
+        if (!ft_is_collision(new_x, new_y, content)) 
+            updated_x_y(content, new_x, new_y);
     }
-    return 0; // No collision
+    if (content->plr.down) 
+    {
+        new_x = content->plr.x - cos_an * content->plr.speed;
+        new_y = content->plr.y - sin_an * content->plr.speed;
+        if (!ft_is_collision(new_x, new_y, content)) 
+            updated_x_y(content, new_x, new_y);
+    }
+
+}
+
+void left_right(t_container *content, float cos_an, float sin_an)
+{
+    float new_x = content->plr.x;
+    float new_y = content->plr.y;
+
+    if (content->plr.left) 
+    {
+        new_x = content->plr.x + sin_an * content->plr.speed;
+        new_y = content->plr.y - cos_an * content->plr.speed;
+        if (!ft_is_collision(new_x, new_y, content)) 
+            updated_x_y(content, new_x, new_y);
+    }
+    if (content->plr.right) 
+    {
+        new_x = content->plr.x - sin_an * content->plr.speed;
+        new_y = content->plr.y + cos_an * content->plr.speed;
+        if (!ft_is_collision(new_x, new_y, content)) 
+            updated_x_y(content, new_x, new_y);
+    }
+
 }
 
 void let_player_move(t_container *content)
 {
-    content->plr.r_angle = fix_angle(content->plr.r_angle);
+    float cos_an = cos(content->plr.r_angle);
+    float sin_an = sin(content->plr.r_angle);
 
+    content->plr.r_angle = fix_angle(content->plr.r_angle);
     if (content->plr.rotate_left)
         content->plr.r_angle -= content->plr.r_speed;
     if (content->plr.rotate_right)
         content->plr.r_angle += content->plr.r_speed;
-
     content->plr.r_angle = fix_angle(content->plr.r_angle);
-
-    float cos_an = cos(content->plr.r_angle);
-    float sin_an = sin(content->plr.r_angle);
-
     if (fabs(cos_an) < 0.0001) 
         cos_an = 0;
     if (fabs(sin_an) < 0.0001) 
         sin_an = 0;
-
-    float new_x = content->plr.x;
-    float new_y = content->plr.y;
-
-    if (content->plr.up) {
-        new_x = content->plr.x + cos_an * content->plr.speed;
-        new_y = content->plr.y + sin_an * content->plr.speed;
-        if (!ft_is_collision(new_x, new_y, content)) {
-            content->plr.x = new_x;
-            content->plr.y = new_y;
-        }
-    }
-    if (content->plr.down) {
-        new_x = content->plr.x - cos_an * content->plr.speed;
-        new_y = content->plr.y - sin_an * content->plr.speed;
-        if (!ft_is_collision(new_x, new_y, content)) {
-            content->plr.x = new_x;
-            content->plr.y = new_y;
-        }
-    }
-    if (content->plr.left) {
-        new_x = content->plr.x + sin_an * content->plr.speed;
-        new_y = content->plr.y - cos_an * content->plr.speed;
-        if (!ft_is_collision(new_x, new_y, content)) {
-            content->plr.x = new_x;
-            content->plr.y = new_y;
-        }
-    }
-    if (content->plr.right) {
-        new_x = content->plr.x - sin_an * content->plr.speed;
-        new_y = content->plr.y + cos_an * content->plr.speed;
-        if (!ft_is_collision(new_x, new_y, content)) {
-            content->plr.x = new_x;
-            content->plr.y = new_y;
-        }
-    }
+    up_down(content, cos_an, sin_an);
+    left_right(content, cos_an, sin_an);
 }
