@@ -125,31 +125,6 @@ typedef struct s_src {
   int pixel_bits_number;
 } t_src;
 
-typedef struct s_minimap
-{
-    int minimap_radius; 
-    int player_map_x;
-    int player_map_y;
-    float offset_x;
-    float offset_y;
-    int       minimap_cell_x; // Variable for minimap cell x-coordinate
-    int       minimap_cell_y; // Variable for minimap cell y-coordinate
-
-}	t_minimap;
-
-typedef struct s_line_params{
-
-  int dx;
-  int dy;
-  int end_x;
-  int end_y;
-  int steps;
-  float xInc; 
-  float yInc; 
-  float x;
-  float y;
-} t_line_params;
-
 typedef struct s_sprite {
   void *img;
   char *buffer;
@@ -190,8 +165,6 @@ typedef struct s_container {
   int fix_mouse_x;
   int open_door;
   int sprite_switcher;
-  t_minimap *minimap;
-  t_line_params *line_par;
 } t_container;
 
 int ft_strlen(const char *s);
@@ -267,5 +240,9 @@ void put_texture_to_screen(t_container *content, t_sprite *spr);
 void draw_sprite_hands(t_container *content);
 void draw_ceilling_floor(t_container *content, t_ray ray, int i);
 void draw_texture_on_screen(t_container *content, t_ray ray, t_config *texture, int i);
+float fix_angle(float angle);
+int is_wall(float x, float y, t_container *content);
+int ft_is_collision(float x, float y, t_container *content);
+void updated_x_y(t_container *content, float new_x, float new_y);
 
 #endif

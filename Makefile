@@ -8,6 +8,7 @@ SRC = src/main.c \
 			src/utils/ray_utils.c\
 			src/utils/horizantal_calcule.c \
 			src/utils/vertical_calcul.c \
+			src/utils/plr_moving_utils.c \
 			src/parsing/map_getting.c \
 			src/parsing/map_parsing.c \
 			src/parsing/conf_parsing.c \
@@ -27,7 +28,6 @@ SRC = src/main.c \
 
 OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)
-
 
 CC = cc
 INCLUDES = -Iinc
