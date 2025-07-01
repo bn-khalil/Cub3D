@@ -34,7 +34,7 @@ DEP = $(OBJ:.o=.d)
 
 CC = cc
 INCLUDES = -Iinc
-CFLAGS = -g -Wno-incompatible-pointer-types -fsanitize=address
+CFLAGS = -g -Wno-incompatible-pointer-types #-fsanitize=address
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)

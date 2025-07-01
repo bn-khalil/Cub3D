@@ -13,12 +13,12 @@ t_config *get_texture_by_id(t_config *confs, const char *id)
 void set_ray_wall_dir(t_ray *ray, t_container *content)
 {
     if (ray->was_vertical) {
-        if (ray->ray_angle > M_PI_2 && ray->ray_angle < 3 * M_PI_2)
+        if (ray->ray_angle > PI / 2 && ray->ray_angle < 3 * PI / 2)
             ray->wall_dir = "WE";
         else
             ray->wall_dir = "EA";
     } else {
-        if (ray->ray_angle > 0 && ray->ray_angle < M_PI)
+        if (ray->ray_angle > 0 && ray->ray_angle < PI)
             ray->wall_dir = "NO";
         else
             ray->wall_dir = "SO";
