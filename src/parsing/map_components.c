@@ -54,9 +54,6 @@ void	map_items_check(t_container *content, int i, int j)
 	if (content->map[i][j] != '1' && content->map[i][j] != '0'
 		&& content->map[i][j] != 'N' && content->map[i][j] != 'W'
 		&& content->map[i][j] != 'E' && content->map[i][j] != 'S'
-		&& content->map[i][j] != 'D' && content->map[i][j] != ' '
-		&& content->map[i][j] != '\t')
+		&& content->map[i][j] != ' ' && content->map[i][j] != '\t')
 		ft_error("Error: invalid map characters!\n", content);
-	if (content->map[i][j] == 'D')
-		door_check(content, i, j);
 }

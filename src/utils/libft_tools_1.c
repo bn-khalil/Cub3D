@@ -1,51 +1,57 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_tools_1.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/01 11:24:09 by kben-tou          #+#    #+#             */
+/*   Updated: 2025/07/01 11:44:05 by kben-tou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/cub3d.h"
+
+static void	should_skip(const char *s, char c, int *count, int *i)
+{
+	size_t	is_in;
+
+	is_in = 0;
+	while (s[(*i)])
+	{
+		if (s[(*i)] != c && is_in == 0)
+		{
+			(*count)++;
+			is_in = 1;
+		}
+		else if (s[(*i)] == c)
+			is_in = 0;
+		(*i)++;
+	}
+}
 
 static size_t	words_count(const char *s, char c, int skip_separator)
 {
-	size_t	i = 0;
-	size_t	count = 0;
+	size_t	i;
+	size_t	count;
 
+	i = 0;
+	count = 0;
 	if (skip_separator)
-	{
-		size_t	is_in = 0;
-		while (s[i])
-		{
-			if (s[i] != c && is_in == 0)
-			{
-				count++;
-				is_in = 1;
-			}
-			else if (s[i] == c)
-				is_in = 0;
-			i++;
-		}
-	}
+		should_skip(s, c, &count, &i);
 	else
 	{
 		if (s[0] == '\0')
-			return 0;
+			return (0);
 		while (s[i])
 		{
 			if (s[i] == c)
 				count++;
 			i++;
 		}
-		return count + 1;
+		return (count + 1);
 	}
-	return count;
-}
-
-static void	mem_free(char **p)
-{
-	size_t	i;
-
-	i = 0;
-	while (p[i])
-	{
-		free(p[i]);
-		i++;
-	}
-	free(p);
+	return (count);
 }
 
 static char	*fill(char *p, const char *s, size_t i, size_t len_chrs)
@@ -62,7 +68,8 @@ static char	*fill(char *p, const char *s, size_t i, size_t len_chrs)
 	return (p);
 }
 
-static char	*store_next_word(const char *s, size_t *i, char c, int skip_separator)
+static char	*store_next_word(const char *s, size_t *i, char c, \
+int skip_separator)
 {
 	char	*p;
 	size_t	char_count;
@@ -93,20 +100,19 @@ char	**ft_split(char *s, char c, int skip_separator)
 	if (!s)
 		return (NULL);
 	word_count = words_count(s, c, skip_separator);
-	p = malloc((word_count + 1) * sizeof(char *));
+	p = (char **)malloc((word_count + 1) * sizeof(char *));
 	if (!p)
 		return (NULL);
 	i = 0;
-	j = 0;
-	while (j < word_count)
+	j = -1;
+	while (++j < word_count)
 	{
 		p[j] = store_next_word(s, &i, c, skip_separator);
-		if (!(p[j]))
+		if (!p[j])
 		{
-			mem_free(p);
+			ft_free_2d(p);
 			return (NULL);
 		}
-		j++;
 	}
 	p[j] = NULL;
 	free(s);

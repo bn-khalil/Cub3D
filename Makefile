@@ -5,6 +5,8 @@ SRC = src/main.c \
 			src/utils/memory_managemnt.c \
 			src/utils/libft_tools_0.c \
 			src/utils/libft_tools_1.c \
+			src/utils/libft_tools_2.c \
+			src/utils/libft_tools_3.c \
 			src/utils/ray_utils.c\
 			src/utils/horizantal_calcule.c \
 			src/utils/vertical_calcul.c \
@@ -31,7 +33,7 @@ DEP = $(OBJ:.o=.d)
 
 CC = cc
 INCLUDES = -Iinc
-CFLAGS = -g -Wno-incompatible-pointer-types #-fsanitize=address
+CFLAGS = -g -Wno-incompatible-pointer-types -fsanitize=address
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)

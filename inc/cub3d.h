@@ -182,7 +182,7 @@ char *ft_substr(char const *s, unsigned int start, size_t len);
 void configure_parsing(t_container *content);
 char *ft_strdup(const char *s1);
 void ft_configue(t_config **lst, t_config *new);
-int ft_atoi(const char *str);
+long ft_atoi(const char *str);
 t_config *ft_new_config(t_container *content, int fd_file, char *dir,
                         char *path);
 void configue_direction_parsing(t_container *content, char *direction,
