@@ -173,6 +173,15 @@ typedef struct s_container
 	int				sprite_switcher;
 }					t_container;
 
+typedef struct s_vertical_params
+{
+  float	x_v_intercept;
+	float	y_v_intercept;
+	float	x_v_step;
+	float	y_v_step;
+  
+}   t_vertical_params;
+
 int					ft_strlen(const char *s);
 int					ft_isdigit(int c);
 char				*ft_strjoin(char *s1, char *s2);
