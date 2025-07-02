@@ -182,6 +182,15 @@ typedef struct s_vertical_params
   
 }   t_vertical_params;
 
+typedef struct s_horizontal_param
+{
+  float	x_h_intercept;
+	float	y_h_intercept;
+	float	x_h_step;
+	float	y_h_step;
+  
+}   t_horizontal_param;
+
 int					ft_strlen(const char *s);
 int					ft_isdigit(int c);
 char				*ft_strjoin(char *s1, char *s2);
