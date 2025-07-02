@@ -178,7 +178,6 @@ void configue_rgb_parsing(t_container *content, char *color, int flag);
 int get_number_newlines(char *str);
 char *get_next_line(t_container *content);
 void get_width_and_height(t_container *content);
-void map_printer(char **map);
 int is_paces(char *str);
 void start_the_play(t_container *content);
 void draw_clean(int x, int y, int color, t_container *content);
