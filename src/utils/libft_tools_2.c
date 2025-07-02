@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 11:48:06 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/01 16:30:43 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/02 11:47:29 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	*ft_strdup(const char *s1)
 	size_t	i;
 	char	*p;
 
+	if (!s1)
+		return (NULL);
 	p = (char *)malloc(ft_strlen(s1) + 1);
 	if (!p)
 		return (NULL);

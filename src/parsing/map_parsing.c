@@ -83,6 +83,8 @@ void	parsing_map_content(t_container *content, int start)
 		content->map[i] = ft_strdup(content->file_content[start + i]);
 	}
 	content->map[i] = NULL;
+	if (!content->map || !content->map[0])
+		ft_error("Error: the map isn't exist!\n", content);
 	get_width_and_height(content);
 	complete_map_rows(content);
 	check_map_components(content);

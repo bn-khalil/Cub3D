@@ -21,7 +21,7 @@ void f()
 int	main(int ac, char **av)
 {
 	t_container	content;
-	// atexit(f);
+	atexit(f);
 	if (ac != 2)
 		return (write(2, "Invalid number of arrguments!\n", 31), 1);
 	is_file_ext_valid(av[1]);

@@ -1,30 +1,13 @@
 #include "../../inc/cub3d.h"
 
-void	map_printer(char **map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (map[i])
-	{
-		j = 0;
-		while (map[i][j])
-		{
-			printf("%c", map[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-}
-
 int	ft_is_wall(char *str)
 {
 	int	i;
 
 	i = 0;
-	while (str[i] == ' ' || str[i] == '\t')
+	if (!str)
+		return (0);
+	while (str[i] && str[i] == ' ' || str[i] == '\t')
 		i++;
 	if (!str[i])
 		return (0);
@@ -43,7 +26,7 @@ int	get_conf_lines(t_container *content)
 	int	i;
 
 	i = 0;
-	while (!ft_is_wall(content->file_content[i]))
+	while (content->file_content[i] && !ft_is_wall(content->file_content[i]))
 		i++;
 	return (i);
 }

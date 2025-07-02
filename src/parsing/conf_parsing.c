@@ -87,9 +87,9 @@ void	configure_parsing(t_container *content)
 		else if (is_paces(content->configues[i]))
 			;
 		else
-			ft_error("Error: missing or invalid identifier\n", content);
+			ft_error("Error: missing or invalid identifier!\n", content);
 		i++;
 	}
-	if (texture_count < 4 || colors_count < 2)
-		ft_error("Error: missing textures!\n", content);
+	if (texture_count != 4 || colors_count != 2)
+		ft_error("Error: missing or duplicated configes!\n", content);
 }
