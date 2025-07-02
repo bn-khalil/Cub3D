@@ -26,6 +26,7 @@
 #define M_MAP_S 200
 #define M_M_X 10
 #define M_M_Y 10
+#define M_CELL 8
 #define KEY_ESC 53
 #define KEY_A 0
 #define KEY_S 1
@@ -152,6 +153,24 @@ typedef struct s_container {
   int sprite_switcher;
 } t_container;
 
+typedef struct s_vertical_params
+{
+  float	x_v_intercept;
+	float	y_v_intercept;
+	float	x_v_step;
+	float	y_v_step;
+  
+}   t_vertical_params;
+
+typedef struct s_horizontal_param
+{
+  float	x_h_intercept;
+	float	y_h_intercept;
+	float	x_h_step;
+	float	y_h_step;
+  
+}   t_horizontal_param;
+
 int ft_strlen(const char *s);
 int ft_isdigit(int c);
 char *ft_strjoin(char *s1, char *s2);
@@ -178,6 +197,7 @@ void configue_rgb_parsing(t_container *content, char *color, int flag);
 int get_number_newlines(char *str);
 char *get_next_line(t_container *content);
 void get_width_and_height(t_container *content);
+void map_printer(char **map);
 int is_paces(char *str);
 void start_the_play(t_container *content);
 void draw_clean(int x, int y, int color, t_container *content);
