@@ -1,31 +1,29 @@
 #include "../../inc/cub3d.h"
 
-static void	init_h_intercepts(t_container *content, int i, float *y_intercept,
-		float *x_intercept)
+static void	init_h_intercepts(t_container *content, int i,
+		t_horizontal_param *horiz)
 {
-	*y_intercept = floor(content->plr.y / PIXEL_SIZE) * PIXEL_SIZE;
+	horiz->y_h_intercept = floor(content->plr.y / PIXEL_SIZE) * PIXEL_SIZE;
 	if (content->rays[i].is_ray_down)
 	{
-		*y_intercept += PIXEL_SIZE;
+		horiz->y_h_intercept += PIXEL_SIZE;
 	}
-	*x_intercept = content->plr.x + (*y_intercept - content->plr.y)
-		/ tan(content->rays[i].ray_angle);
+	horiz->x_h_intercept = content->plr.x + (horiz->y_h_intercept
+			- content->plr.y) / tan(content->rays[i].ray_angle);
 }
 
-
-static void	calc_h_steps(t_container *content, int i, float *y_step,
-		float *x_step)
+static void	calc_h_steps(t_container *content, int i, t_horizontal_param *horiz)
 {
-	*y_step = PIXEL_SIZE;
+	horiz->y_h_step = PIXEL_SIZE;
 	if (content->rays[i].is_ray_up)
 	{
-		*y_step *= -1;
+		horiz->y_h_step *= -1;
 	}
-	*x_step = PIXEL_SIZE / tan(content->rays[i].ray_angle);
-	if ((content->rays[i].is_ray_left && *x_step > 0)
-		|| (content->rays[i].is_ray_right && *x_step < 0))
+	horiz->x_h_step = PIXEL_SIZE / tan(content->rays[i].ray_angle);
+	if ((content->rays[i].is_ray_left && horiz->x_h_step > 0)
+		|| (content->rays[i].is_ray_right && horiz->x_h_step < 0))
 	{
-		*x_step *= -1;
+		horiz->x_h_step *= -1;
 	}
 }
 
@@ -52,17 +50,16 @@ static int	check_h_wall_hit(t_container *content, int i, float next_h_x,
 	return (0);
 }
 
-
 static void	find_horizontal_hit_point(t_container *content, int i,
-		float next_h_x, float next_h_y, float x_step, float y_step)
+		t_horizontal_param *horiz)
 {
 	float	curr_x;
 	float	curr_y;
 	float	map_max_w;
 	float	map_max_h;
 
-	curr_x = next_h_x;
-	curr_y = next_h_y;
+	curr_x = horiz->x_h_intercept;
+	curr_y = horiz->y_h_intercept;
 	map_max_w = content->map_w * PIXEL_SIZE;
 	map_max_h = content->map_h * PIXEL_SIZE;
 	while (curr_x >= 0 && curr_x <= map_max_w && curr_y >= 0
@@ -72,21 +69,18 @@ static void	find_horizontal_hit_point(t_container *content, int i,
 		{
 			break ;
 		}
-		curr_x += x_step;
-		curr_y += y_step;
+		curr_x += horiz->x_h_step;
+		curr_y += horiz->y_h_step;
 	}
 }
 
 void	get_the_horizantal(t_container *content, int i)
 {
-	float	y_intercept;
-	float	x_intercept;
-	float	y_step;
-	float	x_step;
+	t_horizontal_param	horiz;
 
-	init_h_intercepts(content, i, &y_intercept, &x_intercept);
-	calc_h_steps(content, i, &y_step, &x_step);
-	find_horizontal_hit_point(content, i, x_intercept, y_intercept, x_step,
-		y_step);
+	ft_memset(&horiz, 0, sizeof(t_horizontal_param));
+	init_h_intercepts(content, i, &horiz);
+	calc_h_steps(content, i, &horiz);
+	find_horizontal_hit_point(content, i, &horiz);
 	return ;
 }
