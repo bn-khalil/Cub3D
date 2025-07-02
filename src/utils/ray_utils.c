@@ -1,14 +1,5 @@
 #include "../../inc/cub3d.h"
 
-int	mod(int a, int b)
-{
-	while (a < 0)
-		a += b;
-	while (a >= b)
-		a -= b;
-	return (a);
-}
-
 float	get_vector_dis(t_container *content, float nex_x, float nex_y)
 {
 	return (sqrt((nex_x - content->plr.x) * (nex_x - content->plr.x) + (nex_y
