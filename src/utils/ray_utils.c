@@ -58,8 +58,10 @@ void	ray_info(t_container *content)
 {
 	int		i;
 	float	ray_angle;
+	float angle_increment;
 
 	i = -1;
+	angle_increment = FOV / content->num_rays;
 	ray_angle = fix_angle(content->plr.r_angle - (FOV / 2));
 	while (++i < content->num_rays)
 	{
@@ -74,6 +76,6 @@ void	ray_info(t_container *content)
 		get_the_horizantal(content, i);
 		get_vertical(content, i);
 		get_the_ray_length(content, i);
-		ray_angle = fix_angle(ray_angle + (FOV / content->num_rays));
+		ray_angle = fix_angle(ray_angle + angle_increment);
 	}
 }
