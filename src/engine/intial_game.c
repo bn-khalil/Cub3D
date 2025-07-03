@@ -6,11 +6,23 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:54:52 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/02 17:25:19 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/03 14:58:43 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
+
+void	print_pxt(int x, int y, int color, t_container *content)
+{
+	char	*pos;
+
+	if (x >= 0 && x < MAP_W && y >= 0 && y < MAP_H)
+	{
+		pos = content->src.buffer_pos + y * content->src.len_with_pixels
+			+ x * (content->src.pixel_bits_number / 8);
+		*(unsigned int *)pos = color;
+	}
+}
 
 void	init_player(t_container *content)
 {

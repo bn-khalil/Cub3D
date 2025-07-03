@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/03 15:00:23 by kben-tou          #+#    #+#             */
+/*   Updated: 2025/07/03 15:00:56 by kben-tou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/cub3d.h"
-#include <string.h>
+
 void	is_file_ext_valid(char *filename)
 {
 	int	len;
@@ -7,16 +19,16 @@ void	is_file_ext_valid(char *filename)
 	len = ft_strlen(filename);
 	if (len >= 4)
 	{
-		if (strcmp(filename + (len - 4), ".cub") != 0)
+		if (ft_strcmp(filename + (len - 4), ".cub") != 0)
 			ft_error("there is not file with this name \n", NULL);
 	}
 	else
 		ft_error("invalid file name!\n", NULL);
 }
 
-void check_fd(t_container *content, char *path)
+void	check_fd(t_container *content, char *path)
 {
-	int fd;
+	int	fd;
 
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
@@ -24,7 +36,8 @@ void check_fd(t_container *content, char *path)
 	else
 		close(fd);
 }
-void check_sprite_files(t_container *content)
+
+void	check_sprite_files(t_container *content)
 {
 	check_fd(content, "./textures/h1.xpm");
 	check_fd(content, "./textures/h2.xpm");
@@ -33,14 +46,11 @@ void check_sprite_files(t_container *content)
 	check_fd(content, "./textures/h5.xpm");
 	check_fd(content, "./textures/h6.xpm");
 }
-void f()
-{
-	system("leaks cub3d; lsof -c cub3d ");
-}
+
 int	main(int ac, char **av)
 {
 	t_container	content;
-	// atexit(f);
+
 	if (ac != 2)
 		return (write(2, "Invalid number of arrguments!\n", 31), 1);
 	is_file_ext_valid(av[1]);

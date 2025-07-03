@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 11:23:16 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/01 16:21:09 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/03 14:56:44 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	ft_free_2d(char **str)
 	int	i;
 
 	i = 0;
-  if (!str)
-    return ;
+	if (!str)
+		return ;
 	while (str[i])
 	{
 		free(str[i]);
@@ -65,7 +65,7 @@ void	ft_error(char *err, t_container *content)
 {
 	write(2, err, ft_strlen(err));
 	if (!content)
-    	exit(1);
+		exit(1);
 	ft_free_all(content);
 	exit(1);
 }

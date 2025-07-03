@@ -20,7 +20,6 @@ SRC = src/main.c \
 			src/parsing/map_components.c \
 			src/engine/map_drawing.c \
 			src/engine/raycasting.c \
-			src/engine/draw_tools.c \
 			src/engine/texture_drawing.c \
 			src/engine/intial_game.c \
 			src/engine/key_event_handle.c \
