@@ -1,7 +1,0 @@
-- [X] creating the reay effictivly
-- [x] moving the player in more smooth way espacialy ungels 
-- [ ] rmoving the double speed in sertain angle
-- [X] creating the recasting  
-- [X] rmoving the minimap 
-- [ ] fixing the norms 
-- [ ] creting a tldraw to explain 
