@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:05:10 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/04 10:23:32 by sait-nac         ###   ########.fr       */
+/*   Updated: 2025/07/04 10:27:04 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,6 @@ void				configue_rgb_parsing(t_container *content, char *color,
 						int flag);
 int					get_number_newlines(char *str);
 void				get_width_and_height(t_container *content);
-void				map_printer(char **map);
 int					is_paces(char *str);
 void				start_the_play(t_container *content);
 void				draw_clean(int x, int y, int color, t_container *content);
