@@ -38,16 +38,12 @@ int	is_map_covered_with_walls(int x, int y, t_container *content)
 void	check_map_components(t_container *content)
 {
 	int	i;
-	int	count;
 	int	j;
 
 	i = 0;
-	count = 0;
 	while (content->map[i])
 	{
 		j = 0;
-		if (content->map[i][0] == '\0')
-			count++;
 		while (content->map[i][j])
 		{
 			player_pos_check(content, i, j);

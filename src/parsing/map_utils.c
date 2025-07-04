@@ -76,7 +76,7 @@ void	get_width_and_height(t_container *content)
 int	is_map_chars(char c)
 {
 	if (c == '0' || c == 'N' || c == 'E'
-		|| c == 'W' || c == 'S' || c == 'D')
+		|| c == 'W' || c == 'S')
 		return (1);
 	return (0);
 }
