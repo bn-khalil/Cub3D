@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:57:13 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/02 17:13:06 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/04 19:17:13 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,23 @@ void	draw_texture_on_screen(t_container *content, t_ray ray, \
 	int		tex_y;
 	float	rel_y;
 	int		y;
+	float	hit_tx;
 
 	y = ray.wall_top_pixel - 1;
 	if (ray.was_vertical)
-		tex_x = (int)fmod((ray.wall_hit_y * texture->txr_w / PIXEL_SIZE), \
-			texture->txr_w);
+	{
+		hit_tx = ray.wall_hit_y - (floor(ray.wall_hit_y / PIXEL_SIZE) * PIXEL_SIZE);
+		tex_x = (hit_tx / PIXEL_SIZE) * texture->txr_w;
+	}
 	else
-		tex_x = (int)fmod((ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), \
-			texture->txr_w);
+	{
+		hit_tx = ray.wall_hit_x - (floor(ray.wall_hit_x / PIXEL_SIZE) * PIXEL_SIZE);
+		tex_x = (hit_tx / PIXEL_SIZE) * texture->txr_w;
+	}
 	while (++y < ray.botm_pixel)
 	{
-		rel_y = (float)(y - (MAP_H / 2)) / ray.wall_hight;
-		tex_y = (int)((0.5f + rel_y) * texture->txr_h);
+		rel_y = (y - (MAP_H / 2)) / ray.wall_hight;
+		tex_y = (0.5f + rel_y) * texture->txr_h;
 		if (tex_y < 0)
 			tex_y = 0;
 		if (tex_y >= texture->txr_h)
