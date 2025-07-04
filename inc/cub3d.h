@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:05:10 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/03 15:05:11 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/04 10:23:32 by sait-nac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@
 # define MINIMAP_BORDER 5
 # define MINIMAP_CELL_SIZE 8
 # define PIXEL_SIZE 32
-# define PLR PIXEL_SIZE / 3
+# define PLR 10
 # define PI 3.14159265
-# define FOV (60.0 * (PI / 180.0))
+# define FOV 1.04719755 
 # define WALL_COL_WIDH 1
 # define MAP_RATIO 0.8
 # define MAP_W 1080

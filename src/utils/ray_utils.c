@@ -61,7 +61,7 @@ void	ray_info(t_container *content)
 {
 	int		i;
 	float	ray_angle;
-	float angle_increment;
+	float	angle_increment;
 
 	i = -1;
 	angle_increment = FOV / content->num_rays;
