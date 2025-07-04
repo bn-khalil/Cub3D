@@ -6,11 +6,23 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:54:52 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/01 10:55:38 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/03 14:58:43 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
+
+void	print_pxt(int x, int y, int color, t_container *content)
+{
+	char	*pos;
+
+	if (x >= 0 && x < MAP_W && y >= 0 && y < MAP_H)
+	{
+		pos = content->src.buffer_pos + y * content->src.len_with_pixels
+			+ x * (content->src.pixel_bits_number / 8);
+		*(unsigned int *)pos = color;
+	}
+}
 
 void	init_player(t_container *content)
 {
@@ -18,7 +30,7 @@ void	init_player(t_container *content)
 	content->plr.down = 0;
 	content->plr.left = 0;
 	content->plr.right = 0;
-	content->plr.speed = 3.0;
+	content->plr.speed = 3.5;
 	content->plr.rotate_left = 0;
 	content->plr.rotate_right = 0;
 	content->num_rays = MAP_W / WALL_COL_WIDH;
@@ -28,9 +40,9 @@ void	init_player(t_container *content)
 		content->plr.r_angle = 0;
 	if (content->plr.std_direction == 'W')
 		content->plr.r_angle = PI;
-	if (content->plr.std_direction == 'N')
-		content->plr.r_angle = PI / 2;
 	if (content->plr.std_direction == 'S')
+		content->plr.r_angle = PI / 2;
+	if (content->plr.std_direction == 'N')
 		content->plr.r_angle = 3 * PI / 2;
 	content->plr.r_speed = 2 * (PI / 180);
 	content->old_mouse_x = MAP_W / 2;

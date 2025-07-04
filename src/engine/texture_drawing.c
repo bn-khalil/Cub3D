@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:57:13 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/02 13:00:06 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/02 17:13:06 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ void	draw_texture_on_screen(t_container *content, t_ray ray, \
 
 	y = ray.wall_top_pixel - 1;
 	if (ray.was_vertical)
-		tex_x = mod((ray.wall_hit_y * texture->txr_w / PIXEL_SIZE), \
+		tex_x = (int)fmod((ray.wall_hit_y * texture->txr_w / PIXEL_SIZE), \
 			texture->txr_w);
 	else
-		tex_x = mod((ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), \
+		tex_x = (int)fmod((ray.wall_hit_x * texture->txr_w / PIXEL_SIZE), \
 			texture->txr_w);
 	while (++y < ray.botm_pixel)
 	{

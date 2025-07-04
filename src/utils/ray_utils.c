@@ -1,13 +1,16 @@
-#include "../../inc/cub3d.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ray_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/03 14:54:53 by kben-tou          #+#    #+#             */
+/*   Updated: 2025/07/03 14:54:54 by kben-tou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	mod(int a, int b)
-{
-	while (a < 0)
-		a += b;
-	while (a >= b)
-		a -= b;
-	return (a);
-}
+#include "../../inc/cub3d.h"
 
 float	get_vector_dis(t_container *content, float nex_x, float nex_y)
 {
