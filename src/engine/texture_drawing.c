@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:57:13 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/05 11:48:39 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/05 13:13:40 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,21 +48,21 @@ void	draw_ceilling_floor(t_container *content, t_ray ray, int i)
 		print_pxt(i * WALL_COL_WIDH, ray.f, content->floor_color, content);
 }
 
-int get_texture_x(t_ray ray, t_config *texture)
+int	get_texture_x(t_ray ray, t_config *texture)
 {
-    float distance_to_hit;
-    int tex_x;
+	float	distance_to_hit;
+	int		tex_x;
 
-    if (ray.was_vertical)
-        distance_to_hit = fmod(ray.wall_hit_y, PIXEL_SIZE);
-    else
-        distance_to_hit = fmod(ray.wall_hit_x, PIXEL_SIZE);
-    tex_x = (int)((distance_to_hit / PIXEL_SIZE) * texture->txr_w);
-    if (tex_x < 0)
-        tex_x = 0;
-    if (tex_x >= texture->txr_w)
-        tex_x = texture->txr_w - 1;
-    return ( tex_x );
+	if (ray.was_vertical)
+		distance_to_hit = fmod(ray.wall_hit_y, PIXEL_SIZE);
+	else
+		distance_to_hit = fmod(ray.wall_hit_x, PIXEL_SIZE);
+	tex_x = (int)((distance_to_hit / PIXEL_SIZE) * texture->txr_w);
+	if (tex_x < 0)
+		tex_x = 0;
+	if (tex_x >= texture->txr_w)
+		tex_x = texture->txr_w - 1;
+	return (tex_x);
 }
 
 void	draw_texture_on_screen(t_container *content, t_ray ray, \
