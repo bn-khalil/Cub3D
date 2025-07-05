@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 11:24:09 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/01 11:44:05 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/05 20:15:20 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	should_skip(const char *s, char c, int *count, int *i)
 {
-	size_t	is_in;
+	int		is_in;
 
 	is_in = 0;
 	while (s[(*i)])
@@ -30,10 +30,10 @@ static void	should_skip(const char *s, char c, int *count, int *i)
 	}
 }
 
-static size_t	words_count(const char *s, char c, int skip_separator)
+static int	words_count(const char *s, char c, int skip_separator)
 {
-	size_t	i;
-	size_t	count;
+	int		i;
+	int		count;
 
 	i = 0;
 	count = 0;
@@ -54,9 +54,9 @@ static size_t	words_count(const char *s, char c, int skip_separator)
 	return (count);
 }
 
-static char	*fill(char *p, const char *s, size_t i, size_t len_chrs)
+static char	*fill(char *p, const char *s, int i, int len_chrs)
 {
-	size_t	k;
+	int		k;
 
 	k = 0;
 	while (k < len_chrs)
@@ -68,11 +68,11 @@ static char	*fill(char *p, const char *s, size_t i, size_t len_chrs)
 	return (p);
 }
 
-static char	*store_next_word(const char *s, size_t *i, char c, \
+static char	*store_next_word(const char *s, int *i, char c, \
 int skip_separator)
 {
 	char	*p;
-	size_t	char_count;
+	int		char_count;
 
 	char_count = 0;
 	if (skip_separator)
@@ -93,9 +93,9 @@ int skip_separator)
 char	**ft_split(char *s, char c, int skip_separator)
 {
 	char	**p;
-	size_t	i;
-	size_t	j;
-	size_t	word_count;
+	int		i;
+	int		j;
+	int		word_count;
 
 	if (!s)
 		return (NULL);

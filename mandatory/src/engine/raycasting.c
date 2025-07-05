@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:57:28 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/05 14:48:44 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/05 20:16:20 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_config	*get_texture_by_id(t_config *confs, const char *id)
 	return (NULL);
 }
 
-void	set_ray_wall_dir(t_ray *ray, t_container *content)
+void	set_ray_wall_dir(t_ray *ray)
 {
 	if (ray->was_vertical)
 	{
@@ -69,7 +69,7 @@ void	convert_2d_to_3d(t_container *content)
 		ray = content->rays[i];
 		strip_start_end_points(&ray, dis_project);
 		draw_ceilling_floor(content, ray, i);
-		set_ray_wall_dir(&ray, content);
+		set_ray_wall_dir(&ray);
 		texture = get_texture_by_id(content->confs, ray.wall_dir);
 		draw_texture_on_screen(content, ray, texture, i);
 	}
