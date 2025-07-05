@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 13:11:56 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/02 19:31:48 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/05 10:49:34 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,8 @@ void	put_texture_to_screen(t_container *content, t_sprite *spr)
 	int	x;
 
 	y = -1;
-	spr->buffer = mlx_get_data_addr(spr->img, \
-		&spr->nbits, &spr->size_l, &spr->endian);
-	spr->draw_x = (MAP_W - (MAP_W / 5) - spr->width);
-	spr->draw_y = MAP_H - spr->height + 8;
+	if (spr->nbits != 32)
+		ft_error("Error: program support only pixel with 4bytes\n", content);
 	while (++y < spr->height)
 	{
 		x = -1;
@@ -76,6 +74,10 @@ void	draw_sprite_hands(t_container *content)
 	ft_texture_loading(content, &spr);
 	if (!spr.img)
 		ft_error("failed loading image\n", content);
+	spr.buffer = mlx_get_data_addr(spr.img, \
+	&spr.nbits, &spr.size_l, &spr.endian);
+	spr.draw_x = (MAP_W - (MAP_W / 5) - spr.width);
+	spr.draw_y = MAP_H - spr.height + 8;
 	put_texture_to_screen(content, &spr);
 	mlx_destroy_image(content->src.mlx, spr.img);
 	++content->sprite_switcher;

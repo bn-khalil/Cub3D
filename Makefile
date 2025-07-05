@@ -18,7 +18,6 @@ SRC = src/main.c \
 			src/parsing/color_parsing.c \
 			src/parsing/map_utils.c \
 			src/parsing/map_components.c \
-			src/engine/map_drawing.c \
 			src/engine/raycasting.c \
 			src/engine/texture_drawing.c \
 			src/engine/intial_game.c \
