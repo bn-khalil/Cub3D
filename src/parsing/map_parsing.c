@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:57:05 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/03 14:57:06 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/05 14:46:22 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,12 @@ int	is_map_covered_with_walls(int x, int y, t_container *content)
 void	check_map_components(t_container *content)
 {
 	int	i;
-	int	count;
 	int	j;
 
 	i = 0;
-	count = 0;
 	while (content->map[i])
 	{
 		j = 0;
-		if (content->map[i][0] == '\0')
-			count++;
 		while (content->map[i][j])
 		{
 			player_pos_check(content, i, j);

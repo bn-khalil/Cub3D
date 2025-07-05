@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:05:10 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/05 10:17:44 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/05 14:48:02 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,8 +214,6 @@ int					get_number_newlines(char *str);
 void				get_width_and_height(t_container *content);
 int					is_paces(char *str);
 void				start_the_play(t_container *content);
-void				draw_clean(int x, int y, int color, t_container *content);
-void				clear_map_after_player(t_container *content);
 void				print_pxt(int x, int y, int color, t_container *content);
 int					draw_game(t_container *content);
 void				*ft_memset(void *b, int c, size_t len);

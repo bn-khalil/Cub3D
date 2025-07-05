@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:57:28 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/03 14:57:29 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/05 14:48:44 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,6 @@ void	convert_2d_to_3d(t_container *content)
 		draw_ceilling_floor(content, ray, i);
 		set_ray_wall_dir(&ray, content);
 		texture = get_texture_by_id(content->confs, ray.wall_dir);
-		if (!texture || !texture->value)
-			continue ;
 		draw_texture_on_screen(content, ray, texture, i);
 	}
 }
@@ -81,7 +79,6 @@ int	draw_game(t_container *content)
 {
 	let_player_move(content);
 	ray_info(content);
-	clear_map_after_player(content);
 	convert_2d_to_3d(content);
 	draw_sprite_hands(content);
 	mlx_put_image_to_window(content->src.mlx, content->src.win,
