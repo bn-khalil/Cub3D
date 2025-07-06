@@ -6,7 +6,7 @@
 #    By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/05 20:22:14 by kben-tou          #+#    #+#              #
-#    Updated: 2025/07/05 20:22:43 by kben-tou         ###   ########.fr        #
+#    Updated: 2025/07/06 08:29:56 by kben-tou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,15 +41,17 @@ SRC = src/main.c \
 OBJ = $(SRC:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address
 LIBS = -lmlx -framework OpenGL -framework AppKit
 
 all: $(NAME)
 
+bonus: $(NAME)
+
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ $(LIBS)
 
-%.o: %.c
+%.o: %.c inc/cub3d.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
