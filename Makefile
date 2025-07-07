@@ -1,4 +1,16 @@
-NAME = cub3d
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/07/05 20:22:14 by kben-tou          #+#    #+#              #
+#    Updated: 2025/07/06 11:43:41 by kben-tou         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME = cub3D
 
 SRC = src/main.c \
 			src/utils/memset.c \
@@ -27,29 +39,20 @@ SRC = src/main.c \
 			src/engine/mouse_dete.c 
 
 OBJ = $(SRC:.c=.o)
-DEP = $(OBJ:.o=.d)
 
 CC = cc
-INCLUDES = -Iinc
-CFLAGS = -g -Wno-incompatible-pointer-types #-fsanitize=address
-UNAME_S := $(shell uname -s)
-
-ifeq ($(UNAME_S),Linux)
-    INCLUDES += -I${HOME}/.local/include
-    LIBS = -L${HOME}/.local/lib -lmlx -lXext -lX11 -lm
-else ifeq ($(UNAME_S),Darwin)
-    LIBS = -lmlx -framework OpenGL -framework AppKit
-else
-    $(error OS not supported: $(UNAME_S))
-endif
+CFLAGS = -Wall -Wextra -Werror
+LIBS = -lmlx -framework OpenGL -framework AppKit
 
 all: $(NAME)
+
+bonus: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ $(LIBS)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ -MMD
+%.o: %.c inc/cub3d.h
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJ) $(DEP)
@@ -58,7 +61,3 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
-
--include $(DEP)
-
-.PHONY: all clean fclean re

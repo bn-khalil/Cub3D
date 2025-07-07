@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:57:13 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/05 14:18:57 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/05 19:15:11 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,21 @@ void	texture_init(t_container *content)
 	int			i;
 
 	if (!content || !content->src.mlx)
-		ft_error("Error: MLX not initialized", content);
+		ft_error("Error: MLX not initialized\n", content);
 	iter = content->confs;
 	i = 0;
 	while (iter)
 	{
 		if (!iter->value)
-			ft_error("Error: texture path is NULL", content);
+			ft_error("Error: texture path is NULL\n", content);
 		iter->img = mlx_xpm_file_to_image(content->src.mlx, iter->value, \
 			&iter->txr_w, &iter->txr_h);
 		if (!iter->img)
-			ft_error("Error: failed to load texture image", content);
+			ft_error("Error: failed to load texture image\n", content);
 		iter->buffer_pos = mlx_get_data_addr(iter->img, \
 			&iter->pixel_bits_number, &iter->len_with_pixels, &iter->endian);
 		if (!iter->buffer_pos)
-			ft_error("Error: failed to get texture buffer", content);
+			ft_error("Error: failed to get texture buffer\n", content);
 		i++;
 		iter = iter->next;
 	}

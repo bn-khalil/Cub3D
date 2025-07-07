@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:29:48 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/01 11:51:34 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/06 09:07:49 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,55 +26,25 @@ int	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strjoin_ofree(char *s1, char *s2)
-{
-	int		strlen;
-	char	*str;
-	int		i;
-
-	i = 0;
-	if (!s1)
-	{
-		s1 = malloc(sizeof(char) * 1);
-		s1[0] = '\0';
-	}
-	strlen = ft_strlen(s1) + ft_strlen(s2);
-	str = malloc(sizeof(char) * strlen + 1);
-	if (!str)
-		return (NULL);
-	while (s1[i])
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	strlen = 0;
-	while (s2[strlen])
-		str[i++] = s2[strlen++];
-	str[i] = '\0';
-	return (str);
-}
-
 char	*ft_strjoin(char *s1, char *s2)
 {
 	int		strlen;
 	char	*str;
 	int		i;
 
-	i = 0;
+	i = -1;
+	if (!s1 && !s2)
+		return (NULL);
 	if (!s1)
-	{
-		s1 = malloc(sizeof(char) * 1);
-		s1[0] = '\0';
-	}
+		return (ft_strdup(s2));
+	if (!s2)
+		return (ft_strdup(s1));
 	strlen = ft_strlen(s1) + ft_strlen(s2);
 	str = malloc(sizeof(char) * strlen + 1);
 	if (!str)
 		return (NULL);
-	while (s1[i])
-	{
+	while (s1[++i])
 		str[i] = s1[i];
-		i++;
-	}
 	strlen = 0;
 	while (s2[strlen])
 		str[i++] = s2[strlen++];

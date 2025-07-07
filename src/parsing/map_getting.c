@@ -6,7 +6,7 @@
 /*   By: kben-tou <kben-tou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:57:10 by kben-tou          #+#    #+#             */
-/*   Updated: 2025/07/03 14:57:11 by kben-tou         ###   ########.fr       */
+/*   Updated: 2025/07/06 08:35:26 by kben-tou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_is_wall(char *str)
 	i = 0;
 	if (!str)
 		return (0);
-	while (str[i] && str[i] == ' ' || str[i] == '\t')
+	while (str[i] && (str[i] == ' ' || str[i] == '\t'))
 		i++;
 	if (!str[i])
 		return (0);
